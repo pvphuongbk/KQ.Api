@@ -35,6 +35,9 @@ namespace KQ.Services.Users
                     TileXac = u.TileXac,
                     TileThuong = u.TileThuong,
                     TileBaSo = u.TileBaSo,
+                    DaThang = u.DaThang,
+                    DaXien = u.DaXien,
+                    BonSo = u.BonSo,
                     PhoneNumber = u.PhoneNumber
                 });
             }
@@ -62,6 +65,9 @@ namespace KQ.Services.Users
                         TileXac = u.TileXac,
                         TileThuong = u.TileThuong,
                         TileBaSo = u.TileBaSo,
+                        DaThang = u.DaThang,
+                        DaXien = u.DaXien,
+                        BonSo = u.BonSo,
                         PhoneNumber = u.PhoneNumber
                     });
                 }
@@ -70,7 +76,41 @@ namespace KQ.Services.Users
             response.Data = result;
             return response;
         }
-
+        public ResponseBase UserInfo(int userId)
+        {
+            ResponseBase response = new ResponseBase();
+            var user = _userRepository.FindAll(x => !x.IsDeleted && x.ID == userId).Include(x => x.TileUser)
+                                            .FirstOrDefault();
+            UserInfoDtoResponse result = new UserInfoDtoResponse();
+            if (user != null)
+            {
+                result = _mapper.Map<UserInfoDtoResponse>(user);
+                result.Phonebooks = new List<Phonebook>();
+                foreach (var u in user.TileUser)
+                {
+                    result.Phonebooks.Add(new Phonebook
+                    {
+                        ID = u.ID,
+                        Name = u.Name,
+                        TileXac = u.TileXac,
+                        TileThuong = u.TileThuong,
+                        TileBaSo = u.TileBaSo,
+                        DaThang = u.DaThang,
+                        DaXien = u.DaXien,
+                        BonSo = u.BonSo,
+                        PhoneNumber = u.PhoneNumber
+                    });
+                }
+            }
+            else
+            {
+                response.Message = "User không tồn tại";
+                response.Code = 401;
+                return response;
+            }
+            response.Data = result;
+            return response;
+        }
         public ResponseBase UpdatePhonebook(List<TileUserDto> request)
         {
             _commonUoW.BeginTransaction();
@@ -93,6 +133,9 @@ namespace KQ.Services.Users
                             item.TileXac = up.TileXac;
                             item.TileThuong = up.TileThuong;
                             item.TileBaSo = up.TileBaSo;
+                            item.DaThang = up.DaThang;
+                            item.DaXien = up.DaXien;
+                            item.BonSo = up.BonSo;
                             item.PhoneNumber = up.PhoneNumber;
                         }
                     }
@@ -106,6 +149,9 @@ namespace KQ.Services.Users
                             Name = phonebook.Name,
                             TileThuong = phonebook.TileThuong,
                             TileXac = phonebook.TileXac,
+                            DaThang = phonebook.DaThang,
+                            DaXien = phonebook.DaXien,
+                            BonSo = phonebook.BonSo,
                             UserID = phonebook.UserID,
                             TileBaSo = phonebook.TileBaSo,
                             PhoneNumber = phonebook.PhoneNumber,
@@ -138,6 +184,9 @@ namespace KQ.Services.Users
                 user.TileXac = request.TileXac;
                 user.TileThuong = request.TileThuong;
                 user.TileBaSo = request.TileBaSo;
+                user.DaThang = request.DaThang;
+                user.DaXien = request.DaXien;
+                user.BonSo = request.BonSo;
                 _commonUoW.Commit();
                 return new ResponseBase();
             }

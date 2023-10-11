@@ -37,8 +37,8 @@ namespace KQ.Common.Helpers
                             ch,
                             ch.GetFirstChar(),
                             ch.GetFirstCharOnlyFisrt(),
+                            ch.GetFirstCharOnlyForFisrt(),
                             ch.Replace(" ",string.Empty),
-                            ch.GetFirstCharOnlySecond()
                         });
                     }
                 }

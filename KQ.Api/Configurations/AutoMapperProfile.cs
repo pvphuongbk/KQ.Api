@@ -9,6 +9,7 @@ namespace KQ.Api.Configurations
         public AutoMapperProfile()
         {
             CreateMap<LoginResponse, User>().ReverseMap();
+            CreateMap<UserInfoDtoResponse, User>().ReverseMap();
         }
     }
 }

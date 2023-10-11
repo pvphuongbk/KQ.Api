@@ -9,5 +9,6 @@ namespace KQ.Services.Users
         public ResponseBase UpdatePhonebook(List<TileUserDto> request);
         public ResponseBase UpdateUser(UserUpdateDto request);
         public ResponseBase GetDanhBa(int userId);
+        public ResponseBase UserInfo(int userId);
     }
 }

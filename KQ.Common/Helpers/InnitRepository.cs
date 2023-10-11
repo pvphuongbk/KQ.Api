@@ -751,6 +751,7 @@ namespace KQ.Common.Helpers
             options.AddArguments("--window-position=-32000,-32000");
             drivers = new ChromeDriver("C:\\tesst\\driver", options);
             //drivers = new ChromeDriver("D:\\Private\\KQ.Api", options);
+            //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
 
             //FirefoxOptions options = new FirefoxOptions();
             //options.AddArguments("--headless");

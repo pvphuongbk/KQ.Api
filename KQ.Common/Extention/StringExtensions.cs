@@ -79,6 +79,16 @@ namespace KQ.Common.Extention
             result += arr[arr.Length - 1].FirstOrDefault().ToString();
             return result;
         }
+        public static string GetFirstCharOnlyForFisrt(this string s)
+        {
+            var arr = s.Split(" ").ToArray();
+            string result = arr[0].FirstOrDefault().ToString();
+            for (int i = 1; i < arr.Length; i++)
+            {
+                result += arr[i];
+            }
+            return result;
+        }
         public static string ChuanHoaString(this string? input)
         {
             var sy = input.ToLower();

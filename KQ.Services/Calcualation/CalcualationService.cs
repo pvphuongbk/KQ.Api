@@ -509,7 +509,12 @@ namespace KQ.Services.Calcualation
                     dtoTemp.Clear();
                 }
 
-
+                foreach (var dto in dtos)
+                {
+                    dto.DaThang = syntaxes.DaThang == 0 ? 650 : syntaxes.DaThang;
+                    dto.DaXien = syntaxes.DaXien == 0 ? 550 : syntaxes.DaXien;
+                    dto.BonSo = syntaxes.BonSo == 0 ? 5500 : syntaxes.BonSo;
+                }
                 foreach (var dto in dtos)
                 {
                     var (xac, mess) = CalXac(dto);
@@ -1051,7 +1056,7 @@ namespace KQ.Services.Calcualation
                     {
                         for (int j = i + 1; j < dto.Numbers.Count; j++)
                         {
-                            var (total, mes) = CalThuongXien(chal1, chal2, dto.Sl, dto.Numbers[i], dto.Numbers[j]);
+                            var (total, mes) = CalThuongXien(chal1, chal2, dto.Sl, dto.Numbers[i], dto.Numbers[j], dto.DaThang, dto.DaXien);
                             totals += total;
                             message.AddRange(mes);
                         }
@@ -1074,7 +1079,7 @@ namespace KQ.Services.Calcualation
                 case LotteryType.BaCangDauDuoi:
                     return CalThuongBaCangDauDuoi(dto.Chanels, dto.Numbers, dto.Sl, dto.TileBaso);
                 case LotteryType.BaoBonSo:
-                    return CalThuongBonSo(dto.Chanels, dto.Numbers, dto.Sl);
+                    return CalThuongBonSo(dto.Chanels, dto.Numbers, dto.Sl, dto.BonSo);
                 default:
                     return (0, new List<string>());
             }
@@ -1105,14 +1110,14 @@ namespace KQ.Services.Calcualation
 
             return (total, message);
         }
-        public (double, List<string>) CalThuongXien(int chanel1, int chanel2, int sl, int lo1, int lo2)
+        public (double, List<string>) CalThuongXien(int chanel1, int chanel2, int sl, int lo1, int lo2, double dathang, double daxien)
         {
             List<string> message = new List<string>();
-            int mucThuong = 550;
+            double mucThuong = daxien;
             List<int> lst = new List<int>();
             if (chanel1 > 0 && chanel2 == 0)
             {
-                mucThuong = 650;
+                mucThuong = dathang;
                 lst = InnitRepository._totalDic["Now"][chanel1 - 1];
             }
             else
@@ -1353,9 +1358,8 @@ namespace KQ.Services.Calcualation
 
             return (total, message);
         }
-        public (double, List<string>) CalThuongBonSo(List<int> chanels, List<int> bonSo, int sl)
+        public (double, List<string>) CalThuongBonSo(List<int> chanels, List<int> bonSo, int sl, double tileBonSo)
         {
-            int tileBonSo = 5500;
             List<string> message = new List<string>();
             double total = 0;
             foreach (var chanel in chanels)

@@ -1,11 +1,10 @@
-﻿namespace KQ.DataAccess.Entities
+﻿namespace KQ.DataDto.User
 {
-    public partial class User
+    public class UserInfoDtoResponse
     {
         public int ID { get; set; }
         public string UserName { get; set; }
         public string Account { get; set; }
-        public string Password { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpireDate { get; set; }
         public bool IsDeleted { get; set; }
@@ -17,6 +16,7 @@
         public double DaThang { get; set; }
         public double DaXien { get; set; }
         public double BonSo { get; set; }
-        public virtual List<TileUser> TileUser { get; set; }
+        public List<Phonebook> Phonebooks { get; set;}
     }
 }
+

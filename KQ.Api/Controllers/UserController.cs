@@ -21,6 +21,12 @@ namespace KQ.Api.Controllers
             var items = _userService.Login(request);
             return items;
         }
+        [HttpGet("user-info/{userId}")]
+        public ResponseBase UserInfo(int userId)
+        {
+            var items = _userService.UserInfo(userId);
+            return items;
+        }
 
         [HttpPut("update-phonebook")]
         public ResponseBase UpdatePhonebook(List<TileUserDto> request)
