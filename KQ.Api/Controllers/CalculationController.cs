@@ -17,6 +17,7 @@ namespace KQ.Api.Controllers
             _calcualationService = calcualationService;
         }
 
+
         [HttpPost("cal-1")]
         public ResponseBase Cal1(List<Cal1RequestDto> cal1)
         {
