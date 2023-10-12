@@ -129,7 +129,7 @@ namespace KQ.Common.Helpers
                     
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Init");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
                 else if (now > new TimeSpan(17, 0, 0) && now <= new TimeSpan(17, 2, 0))
                 {
@@ -159,7 +159,7 @@ namespace KQ.Common.Helpers
 
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Init");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
                 else if (now > new TimeSpan(17, 15, 0) && now <= new TimeSpan(17, endCheck, 0))
                 {
@@ -193,7 +193,7 @@ namespace KQ.Common.Helpers
                     
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Update---");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
                 else if (now > new TimeSpan(18, 0, 0) && now <= new TimeSpan(18, 2, 0))
                 {
@@ -223,7 +223,7 @@ namespace KQ.Common.Helpers
 
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Update---");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
                 else if (now > new TimeSpan(18, 15, 0) && now <= new TimeSpan(18, endCheck, 0))
                 {
@@ -257,7 +257,7 @@ namespace KQ.Common.Helpers
                     
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Init");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
                 else if (now > new TimeSpan(19, 0, 0) && now <= new TimeSpan(19, 0, 0))
                 {
@@ -287,7 +287,7 @@ namespace KQ.Common.Helpers
 
                     s1.Stop();
                     FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "Init");
+                        $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
                 }
             }
             catch (Exception ex)
