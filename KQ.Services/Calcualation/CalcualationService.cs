@@ -466,8 +466,8 @@ namespace KQ.Services.Calcualation
                             }
                             if (unknowList.Any())
                             {
-                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}. sys : {sys}";
-                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {string.Join(",", unknowList)}", "Cal2Request");
+                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}";
+                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {string.Join(",", unknowList)}. sys : {sys}", "Cal2Request");
                                 break;
                             }
                             if (!dtoTemp.Any())
