@@ -138,15 +138,17 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "MT. 70 bao 50N 1đài Kom Tum. 70.52 đá 5n.2đài 70.85 đá 5n.2đài. 70.58 đá 5n.2đài ", Xac =  1504.8 },//77
                 new CalTestRequestDto { SynTaxe = "MB. 85.38.78 đá Vòng 15N", Xac =  1846.8 },                                                         //78
                 new CalTestRequestDto { SynTaxe = "Đa vòng 31 , 61 , 91 2ng bao 61 , 20ng", Xac =  437.8 },                                           //79
-                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3ng bao 7 ng Vĩnh Long", Xac =  1368 },                                           //80
-                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  1368 },                                           //81
+                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3ng bao 7 ng Vĩnh Long", Xac =  533.5 },                                        //80
+                new CalTestRequestDto { SynTaxe = "Đa thẳng 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  533.5 },                                       //81
+                new CalTestRequestDto { SynTaxe = "Đa xien 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  1368 },                                       //81
+                new CalTestRequestDto { SynTaxe = "04 44 đá 10n dc 04 13dx 10n", Xac =  1368 },                                                       //82
                 
             };
             Constants.IstestMode = true;
             var arr = teststos.ToArray();
             for (int i = 0; i < arr.Length;i++)
             {
-                if(i ==80)
+                if(i ==79)
                 {
 
                 }

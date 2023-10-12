@@ -338,8 +338,8 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic.TryAdd("Saturday", new List<int>[8]);
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
-                InitDriver();
-                var check1 = UpdateKQ(null);
+                //InitDriver();
+                //var check1 = UpdateKQ(null);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
                 //var check3 = UpdateKQ(DayOfWeek.Tuesday);
                 //var check4 = UpdateKQ(DayOfWeek.Wednesday);
@@ -361,7 +361,7 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-                DisposeDriver();
+                //DisposeDriver();
             }
 
         }

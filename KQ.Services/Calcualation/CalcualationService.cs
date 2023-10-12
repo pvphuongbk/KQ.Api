@@ -141,16 +141,32 @@ namespace KQ.Services.Calcualation
                         int? tType = null;
                         if (type == null)
                         {
-                            tType = GetType(it, ref slDai);
-                            if (tType == 1 && array.Length > (i + 1) && (array[i + 1] == "vong" || array[i + 1] == "xien" || array[i + 1] == "x" || array[i + 1] == "v"))
+                            tType = GetType(it);
+                            if (tType == 1 && array.Length > (i + 1) && (array[i + 1] == "vong" || array[i + 1] == "v" || array[i + 1] == "thang"))
+                            {
                                 i++;
+                            }
+                            if (tType == 1 && array.Length > (i + 1) && (array[i + 1] == "xien" || array[i + 1] == "x"))
+                            {
+                                tType = 10;
+                                i++;
+                            }
                             if (tType == 2 && array.Length > (i + 1) && (array[i + 1] == "duoi" || array[i + 1] == "d"))
                             {
                                 i++;
                                 tType = 4;
                             }
                         }
-                        if ((it == "d" || it == "dai") && previous.Length == 1 && numbers.Any() && numbers.Last().StringToInt() <= 4)
+                        if(it == "dc")
+                        {
+                            slDai = 1;
+                            if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
+                            {
+                                CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache,
+                                    ref numbers, ref sl, ref result.MessageLoi[index], true);
+                            }
+                        }
+                        else if ((it == "d" || it == "dai") && previous.Length == 1 && numbers.Any() && numbers.Last().StringToInt() <= 4)
                         {
                             if (!chanels.Any() && array.Length > (i + 1) && array[i + 1].GetChanel(ref chanel))
                             {
@@ -466,8 +482,8 @@ namespace KQ.Services.Calcualation
                             }
                             if (unknowList.Any())
                             {
-                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}. sys : {sys}";
-                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {string.Join(",", unknowList)}", "Cal2Request");
+                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}";
+                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {string.Join(",", unknowList)}. sys : {sys}", "Cal2Request");
                                 break;
                             }
                             if (!dtoTemp.Any())
@@ -522,12 +538,12 @@ namespace KQ.Services.Calcualation
                     if (!string.IsNullOrEmpty(mess))
                         result.MessageXac.Add(mess);
                 }
-                foreach (var dto in dtos)
-                {
-                    var (thuong, mes) = CalThuong(dto);
-                    result.Thuong += thuong;
-                    result.MessageThuong.AddRange(mes);
-                }
+                //foreach (var dto in dtos)
+                //{
+                //    var (thuong, mes) = CalThuong(dto);
+                //    result.Thuong += thuong;
+                //    result.MessageThuong.AddRange(mes);
+                //}
                 result.Loi = result.Thuong - result.Xac;
                 result.Xac = Math.Round(result.Xac, 1);
                 result.Thuong = Math.Round(result.Thuong, 1);
@@ -731,17 +747,19 @@ namespace KQ.Services.Calcualation
             }
             return error;
         }
-        public int? GetType(string it, ref int slDai)
+        public int? GetType(string it)
         {
             int? type = null;
             if (it == "b" || it == "bl" || it == "bao" || it == "baolo" || it == "blo")
             {
                 type = 0;
             }
-            else if (it == "dx" || it == "dv" || it == "da")
+            else if (it == "dx")
             {
-                if (it == "dx")
-                    slDai = 2;
+                type = 10;
+            }
+            else if (it == "dv" || it == "da")
+            {
                 type = 1;
             }
             else if (it == "d" || it == "dau")
