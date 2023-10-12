@@ -141,16 +141,32 @@ namespace KQ.Services.Calcualation
                         int? tType = null;
                         if (type == null)
                         {
-                            tType = GetType(it, ref slDai);
-                            if (tType == 1 && array.Length > (i + 1) && (array[i + 1] == "vong" || array[i + 1] == "xien" || array[i + 1] == "x" || array[i + 1] == "v"))
+                            tType = GetType(it);
+                            if (tType == 1 && array.Length > (i + 1) && (array[i + 1] == "vong" || array[i + 1] == "v" || array[i + 1] == "thang"))
+                            {
                                 i++;
+                            }
+                            if (array.Length > (i + 1) && array[i] == "da" && (array[i + 1] == "xien" || array[i + 1] == "x"))
+                            {
+                                tType = 10;
+                                i++;
+                            }
                             if (tType == 2 && array.Length > (i + 1) && (array[i + 1] == "duoi" || array[i + 1] == "d"))
                             {
                                 i++;
                                 tType = 4;
                             }
                         }
-                        if ((it == "d" || it == "dai") && previous.Length == 1 && numbers.Any() && numbers.Last().StringToInt() <= 4)
+                        if(it == "dc")
+                        {
+                            slDai = 1;
+                            if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
+                            {
+                                CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache,
+                                    ref numbers, ref sl, ref result.MessageLoi[index], true);
+                            }
+                        }
+                        else if ((it == "d" || it == "dai") && previous.Length == 1 && numbers.Any() && numbers.Last().StringToInt() <= 4)
                         {
                             if (!chanels.Any() && array.Length > (i + 1) && array[i + 1].GetChanel(ref chanel))
                             {
@@ -273,28 +289,6 @@ namespace KQ.Services.Calcualation
                                 {
                                     List<int> chanelsTemps = new List<int>();
                                     CheckChanel(ref array, ref i, ref chanelsTemps);
-                                    //bool check = true;
-                                    //while (check)
-                                    //{
-                                    //    if (array.Length > (i + 1))
-                                    //    {
-                                    //        var chw = InnitRepository._chanelCode.FirstOrDefault(x => x.Value.Contains(array[i + 1]));
-                                    //        if (Constants.IstestMode)
-                                    //        {
-                                    //            chw = InnitRepository._chanelCodeForTest.FirstOrDefault(x => x.Value.Contains(array[i + 1]));
-                                    //        }
-                                    //        if (chw.Value != null && chw.Value.Any())
-                                    //        {
-                                    //            i++;
-                                    //            chanelsTemps.Add(chw.Key);
-                                    //        }
-                                    //        else
-                                    //            check = false;
-                                    //    }
-                                    //    else
-                                    //        check = false;
-
-                                    //}
                                     if (chanels.Any() || slDai > 0)
                                     {
                                         if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
@@ -351,8 +345,10 @@ namespace KQ.Services.Calcualation
                                             dtoTemp.Last().Chanels = chanels.CloneList();
                                             chanels.Clear();
                                         }
-                                        if (type != null && sl > 0 && numbers.Any())
+                                        if (type != null && sl > 0 && (numbers.Any() || numberCache.Any()))
                                         {
+                                            if(!numbers.Any())
+                                                numbers = numberCache.CloneList();
                                             dtoTemp.Add(new Cal1RequestDto
                                             {
                                                 Chanels = chanels,
@@ -485,12 +481,16 @@ namespace KQ.Services.Calcualation
                             if (dto.Chanels == null && chanels.Any())
                             {
                                 dto.Chanels = chanels;
-                                var er1 = CheckChanelValid(dto.Chanels, chanel, type);
-                                if (!string.IsNullOrEmpty(er1))
+                                if (dto.LotteryType == LotteryType.DaXien && chanels.Count == 1)
                                 {
-                                    result.MessageLoi[index] = er1;
-                                    break;
+                                    dto.Chanels.Add(chanels.First() + 1);
                                 }
+                            }
+                            var er1 = CheckChanelValid(dto.Chanels, chanel, (int)dto.LotteryType);
+                            if (!string.IsNullOrEmpty(er1))
+                            {
+                                result.MessageLoi[index] = er1;
+                                break;
                             }
                             var error = CheckErrorTypeAndNumber(dto.LotteryType, dto.NumbersStr, dto.Chanels);
                             if (!string.IsNullOrEmpty(error))
@@ -498,6 +498,8 @@ namespace KQ.Services.Calcualation
                                 result.MessageLoi[index] = error;
                                 break;
                             }
+                            if (dto.LotteryType == LotteryType.DaXien)
+                                dto.LotteryType = LotteryType.Xien;
                         }
                     }
                     if (!string.IsNullOrEmpty(result.MessageLoi[index]))
@@ -630,7 +632,7 @@ namespace KQ.Services.Calcualation
             }
             type = null;
             chanels.Clear();
-            numberCache.Clear();
+            //numberCache.Clear();
             numbers.Clear();
             sl = 0;
         }
@@ -651,12 +653,16 @@ namespace KQ.Services.Calcualation
             var chs = InnitRepository._chanelCode.Select(x => x.Key).ToList();
             if (Constants.IstestMode)
                 chs = InnitRepository._chanelCodeForTest.Select(x => x.Key).ToList();
-            if ((chanel == "mb" || chanel == "hn") && (chanels.Count > 1 || (slDai != null && slDai > 1)))
+            if ((chanel == "mb" || chanel == "hn") && (type == 10 || chanels.Count > 1 || (slDai != null && slDai > 1)))
             {
                 string add = "";
-                if (type == 1)
+                if (type == 10)
                     add = " Không thể đá xiên 2 đài miền bắc.";
                 error = $"Miền bắc chỉ có 1 đài.{add}";
+            }
+            else if(type == 10 && chanels.Count != 2)
+            {
+                error = $"Phải đá xiên 2 đài";
             }
             else if (chanel == "mn" && chanels.Count > 3)
             {
@@ -731,17 +737,19 @@ namespace KQ.Services.Calcualation
             }
             return error;
         }
-        public int? GetType(string it, ref int slDai)
+        public int? GetType(string it)
         {
             int? type = null;
             if (it == "b" || it == "bl" || it == "bao" || it == "baolo" || it == "blo")
             {
                 type = 0;
             }
-            else if (it == "dx" || it == "dv" || it == "da")
+            else if (it == "dx")
             {
-                if (it == "dx")
-                    slDai = 2;
+                type = 10;
+            }
+            else if (it == "dv" || it == "da")
+            {
                 type = 1;
             }
             else if (it == "d" || it == "dau")

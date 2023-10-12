@@ -57,7 +57,7 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "Bl 14 20n bl 914 5n xc 20n HN \r\n32 b50 232b10 xc50", Xac = 1911.4 }, //9
                 new CalTestRequestDto { SynTaxe = "51 bl50n. Hn", Xac = 1026 },                                           //10
                 new CalTestRequestDto { SynTaxe = "03.43.83.đx.5n.36.43.76.đx.5n.hn", Xac = 1231.2,
-                    MessageLoi = "Miền bắc chỉ có 1 đài." },                                                              //11
+                    MessageLoi = "Miền bắc chỉ có 1 đài. Không thể đá xiên 2 đài miền bắc." },                            //11
                 new CalTestRequestDto { SynTaxe = "Hn 35,59,92 bl 50n đa 10n", Xac = 4309.2 },                            //12
                 new CalTestRequestDto { SynTaxe = "03.43.83.đx.5n.mtr", Xac = 820.8 },                                    //13
                 new CalTestRequestDto { SynTaxe = "085,734 bl 2ng xchu 5ng 2dai mt", Xac = 133.8 },                       //14
@@ -78,7 +78,7 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "Tp,vl 22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n4₫ai mt 22bl10ndd10n", Xac = 1732.8,
                                                                                         MessageLoi = "Miền trung hôm nay chỉ có 3 đài" },      //29
                 new CalTestRequestDto { SynTaxe = "Tp,vl,bd 22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n2₫ai mb 22bl10ndd10n", Xac = 1732.8,
-                                                                                        MessageLoi = "Không thể đá xiên quá 2 đài" },          //30
+                                                                                        MessageLoi = "Miền bắc chỉ có 1 đài." },               //30
                 new CalTestRequestDto { SynTaxe = "Tp,vl 22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n2₫ai mb 22bl10ndd10n", Xac = 1732.8,
                                                                                         MessageLoi = "Miền bắc chỉ có 1 đài." },               //31
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n2₫ai mb 22bl10ndd10n tp,vl", Xac = 1732.8,
@@ -138,15 +138,20 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "MT. 70 bao 50N 1đài Kom Tum. 70.52 đá 5n.2đài 70.85 đá 5n.2đài. 70.58 đá 5n.2đài ", Xac =  1504.8 },//77
                 new CalTestRequestDto { SynTaxe = "MB. 85.38.78 đá Vòng 15N", Xac =  1846.8 },                                                         //78
                 new CalTestRequestDto { SynTaxe = "Đa vòng 31 , 61 , 91 2ng bao 61 , 20ng", Xac =  437.8 },                                           //79
-                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3ng bao 7 ng Vĩnh Long", Xac =  1368 },                                           //80
-                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  1368 },                                           //81
+                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3ng bao 7 ng Vĩnh Long", Xac =  533.5 },                                        //80
+                new CalTestRequestDto { SynTaxe = "Đa thẳng 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  533.5 },                                      //81
+                new CalTestRequestDto { SynTaxe = "Đa xien 70 , 31, 19 3 ng bao 7 ng Vĩnh Long", Xac =  1368, MessageLoi = "Phải đá xiên 2 đài" },     //82
+                new CalTestRequestDto { SynTaxe = "Đa vòng 70 , 31, 19 3ng 2đài bao 7 ng Vĩnh Long", Xac =  779.8 },                                    //83
+                new CalTestRequestDto { SynTaxe = "04 44 đá 10n dc 04 13dx 10n", Xac =  820.8 },                                                       //84
+                new CalTestRequestDto { SynTaxe = "Đa thẳng 70 , 31, 19 3 ng hai đài bao 7 ng Vĩnh Long", Xac =  779.8 },                              //85
+                new CalTestRequestDto { SynTaxe = "Đa xiên 70 , 31, 19 3ng 2đài bao 7 ng Vĩnh Long", Xac =  779.8 },                                   //86
                 
             };
             Constants.IstestMode = true;
             var arr = teststos.ToArray();
             for (int i = 0; i < arr.Length;i++)
             {
-                if(i ==80)
+                if(i ==79)
                 {
 
                 }

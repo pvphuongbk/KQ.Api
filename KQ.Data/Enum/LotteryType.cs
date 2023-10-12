@@ -23,6 +23,8 @@ namespace KQ.DataDto.Enum
         [Description("Xỉu chủ")]
         BaCangDauDuoi = 8,
         [Description("Bốn số")]
-        BaoBonSo = 9
+        BaoBonSo = 9,
+        [Description("Đá xiên 2 đài")]
+        DaXien = 10,
     }
 }
