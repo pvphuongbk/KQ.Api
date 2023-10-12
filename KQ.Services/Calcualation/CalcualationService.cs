@@ -461,12 +461,12 @@ namespace KQ.Services.Calcualation
                                 for (int j = indexTrue + 1; j <= i; j++)
                                     thua = thua + " " + array[j];
                                 result.MessageLoi[index] = $"Không hiểu : {thua}";
-                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {thua}", "Cal2Request");
+                                FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {thua}. sys : {sys}" , "Cal2Request");
                                 break;
                             }
                             if (unknowList.Any())
                             {
-                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}";
+                                result.MessageLoi[index] = $"Không hiểu : {string.Join(",", unknowList)}. sys : {sys}";
                                 FileHelper.GeneratorFileByDay(FileStype.Error, $"Không hiểu : {string.Join(",", unknowList)}", "Cal2Request");
                                 break;
                             }
