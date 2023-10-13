@@ -1,4 +1,5 @@
 ﻿using KQ.Common.Constants;
+using KQ.Common.Extention;
 using KQ.Common.Helpers;
 using KQ.Data.Base;
 using KQ.DataDto.Calculation;
@@ -89,10 +90,10 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n Tp 2₫ai 22bl10ndd10n", Xac = 942.4 },           //35  
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\n Tp 22bl10ndd10n 2₫ai", Xac = 942.4 },           //36  
                 new CalTestRequestDto { SynTaxe = "Tp 22,33đá10nbl10ndd10n.22,33,44,55 dd 10n\r\nvl 22bl10ndd10n", Xac = 790.4 },              //37
-                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n Tp\r\nvl 22bl10ndd10n", Xac = 1428.8 },             //38  
+                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n Tp\r\nvl 22bl10ndd10n", Xac = 1580.8 },             //38  
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n Tp\r\n 22bl10ndd10n vl", Xac = 790.4 },             //39
-                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n Tp,vl\r\n 22bl10ndd10n", Xac = 1428.8 },            //40  
-                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n mn 2d\r\n 22bl10ndd10n", Xac = 1428.8 },            //41
+                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n Tp,vl\r\n 22bl10ndd10n", Xac = 1580.8 },            //40  
+                new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n mn 2d\r\n 22bl10ndd10n", Xac = 1580.8 },            //41
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n mn\r\n 22bl10ndd10n", Xac = 790.4 },                //42
                 new CalTestRequestDto { SynTaxe = "22,33đá10nbl10ndd10n.22,33,44,55 dd 10n huế\r\n 22bl10ndd10n", Xac = 790.4 },               //43
                 new CalTestRequestDto { SynTaxe = "vl,bd 1234 b10n", Xac = 243.2 },                                                            //44
@@ -145,13 +146,23 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "04 44 đá 10n dc 04 13dx 10n", Xac =  820.8 },                                                       //84
                 new CalTestRequestDto { SynTaxe = "Đa thẳng 70 , 31, 19 3 ng hai đài bao 7 ng Vĩnh Long", Xac =  779.8 },                              //85
                 new CalTestRequestDto { SynTaxe = "Đa xiên 70 , 31, 19 3ng 2đài bao 7 ng Vĩnh Long", Xac =  779.8 },                                   //86
+                new CalTestRequestDto { SynTaxe = "76đau 50n Miền trung 3đài 576xc30n Khánh Hòa Kom Tum  538xc30n 38.58 bl30n", Xac =  1938 },         //87
+                new CalTestRequestDto { SynTaxe = "Miền trung 3đài 76đau 50n 576xc30n Khánh Hòa Kom Tum 538xc30n 38.58 bl30n", Xac =  1983.6 },        //88
+                new CalTestRequestDto { SynTaxe = "76đau 50n Miền trung 3đài 576xc30n kh kt 38.58b30n.538xc30n", Xac =  1938 },                        //89
+                new CalTestRequestDto { SynTaxe = "Miền trung 3đài 76đau 50n 576xc30n kh kt 538xc30n 38.58 bl30n", Xac =  1983.6 },                    //90
+                new CalTestRequestDto { SynTaxe = "234 bd 10 n", Xac =  775.2 },                                                                      //91
+                new CalTestRequestDto { SynTaxe = "234 247 daolo 10 n", Xac =  1550.4 },                                                               //92
+                new CalTestRequestDto { SynTaxe = "234.247bao đảo 10n 576xc40n", Xac =  1611.2 },                                                      //93
+                new CalTestRequestDto { SynTaxe = "Mb 34.43.38.83.33.73bl100n 963xc250n 234.247bao đảo 10n 576xc40n 43.41bl30n 43.41đa20n 27.72.24.42 đa10n 16.61" +
+                " .35.53đv10n 41.16.61đa10n 5555bl10n 43bl50n 779xc20n 963xc50n 168xc20n", Xac =  24950.8 },                                            //94
                 
             };
             Constants.IstestMode = true;
             var arr = teststos.ToArray();
+
             for (int i = 0; i < arr.Length;i++)
             {
-                if(i ==79)
+                if(i ==91)
                 {
 
                 }

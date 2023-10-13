@@ -121,6 +121,7 @@ namespace KQ.Services.Calcualation
                                 }
 
                     List<int> chanels = new List<int>();
+                    List<int> chanelsCache = new List<int>();
                     List<string> numbers = new List<string>();
                     List<string> numberCache = new List<string>();
                     List<string> unknowList = new List<string>();
@@ -146,6 +147,11 @@ namespace KQ.Services.Calcualation
                             {
                                 i++;
                             }
+                            if (tType == 0 && array.Length > (i + 1) && array[i + 1] == "dao")
+                            {
+                                i++;
+                                tType = 11;
+                            }
                             if (array.Length > (i + 1) && array[i] == "da" && (array[i + 1] == "xien" || array[i + 1] == "x"))
                             {
                                 tType = 10;
@@ -163,7 +169,7 @@ namespace KQ.Services.Calcualation
                             if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                             {
                                 CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache,
-                                    ref numbers, ref sl, ref result.MessageLoi[index], true);
+                                    ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache, true);
                             }
                         }
                         else if ((it == "d" || it == "dai") && previous.Length == 1 && numbers.Any() && numbers.Last().StringToInt() <= 4)
@@ -202,7 +208,8 @@ namespace KQ.Services.Calcualation
                             }
                             if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                             {
-                                CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index]);
+                                CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache,
+                                    ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache);
                             }
                         }
                         else if (tType != null)
@@ -294,7 +301,7 @@ namespace KQ.Services.Calcualation
                                         if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                                         {
                                             CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type,
-                                                ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index]);
+                                                ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache);
                                         }
                                         chanels.Add(ch.Key);
                                         chanels.AddRange(chanelsTemps.CloneList());
@@ -312,7 +319,7 @@ namespace KQ.Services.Calcualation
                                         if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                                         {
                                             CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type,
-                                                ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index], true);
+                                                ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache, true);
                                         }
                                         else if ((previous == "dai" || previousTo == "dai") && dtoTemp.Any())
                                         {
@@ -337,6 +344,12 @@ namespace KQ.Services.Calcualation
                                     }
                                     if (chl.Value != null && chl.Value.Any())
                                     {
+                                        if (chanels.Any() || slDai > 0 && (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any())))
+                                        {
+                                            CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type,
+                                                 ref numberCache, ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache, true);
+                                        }
+
                                         chanels.Add(chl.Key);
                                         unknowList.Clear();
                                         CheckChanel(ref array, ref i, ref chanels);
@@ -371,10 +384,14 @@ namespace KQ.Services.Calcualation
                                         if (dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                                         {
                                             CreateDto(ref dtoTemp, ref chanels, ref chanel, ref slDai, ref indexTrue, ref i, ref type, ref numberCache, 
-                                                ref numbers, ref sl, ref result.MessageLoi[index], true);
+                                                ref numbers, ref sl, ref result.MessageLoi[index], ref chanelsCache, true);
                                         }
                                     }
                                     else if (CheckType(itl, ref type))
+                                    {
+                                        unknowList.Clear();
+                                    }
+                                    else if (CheckMien(itl, ref chanel))
                                     {
                                         unknowList.Clear();
                                     }
@@ -435,19 +452,23 @@ namespace KQ.Services.Calcualation
                             previousTo = array[i - 1];
                         if (i == (array.Length - 1))
                         {
-                            slDai = slDai == 0 ? 1 : slDai;
+                            var sslDai = slDai == 0 ? 1 : slDai;
                             if (!chanels.Any() && dtoTemp.Any(x => x.Chanels == null || !x.Chanels.Any()))
                             {
                                 if (chanel == "hn")
                                 {
-                                    for (int j = 0; j < slDai; j++)
+                                    for (int j = 0; j < sslDai; j++)
                                         chanels.Add(8 + j);
                                 }
                                 else if (chanel == "mt")
-                                    for (int j = 0; j < slDai; j++)
+                                    for (int j = 0; j < sslDai; j++)
                                         chanels.Add(5 + j);
+                                else if (string.IsNullOrEmpty(chanel) && slDai == 0 && chanelsCache.Any())
+                                {
+                                    chanels = chanelsCache.CloneList();
+                                }
                                 else if (chanel == "mn" || string.IsNullOrEmpty(chanel))
-                                    for (int j = 0; j < slDai; j++)
+                                    for (int j = 0; j < sslDai; j++)
                                         chanels.Add(1 + j);
                                 indexTrue = i;
                             }
@@ -498,8 +519,6 @@ namespace KQ.Services.Calcualation
                                 result.MessageLoi[index] = error;
                                 break;
                             }
-                            if (dto.LotteryType == LotteryType.DaXien)
-                                dto.LotteryType = LotteryType.Xien;
                         }
                     }
                     if (!string.IsNullOrEmpty(result.MessageLoi[index]))
@@ -600,8 +619,21 @@ namespace KQ.Services.Calcualation
                 result = false;
             return result;
         }
+        public bool CheckMien(string str, ref string chanel)
+        {
+            bool result = true;
+            if (str == "mientrung" || str == "mien tr")
+                chanel = "mt";
+            else if (str == "miennam")
+                chanel = "mn";
+            else if (str == "mienbac")
+                chanel = "mb";
+            else
+                result = false;
+            return result;
+        }
         public void CreateDto(ref List<Cal1RequestDto> dtoTemp, ref List<int> chanels, ref string chanel, ref int slDai, ref int indexTrue, ref int i, ref int? type,
-             ref List<string> numberCache, ref List<string> numbers, ref int sl, ref string message, bool isIndex = false)
+             ref List<string> numberCache, ref List<string> numbers, ref int sl, ref string message, ref List<int> chanelsCache, bool isIndex = false)
         {
             var chanTemp = chanel;
             var slDaiTemp = slDai;
@@ -631,7 +663,9 @@ namespace KQ.Services.Calcualation
                     dto.Chanels = chanels.CloneList();
             }
             type = null;
+            chanelsCache = chanels.CloneList();
             chanels.Clear();
+            chanel = "";
             //numberCache.Clear();
             numbers.Clear();
             sl = 0;
@@ -731,7 +765,14 @@ namespace KQ.Services.Calcualation
                         var lst = numbers.Where(x => x.Length != 2).ToList();
                         error = $"{string.Join(",", lst)} : Không thể đánh 4 số";
                     }
-                    break; ;
+                    break;
+                case LotteryType.BaoDao:
+                    if (!numbers.All(x => x.Length == 3))
+                    {
+                        var lst = numbers.Where(x => x.Length != 3).ToList();
+                        error = $"{string.Join(",", lst)} : Không thể bao đảo";
+                    }
+                    break;
                 default:
                     break;
             }
@@ -748,7 +789,7 @@ namespace KQ.Services.Calcualation
             {
                 type = 10;
             }
-            else if (it == "dv" || it == "da")
+            else if (it == "dv" || it == "da" || it == "dav")
             {
                 type = 1;
             }
@@ -767,6 +808,10 @@ namespace KQ.Services.Calcualation
             else if (it == "xc" || it == "xchu" || it == "xiuchu")
             {
                 type = 8;
+            }
+            else if (it == "bd" || it == "daolo" || it == "baodao")
+            {
+                type = 11;
             }
 
             return type;
@@ -818,6 +863,7 @@ namespace KQ.Services.Calcualation
                         $" ({string.Join(",", dto.Chanels.ChanelIntToString())}). Xác : {Math.Round(xacLo, 1)}";
                     return (xacLo, messLo);
                 case LotteryType.Xien:
+                case LotteryType.DaXien:
                     int chanel1 = 0;
                     int chanel2 = 0;
                     if (dto.Chanels.Count == 1)
@@ -873,6 +919,11 @@ namespace KQ.Services.Calcualation
                     var messxbon = $"Bốn số [{string.Join(",", dto.Numbers.Select(x => x.ToString("000")))}]. {dto.Sl} ngìn. " +
                         $"{dto.Chanels.Count} đài {typeChanel} ({string.Join(",", dto.Chanels.ChanelIntToString())}). Xác : {Math.Round(xacBon, 1)}";
                     return (xacBon, messxbon);
+                case LotteryType.BaoDao:
+                    var xacBaoDao = CalXacBaoDao(dto.Chanels, dto.Numbers, dto.Sl, dto.TileXac);
+                    var messBaoDao = $"Bao Đảo [{string.Join(",", dto.Numbers.Select(x => x.ToString("000")))}]. {dto.Sl} ngìn. " +
+                        $"{dto.Chanels.Count} đài {typeChanel} ({string.Join(",", dto.Chanels.ChanelIntToString())}). Xác : {Math.Round(xacBaoDao, 1)}";
+                    return (xacBaoDao, messBaoDao);
                 default:
                     return (0, "");
             }
@@ -1044,6 +1095,22 @@ namespace KQ.Services.Calcualation
 
             return total;
         }
+        public double CalXacBaoDao(List<int> chanels, List<int> baso, int sl, double tile)
+        {
+            int soLuong = 17;
+            double total = 0;
+            foreach (var chanel in chanels)
+            {
+                if (chanel < 1)
+                    continue;
+                if (chanel == 8)
+                    soLuong = 23;
+
+                total += soLuong * baso.Count * sl * tile * 6;
+            }
+
+            return total;
+        }
         // Tính tiền thưởng
         public (double, List<string>) CalThuong(Cal1RequestDto dto)
         {
@@ -1088,6 +1155,8 @@ namespace KQ.Services.Calcualation
                     return CalThuongBaCangDauDuoi(dto.Chanels, dto.Numbers, dto.Sl, dto.TileBaso);
                 case LotteryType.BaoBonSo:
                     return CalThuongBonSo(dto.Chanels, dto.Numbers, dto.Sl, dto.BonSo);
+                case LotteryType.BaoDao:
+                    return CalThuongBaoBaCang(dto.Chanels, dto.Numbers, dto.Sl, dto.TileBaso);
                 default:
                     return (0, new List<string>());
             }
@@ -1265,6 +1334,34 @@ namespace KQ.Services.Calcualation
                         var mes = $"Ba càng {ba.ToString("000")} đài {chan} ăn {count}x{sl}={count * sl} điểm. Chung {chung} đ";
                         message.Add(mes);
                         total += chung;
+                    }
+                }
+            }
+
+            return (total, message);
+        }
+        public (double, List<string>) CalThuongBaoDao(List<int> chanels, List<int> bacangs, int sl, double tileBaCang)
+        {
+            tileBaCang = tileBaCang == 0 ? 650 : tileBaCang;
+            List<string> message = new List<string>();
+            double total = 0;
+            foreach (var chanel in chanels)
+            {
+                if (chanel < 1)
+                    continue;
+                var chan = _currentChanels.FirstOrDefault(x => x.Key == chanel)?.Value;
+                foreach (var ba in bacangs)
+                {
+                    foreach (var dao in ba.BaSoToBaoDao())
+                    {
+                        var count = InnitRepository._totalBaCangDic["Now"][chanel - 1].Count(x => x == dao);
+                        if (count > 0)
+                        {
+                            var chung = count * sl * tileBaCang;
+                            var mes = $"Bao Đảo {ba.ToString("000")} trúng {dao} đài {chan} ăn {count}x{sl}={count * sl} điểm. Chung {chung} đ";
+                            message.Add(mes);
+                            total += chung;
+                        }
                     }
                 }
             }
