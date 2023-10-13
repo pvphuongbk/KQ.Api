@@ -1156,7 +1156,7 @@ namespace KQ.Services.Calcualation
                 case LotteryType.BaoBonSo:
                     return CalThuongBonSo(dto.Chanels, dto.Numbers, dto.Sl, dto.BonSo);
                 case LotteryType.BaoDao:
-                    return CalThuongBaoBaCang(dto.Chanels, dto.Numbers, dto.Sl, dto.TileBaso);
+                    return CalThuongBaoDao(dto.Chanels, dto.Numbers, dto.Sl, dto.TileBaso);
                 default:
                     return (0, new List<string>());
             }
