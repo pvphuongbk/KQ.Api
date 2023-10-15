@@ -91,8 +91,31 @@ namespace KQ.Common.Extention
         }
         public static string ChuanHoaString(this string? input)
         {
+            //var sy = input.ToLower();
+            var sy = Regex.Replace(input, @"\t|\n|\r", " ");
+            //sy = sy.RemoveUnicode();
+            return sy;
+        }
+        public static List<string> ChuanHoaString2(this List<string?> input)
+        {
+            List<string> re = new List<string>();
+            foreach(var sys in input)
+            {
+                var sy = sys.ToLower();
+                sy = sy.RemoveUnicode();
+
+                var num = StrToNumber(sy);
+                if(num > 0)
+                    re.Add(num.ToString());
+                else
+                    re.Add(sy);
+            }
+            return re;
+        }
+        public static string ChuanHoaString2(this string? input)
+        {
+
             var sy = input.ToLower();
-            sy = Regex.Replace(sy, @"\t|\n|\r", " ");
             sy = sy.RemoveUnicode();
             return sy;
         }

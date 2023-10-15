@@ -28,5 +28,11 @@ namespace KQ.DataDto.Enum
         DaXien = 10,
         [Description("Bao Đảo")]
         BaoDao = 11,
+        [Description("Xỉu chủ đảo")]
+        XCDao = 12,
+        [Description("Xỉu chủ đầu đảo")]
+        XCDauDao = 13,
+        [Description("Xỉu chủ đuôi đảo")]
+        XCDuoiDao = 14,
     }
 }

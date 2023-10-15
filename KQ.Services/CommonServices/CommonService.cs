@@ -155,6 +155,22 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "234.247bao đảo 10n 576xc40n", Xac =  1611.2 },                                                      //93
                 new CalTestRequestDto { SynTaxe = "Mb 34.43.38.83.33.73bl100n 963xc250n 234.247bao đảo 10n 576xc40n 43.41bl30n 43.41đa20n 27.72.24.42 đa10n 16.61" +
                 " .35.53đv10n 41.16.61đa10n 5555bl10n 43bl50n 779xc20n 963xc50n 168xc20n", Xac =  24950.8 },                                            //94
+                new CalTestRequestDto { SynTaxe = "722b10nxc đuôi đảo 20 mb", Xac = 448.4 },                                                            //95
+                new CalTestRequestDto { SynTaxe = "722b10nxc đầu đảo 20 hn", Xac = 266 },                                                             //96
+                new CalTestRequestDto { SynTaxe = "722b10nxc đảo 20 hn", Xac = 539.6 },                                                                 //97
+                new CalTestRequestDto { SynTaxe = "722b10đuôi đảo 20 hn", Xac = 448.4 },                                                                //98
+                new CalTestRequestDto { SynTaxe = "722 455 b10đuôi đảo 20 hn", Xac = 896.8 },                                                           //99
+                new CalTestRequestDto { SynTaxe = "722 455 b10đầu đảo 20 hn", Xac = 532 },                                                              //100
+                new CalTestRequestDto { SynTaxe = "722 455 b10 xỉu chủ đảo 20 hn", Xac = 1079.2 },                                                       //101
+                new CalTestRequestDto { SynTaxe = "722 455 b10nxc đuôi 20 mb", Xac = 440.8 },                                                           //102
+                new CalTestRequestDto { SynTaxe = "722 455 b10nxc đầu 20 hn", Xac = 380 },                                                              //103
+                new CalTestRequestDto { SynTaxe = "722 455b10nxc đảo 20 hn", Xac = 1079.2 },                                                            //104
+                new CalTestRequestDto { SynTaxe = "722 45 b10nxc đầu 20 hn", Xac = 220.4, MessageLoi = "722 : Không thể đánh lô" },                     //105
+                new CalTestRequestDto { SynTaxe = "22 55b10nxc đảo 20 hn", Xac = 220.4 , MessageLoi = "22,55 : Không thể đánh 3 số"},                   //106
+                new CalTestRequestDto { SynTaxe = "722b10nxc đầu đảo 20 mt", Xac = 220.4 },                                                             //107
+                new CalTestRequestDto { SynTaxe = "722b10nxc đảo 20 mn", Xac = 311.6 },                                                                 //108
+                new CalTestRequestDto { SynTaxe = "722b10đuôi đảo 20 mn", Xac = 220.4 },                                                                //109
+                new CalTestRequestDto { SynTaxe = "mn 00keo10 bao 10n", Xac = 1504.8 },                                                                  //110
                 
             };
             Constants.IstestMode = true;
@@ -162,7 +178,7 @@ namespace KQ.Services.CommonServices
 
             for (int i = 0; i < arr.Length;i++)
             {
-                if(i ==91)
+                if(i ==110)
                 {
 
                 }
