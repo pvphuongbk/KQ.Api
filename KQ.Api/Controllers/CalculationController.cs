@@ -35,7 +35,7 @@ namespace KQ.Api.Controllers
         {
             var user = _userRepository.FindAll(x => !x.IsDeleted && x.ID == cal2.UserId).FirstOrDefault();
             var useName = user == null ? "" : $"ID: {user.ID}. Account {user.Account}. Name : {user.UserName}";
-            FileHelper.GeneratorFileByDay(FileStype.Log, $"{user} \r\n. {string.Join("\r\n", cal2.SynTaxes)}", "Cal2Request");
+            FileHelper.GeneratorFileByDay(FileStype.Log, $"{useName} \r\n. {string.Join("\r\n", cal2.SynTaxes)}", "Cal2Request");
             var items = _calcualationService.Cal2Request(cal2);
             return items;
         }
