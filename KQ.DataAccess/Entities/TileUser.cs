@@ -1,6 +1,9 @@
-﻿namespace KQ.DataAccess.Entities
+﻿using KQ.DataAccess.Base;
+using KQ.DataAccess.Enum;
+
+namespace KQ.DataAccess.Entities
 {
-    public partial class TileUser
+    public class TileUser : TiLeBase
     {
         public int ID { get; set; }
         public string Name { get; set; }
@@ -13,5 +16,6 @@
         public double DaThang { get; set; }
         public double DaXien { get; set; }
         public double BonSo { get; set; }
+        public bool IsChu { get; set; }
     }
 }

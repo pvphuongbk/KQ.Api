@@ -4,6 +4,7 @@ using KQ.DataAccess.Entities;
 using KQ.DataAccess.Interface;
 using KQ.DataDto.User;
 using Microsoft.EntityFrameworkCore;
+using KQ.Common.Extention;
 namespace KQ.Services.Users
 {
     public class UserService : IUserService
@@ -28,7 +29,7 @@ namespace KQ.Services.Users
             var items = new List<Phonebook>();
             foreach (var u in phones)
             {
-                items.Add(new Phonebook
+                var item = new Phonebook
                 {
                     ID = u.ID,
                     Name = u.Name,
@@ -38,8 +39,11 @@ namespace KQ.Services.Users
                     DaThang = u.DaThang,
                     DaXien = u.DaXien,
                     BonSo = u.BonSo,
-                    PhoneNumber = u.PhoneNumber
-                });
+                    PhoneNumber = u.PhoneNumber,
+                    IsChu = u.IsChu,
+                };
+                u.ConvertConfigTo(item);
+                items.Add(item);
             }
             response.Data = items;
             return response;
@@ -58,7 +62,7 @@ namespace KQ.Services.Users
                 result.Phonebooks = new List<Phonebook>();
                 foreach (var u in user.TileUser)
                 {
-                    result.Phonebooks.Add(new Phonebook
+                    var dto = new Phonebook
                     {
                         ID = u.ID,
                         Name = u.Name,
@@ -69,7 +73,9 @@ namespace KQ.Services.Users
                         DaXien = u.DaXien,
                         BonSo = u.BonSo,
                         PhoneNumber = u.PhoneNumber
-                    });
+                    };
+                    u.ConvertConfigTo(dto);
+                    result.Phonebooks.Add(dto);
                 }
                 result.IsLoginSuccess = true;
             }
@@ -88,7 +94,7 @@ namespace KQ.Services.Users
                 result.Phonebooks = new List<Phonebook>();
                 foreach (var u in user.TileUser)
                 {
-                    result.Phonebooks.Add(new Phonebook
+                    var userDto = new Phonebook
                     {
                         ID = u.ID,
                         Name = u.Name,
@@ -99,7 +105,9 @@ namespace KQ.Services.Users
                         DaXien = u.DaXien,
                         BonSo = u.BonSo,
                         PhoneNumber = u.PhoneNumber
-                    });
+                    };
+                    u.ConvertConfigTo(userDto);
+                    result.Phonebooks.Add(userDto);
                 }
             }
             else
@@ -122,8 +130,8 @@ namespace KQ.Services.Users
                     var dels = _tileUserRepository.FindAll(x => delIds.Contains(x.ID));
                     _tileUserRepository.RemoveMultiple(dels);
 
-                    var upIds = request.Where(x => x.ID != null && x.ID != 0 && !x.IsDeleted).Select(x => x.ID).ToList();
-                    var ups = _tileUserRepository.FindAll(x => upIds.Contains(x.ID));
+                    var upIds = request.Where(x => x.ID != null && x.ID != 0 && !x.IsDeleted).Select(x => x.ID);
+                    var ups = _tileUserRepository.FindAll(x => upIds.Contains(x.ID)).ToList();
                     foreach (var item in ups)
                     {
                         var up = request.FindAll(x => x.ID == item.ID).FirstOrDefault();
@@ -137,14 +145,17 @@ namespace KQ.Services.Users
                             item.DaXien = up.DaXien;
                             item.BonSo = up.BonSo;
                             item.PhoneNumber = up.PhoneNumber;
+                            item.IsChu = up.IsChu;
                         }
+
+                        up.ConvertConfigTo(item);
                     }
-                    _tileUserRepository.UpdateMultiple(ups);
+                    _tileUserRepository.UpdateMultiple(ups.AsQueryable());
 
                     List<TileUser> tileUsers = new List<TileUser>();
                     foreach (var phonebook in request.Where(x => x.ID == null || x.ID == 0))
                     {
-                        tileUsers.Add(new TileUser
+                        var item = new TileUser
                         {
                             Name = phonebook.Name,
                             TileThuong = phonebook.TileThuong,
@@ -155,7 +166,11 @@ namespace KQ.Services.Users
                             UserID = phonebook.UserID,
                             TileBaSo = phonebook.TileBaSo,
                             PhoneNumber = phonebook.PhoneNumber,
-                        });
+                            IsChu = phonebook.IsChu,
+                        };
+                        phonebook.ConvertConfigTo(item);
+
+                        tileUsers.Add(item);
                     }
                     _tileUserRepository.InsertMultiple(tileUsers.AsQueryable());
                 }
@@ -187,6 +202,7 @@ namespace KQ.Services.Users
                 user.DaThang = request.DaThang;
                 user.DaXien = request.DaXien;
                 user.BonSo = request.BonSo;
+                request.ConvertConfigTo(user);
                 _commonUoW.Commit();
                 return new ResponseBase();
             }

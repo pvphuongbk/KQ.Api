@@ -1,6 +1,8 @@
-﻿namespace KQ.DataDto.User
+﻿using KQ.DataAccess.Base;
+
+namespace KQ.DataDto.User
 {
-    public class UserInfoDtoResponse
+    public class UserInfoDtoResponse : TiLeBase
     {
         public int ID { get; set; }
         public string UserName { get; set; }

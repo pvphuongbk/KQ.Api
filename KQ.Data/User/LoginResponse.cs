@@ -1,6 +1,8 @@
-﻿namespace KQ.DataDto.User
+﻿using KQ.DataAccess.Base;
+
+namespace KQ.DataDto.User
 {
-    public class LoginResponse
+    public class LoginResponse : TiLeBase
     {
         public bool IsLoginSuccess { get; set; }
         public int ID { get; set; }
@@ -20,7 +22,7 @@
         public List<Phonebook> Phonebooks { get; set;}
     }
 
-    public class Phonebook
+    public class Phonebook : TiLeBase
     {
         public int ID { get; set; }
         public string Name { get; set; }
@@ -31,8 +33,9 @@
         public double DaXien { get; set; }
         public double BonSo { get; set; }
         public string PhoneNumber { get; set; }
+        public bool IsChu { get; set; }
     }
-    public class TileUserDto
+    public class TileUserDto : TiLeBase
     {
         public int? ID { get; set; }
         public int UserID { get; set; }
@@ -45,9 +48,10 @@
         public double DaXien { get; set; }
         public double BonSo { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsChu { get; set; }
     }
 
-    public class UserUpdateDto
+    public class UserUpdateDto : TiLeBase
     {
         public int UserID { get; set; }
         public string UserName { get; set; }

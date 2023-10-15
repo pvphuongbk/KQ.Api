@@ -771,7 +771,7 @@ namespace KQ.Services.Calcualation
             {
                 type = 0;
             }
-            else if (it == "dx")
+            else if (it == "dx" || it == "dax")
             {
                 type = 10;
             }

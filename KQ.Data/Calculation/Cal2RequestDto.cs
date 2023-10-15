@@ -1,8 +1,8 @@
-﻿using KQ.DataDto.Enum;
+﻿using KQ.DataAccess.Base;
 
 namespace KQ.DataDto.Calculation
 {
-    public class Cal2RequestDto
+    public class Cal2RequestDto : TiLeBase
     {
         public List<string> SynTaxes { get; set; }
         public double TileXac { get; set; }

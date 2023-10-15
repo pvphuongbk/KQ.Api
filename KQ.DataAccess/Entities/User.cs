@@ -1,6 +1,8 @@
-﻿namespace KQ.DataAccess.Entities
+﻿using KQ.DataAccess.Base;
+
+namespace KQ.DataAccess.Entities
 {
-    public partial class User
+    public partial class User : TiLeBase
     {
         public int ID { get; set; }
         public string UserName { get; set; }

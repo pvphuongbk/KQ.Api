@@ -1,12 +1,13 @@
 ﻿using KQ.Common.Helpers;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
-using KQ.Common.Constants;
+using KQ.DataAccess.Base;
+using KQ.DataAccess.Entities;
 
 namespace KQ.Common.Extention
 {
-	public static class StringExtensions
-	{
+    public static class StringExtensions
+    {
         public static string[] arr1 = new string[] { "á", "à","à", "ả", "ã", "ạ", "â", "ấ", "ầ", "ẩ", "ẫ", "ậ", "ă", "ắ", "ằ", "ẳ", "ẵ", "ặ",
                                             "đ","₫",
                                             "é","è","ẻ","ẽ","ẹ","ê","ế","ề","ể","ễ","ệ",
@@ -29,13 +30,13 @@ namespace KQ.Common.Extention
             return string.Concat(str[0].ToString().ToUpper(), str.AsSpan(1));
         }
         public static string GetEnumDescription(this System.Enum enumValue)
-		{
-			var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+        {
+            var fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
 
-			var descriptionAttributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            var descriptionAttributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-			return descriptionAttributes.Length > 0 ? descriptionAttributes[0].Description : enumValue.ToString();
-		}
+            return descriptionAttributes.Length > 0 ? descriptionAttributes[0].Description : enumValue.ToString();
+        }
 
         public static string RemoveUnicode(this string text)
         {
@@ -61,7 +62,7 @@ namespace KQ.Common.Extention
         {
             var arr = s.Split(" ").ToArray();
             string result = arr[0];
-            for (int i = 1; i < arr.Length;i++)
+            for (int i = 1; i < arr.Length; i++)
             {
                 result += arr[i].FirstOrDefault().ToString();
             }
@@ -99,15 +100,25 @@ namespace KQ.Common.Extention
         public static List<string> ChuanHoaString2(this List<string?> input, bool isStr = false)
         {
             List<string> re = new List<string>();
-            foreach(var sys in input)
+            foreach (var sys in input)
             {
+                bool dao = false;
                 var sy = sys.ToLower();
                 sy = sy.RemoveUnicode();
+                if (sy.EndsWith("dao"))
+                {
+                    sy = sy.Replace("dao", string.Empty);
+                    dao = true;
+
+                }
                 var num = StrToNumber(sy);
-                if(!isStr && num > 0)
+                if (!isStr && num > 0)
                     re.Add(num.ToString());
-                else
+                else if(!string.IsNullOrEmpty(sy))
                     re.Add(sy);
+
+                if(dao)
+                    re.Add("dao");
             }
             return re;
         }
@@ -153,7 +164,7 @@ namespace KQ.Common.Extention
         {
             List<string> list = new List<string>();
             var chanels = InnitRepository._chanelCode;
-            if(Constants.Constants.IstestMode)
+            if (Constants.Constants.IstestMode)
             {
                 chanels = InnitRepository._chanelCodeForTest;
             }
@@ -163,6 +174,60 @@ namespace KQ.Common.Extention
             }
             return list;
         }
+        public static void ConvertConfigTo(this TiLeBase input, TiLeBase result)
+        {
+            result.NCoBaoHaiCon = input.NCoBaoHaiCon;
+            result.NTrungBaoHaiCon = input.NTrungBaoHaiCon;
+            result.NCoHaiConDD = input.NCoHaiConDD;
+            result.NTrungHaiConDD = input .NTrungHaiConDD;
+            result.NCoDaThang = input .NCoDaThang;
+            result.NTrungDaThang = input.NTrungDaThang;
+            result.NCachTrungDaThang = input.NCachTrungDaThang;
+            result.NCoDaXien = input.NCoDaXien;
+            result.NTrungDaXien = input.NTrungDaXien;
+            result.NCachTrungDaXien = input.NCachTrungDaXien;
+            result.NCoBaCon = input.NCoBaCon;
+            result.NTrungBaCon = input.NTrungBaCon;
+            result.NCoBonCon = input.NCoBonCon;
+            result.NTrungBonCon = input.NTrungBonCon;
+            result.NPhanTramTong = input.NPhanTramTong;
+
+            result.TCoBaoHaiCon = input.TCoBaoHaiCon;
+            result.TTrungBaoHaiCon = input.TTrungBaoHaiCon;
+            result.TCoHaiConDD = input.TCoHaiConDD;
+            result.TTrungHaiConDD = input.TTrungHaiConDD;
+            result.TCoDaThang = input.TCoDaThang;
+            result.TTrungDaThang = input.TTrungDaThang;
+            result.TCachTrungDaThang = input.TCachTrungDaThang;
+            result.TCoDaXien = input.TCoDaXien;
+            result.TTrungDaXien = input.TTrungDaXien;
+            result.TCachTrungDaXien = input.TCachTrungDaXien;
+            result.TCoBaCon = input.TCoBaCon;
+            result.TTrungBaCon = input.TTrungBaCon;
+            result.TCoBonCon = input.TCoBonCon;
+            result.TTrungBonCon = input.TTrungBonCon;
+            result.TPhanTramTong = input.TPhanTramTong;
+
+            result.BCoBaoHaiCon = input.BCoBaoHaiCon;
+            result.BTrungBaoHaiCon = input.BTrungBaoHaiCon;
+            result.BCoHaiConDD = input.BCoHaiConDD;
+            result.BTrungHaiConDD = input.BTrungHaiConDD;
+            result.BCoDaThang = input.BCoDaThang;
+            result.BTrungDaThang = input.BTrungDaThang;
+            result.BCachTrungDaThang = input.BCachTrungDaThang;
+            result.BCoBaCon = input.BCoBaCon;
+            result.BTrungBaCon = input.BTrungBaCon;
+            result.BCoBonCon = input.BCoBonCon;
+            result.BTrungBonCon = input.BTrungBonCon;
+            result.BPhanTramTong = input.BPhanTramTong;
+            result.BCoXienHai = input.BCoXienHai;
+            result.BTrungXienHai = input.BTrungXienHai;
+            result.BCoXienBa = input.BCoXienBa;
+            result.BTrungXienBa = input.BTrungXienBa;
+            result.BCoXienBon = input.BCoXienBon;
+            result.BTrungXienBon = input.BTrungXienBon;
+        }
+
         public static int StrToNumber(this string? input)
         {
             switch (input)
@@ -187,7 +252,7 @@ namespace KQ.Common.Extention
                     return 9;
                 case "muoi":
                     return 10;
-                default: 
+                default:
                     return 0;
             }
         }
