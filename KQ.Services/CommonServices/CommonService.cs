@@ -170,7 +170,8 @@ namespace KQ.Services.CommonServices
                 new CalTestRequestDto { SynTaxe = "722b10nxc đầu đảo 20 mt", Xac = 220.4 },                                                             //107
                 new CalTestRequestDto { SynTaxe = "722b10nxc đảo 20 mn", Xac = 311.6 },                                                                 //108
                 new CalTestRequestDto { SynTaxe = "722b10đuôi đảo 20 mn", Xac = 220.4 },                                                                //109
-                new CalTestRequestDto { SynTaxe = "mn 00keo10 bao 10n", Xac = 1504.8 },                                                                  //110
+                new CalTestRequestDto { SynTaxe = "mn 00keo10 bao 10n", Xac = 1504.8 },                                                                 //110
+                new CalTestRequestDto { SynTaxe = "hai đài MIỀN nam bao 76 10 ngìn", Xac = 273.6 },                                                    //111
                 
             };
             Constants.IstestMode = true;
@@ -178,7 +179,7 @@ namespace KQ.Services.CommonServices
 
             for (int i = 0; i < arr.Length;i++)
             {
-                if(i ==110)
+                if(i ==111)
                 {
 
                 }

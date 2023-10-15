@@ -103,7 +103,10 @@ namespace KQ.Services.Calcualation
                                 {
                                     var lst = HandlerStringNoSpace(it4);
                                     itemsGoc.AddRange(lst);
-                                    lst = lst.ChuanHoaString2();
+                                    if(items.LastOrDefault() == "mien")
+                                        lst = lst.ChuanHoaString2(true);
+                                    else
+                                        lst = lst.ChuanHoaString2();
                                     items.AddRange(lst);
                                 }
 

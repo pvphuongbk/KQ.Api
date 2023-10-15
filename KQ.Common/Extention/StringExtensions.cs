@@ -96,16 +96,15 @@ namespace KQ.Common.Extention
             //sy = sy.RemoveUnicode();
             return sy;
         }
-        public static List<string> ChuanHoaString2(this List<string?> input)
+        public static List<string> ChuanHoaString2(this List<string?> input, bool isStr = false)
         {
             List<string> re = new List<string>();
             foreach(var sys in input)
             {
                 var sy = sys.ToLower();
                 sy = sy.RemoveUnicode();
-
                 var num = StrToNumber(sy);
-                if(num > 0)
+                if(!isStr && num > 0)
                     re.Add(num.ToString());
                 else
                     re.Add(sy);
