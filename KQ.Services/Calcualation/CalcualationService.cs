@@ -90,6 +90,7 @@ namespace KQ.Services.Calcualation
                 {
                     if (string.IsNullOrEmpty(sys))
                         continue;
+                    FileHelper.GeneratorFileByDay(FileStype.Log, sys, "Cal2Request");
                     var sy = sys.ChuanHoaString();
                     List<Cal1RequestDto> dtoTemp = new List<Cal1RequestDto>();
                     index++;

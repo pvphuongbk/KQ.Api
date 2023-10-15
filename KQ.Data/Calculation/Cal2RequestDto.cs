@@ -11,5 +11,6 @@ namespace KQ.DataDto.Calculation
         public double DaThang { get; set; }
         public double DaXien { get; set; }
         public double BonSo { get; set; }
+        public int? UserId { get; set; }
     }
 }
