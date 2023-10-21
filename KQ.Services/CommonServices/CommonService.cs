@@ -5,6 +5,7 @@ using KQ.Data.Base;
 using KQ.DataAccess.Entities;
 using KQ.DataAccess.Interface;
 using KQ.DataAccess.UnitOfWork;
+using KQ.DataAccess.Utilities;
 using KQ.DataDto.Calculation;
 using KQ.DataDto.Enum;
 using KQ.Services.Calcualation;
@@ -39,15 +40,15 @@ namespace KQ.Services.CommonServices
                     BaCang = InnitRepository._totalBaCangDic[key],
                     BonSo = InnitRepository._totalBonSoDic[key],
                 };
-                _commonUoW.BeginTransaction();
-                _storeKQRepository.Insert(new StoreKQ
-                {
-                    CreatedDate = new DateTime(2023,10,18),
-                    HaiCon = JsonConvert.SerializeObject(data.Lo),
-                    BaCon = JsonConvert.SerializeObject(data.BaCang),
-                    BonCon = JsonConvert.SerializeObject(data.BonSo),
-                });
-                _commonUoW.Commit();
+                //_commonUoW.BeginTransaction();
+                //_storeKQRepository.Insert(new StoreKQ
+                //{
+                //    CreatedDate = new DateTime(2023,10,18),
+                //    HaiCon = JsonConvert.SerializeObject(data.Lo),
+                //    BaCon = JsonConvert.SerializeObject(data.BaCang),
+                //    BonCon = JsonConvert.SerializeObject(data.BonSo),
+                //});
+                //_commonUoW.Commit();
 
                 response.Data = data;
                 return response;
@@ -68,53 +69,62 @@ namespace KQ.Services.CommonServices
             List<string> result = new List<string>();
             var teststos = new List<CalTest2RequestDto>
             {
-                new CalTest2RequestDto{SynTaxe = "2d  72 89 04 83 27 dd100n 90 96 17 b25 15 33 b20 68 78 dd10n 78 d50n d140n 278 678 xc20n 3d 35 55 da1n"},
-                new CalTest2RequestDto{SynTaxe = "3d  34 56 78 dax20nb30"},
-                new CalTest2RequestDto{SynTaxe = "2d 11 22 33 b10 d20 d30 da15 223 670 xdau40n xcdao 50n"},
-                new CalTest2RequestDto{SynTaxe = "2d  72keo27 dd100n  027k072 xc30 bao10 0027kht1027 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  072kht527 xcdau100n xc30 05k95 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  113khc563 xcdau100n 563khc113 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  15khc95 dd100n 95k13 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  213kht513 xcdau100n 513kht213 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  72 89  04 83 27 dd100n bao50n 690 xc30n"},
-                new CalTest2RequestDto{SynTaxe = "2d   72 89  04 83 27 dd100n  bao50n 690 xc30n"},
-                new CalTest2RequestDto{SynTaxe = "1 dai 72 89 04 83 27 b100n 2d 067 345 b20"},
-                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 dui100ndax20"},
-                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 d100d20nda20nb40"},
+                new CalTest2RequestDto{SynTaxe = "2d  72 89 04 83 10 dd100n 90 96 17 b25 15 33 b20 68 78 dd10n 78 d50n d140n 278 678 xc20n 3d 35 55 da1n"  //0
+                , Xac = 6976, Trung = 100},
+                new CalTest2RequestDto{SynTaxe = "3d 28 87 59 dax10n b10n", DateTime = new DateTime(2023,10,20),Xac = 8100, Trung =130},                   //1
+                new CalTest2RequestDto{SynTaxe = "3d  34 56 78 dax20nb30", Xac = 17820, Trung = 130},                                                      //2
+                new CalTest2RequestDto{SynTaxe = "2d 11 22 33 b10 d20 d30 da15 223 670 xdau40n xcdao 50n", Xac = 6580, Trung = 0},                         //3
+                new CalTest2RequestDto{SynTaxe = "2d  72keo27 dd100n  027k072 xc30 bao10 0027kht1027 bao10", Xac= 43080, Trung =220},                      //4
+                new CalTest2RequestDto{SynTaxe = "2d  072kht272 xcdau100n xc30 05k95 bao10", Xac = 33720, Trung = 340},                                    //5
+                new CalTest2RequestDto{SynTaxe = "2d  113khc563 xcdau100n 563khc113 bao10", Xac = 24840, Trung = 0},                                       //6
+                new CalTest2RequestDto{SynTaxe = "2d  15khc95 dd100n 95k13 bao10", Xac = 33480, Trung = 290},                                              //7
+                new CalTest2RequestDto{SynTaxe = "2d  213kht513 xcdau100n 513kht213 bao10", Xac = 2160, Trung = 0},                                        //8
+                new CalTest2RequestDto{SynTaxe = "2d  72 89  04 83 27 dd100n bao50n 690 xc30n", Xac = 11120, Trung = 50},                                  //9
+                new CalTest2RequestDto{SynTaxe = "2d   72 89  04 83 27 dd100n  bao50n 690 xc30n", Xac = 11120, Trung = 50},                                //10
+                new CalTest2RequestDto{SynTaxe = "1 dai 72 89 04 83 27 b100n 2d 067 345 b20", Xac = 10360},                                                //11
+                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 dui100ndax20", Xac = 13860, Trung = 20},                                          //12
+                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 d100d20nda20nb40", Xac = 20520, Trung = 140},                                     //13
 
-                // Lỗi
-                new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n"},
-                new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  29ka79 82 dd100n"},
-                new CalTest2RequestDto{SynTaxe = "2d  72ka29 dd100n 27a72 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  72keo29 dd100n 27k72 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  13khc95 dd100n 95k13 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  212kht513 dd100n 513kht212 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  72keo127 dd100n 127k72 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n vl,la 23 36 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  45678 bao10"},
-                new CalTest2RequestDto{SynTaxe = "2d  4567 xc10"},
-                new CalTest2RequestDto{SynTaxe = "2d  4567 dd10"},
+                //// Lỗi
+                //new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n"},
+                //new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  29ka79 82 dd100n"},
+                //new CalTest2RequestDto{SynTaxe = "2d  72ka29 dd100n 27a72 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  72keo29 dd100n 27k72 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  13khc95 dd100n 95k13 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  212kht513 dd100n 513kht212 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  72keo127 dd100n 127k72 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n vl,la 23 36 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  45678 bao10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  4567 xc10"},
+                //new CalTest2RequestDto{SynTaxe = "2d  4567 dd10"},
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 4)
+                if(i == 5)
                 {
 
                 }
                 var dto = new Cal3RequestDto
                 {
-                    SynTax = teststos[i].SynTaxe
+                    SynTax = teststos[i].SynTaxe,
                 };
                 dto.CreatedDate = teststos[i].DateTime == null ? new DateTime(2023, 10, 18) : (DateTime)teststos[i].DateTime;
                 dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
 
-                var re = (Cal2ResponseDto)_calcualation2Service.Cal3Request(dto).Data;
-                //response.Data = result;
+                var re = (Cal3DetailDto)_calcualation2Service.Cal3Request(dto).Data;
+                var totalX = re.Xac.HaiCB + re.Xac.HaiCD + re.Xac.DaT + re.Xac.DaX + re.Xac.BaCon + re.Xac.BonCon;
+                var totalT = re.Trung.HaiCB + re.Trung.HaiCD + re.Trung.DaT + re.Trung.DaX + re.Trung.BaCon + re.Trung.BonCon;
+                if (teststos[i].Xac == totalX && teststos[i].Trung == totalT)
+                    result.Add("Pass");
+                else
+                    result.Add("Fail");
+
             }
+            response.Data = result;
             Constants.IstestMode = false;
             return response;
         }

@@ -9,7 +9,6 @@ namespace KQ.DataDto.Calculation
         public List<string> TrungDetail { get; set; }
         public List<Detail> Details { get; set; }
         public bool IsTinh { get; set; }
-        public DateTime DateTime { get; set; }
     }
     public class Detail
     {
@@ -19,6 +18,7 @@ namespace KQ.DataDto.Calculation
         public List<int> SoIn { get; set; }
         public CachChoi CachChoi { get; set; }
         public int SoTien { get; set; }
+        public int SlTrung { get; set; }
     }
     public class Summary
     {
