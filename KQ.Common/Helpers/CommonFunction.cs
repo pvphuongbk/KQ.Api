@@ -1,11 +1,89 @@
 ﻿using KQ.Common.Extention;
 using KQ.DataDto.Common;
+using KQ.DataDto.Enum;
 using System.Collections.Concurrent;
+using System.Threading.Channels;
 
 namespace KQ.Common.Helpers
 {
     public class CommonFunction
     {
+        public static ConcurrentDictionary<DayOfWeek, Dictionary<MienEnum, Dictionary<int, List<string>>>> GetCurrentChanelCodeAll()
+        {
+            ConcurrentDictionary<DayOfWeek, Dictionary<MienEnum, Dictionary<int, List<string>>>> dic = new();
+            for(int i = 0;i<=6;i++)
+            {
+                dic.TryAdd((DayOfWeek)i, new Dictionary<MienEnum, Dictionary<int, List<string>>>());
+                dic[(DayOfWeek)i].TryAdd(MienEnum.MN, new Dictionary<int, List<string>>());
+                var allChanelN = GetNorthChanels((DayOfWeek)i);
+                foreach (var chanel in allChanelN)
+                {
+                    if (chanel.Value == "TPHCM")
+                    {
+                        dic[(DayOfWeek)i][MienEnum.MN].TryAdd(chanel.Key, new List<string>
+                        {
+                            "TPHCM",
+                            "TP",
+                            "tphcm",
+                            "tp",
+                            "hcm"
+                        });
+                    }
+                    else
+                    {
+                        var ch = chanel.Value.RemoveUnicode();
+                        var notLower = ch;
+                        ch = ch.ToLower();
+                        dic[(DayOfWeek)i][MienEnum.MN].TryAdd(chanel.Key, new List<string>
+                        {
+                            chanel.Value,
+                            notLower,
+                            ch,
+                            ch.GetFirstChar(),
+                            ch.GetFirstCharOnlyFisrt(),
+                            ch.GetFirstCharOnlyForFisrt(),
+                            ch.Replace(" ",string.Empty),
+                        });
+                    }
+                }
+                var allChanelT = GetCenterChanels((DayOfWeek)i);
+                dic[(DayOfWeek)i].TryAdd(MienEnum.MT, new Dictionary<int, List<string>>());
+                foreach (var chanel in allChanelT)
+                {
+                    if (chanel.Value == "Huế")
+                    {
+                        dic[(DayOfWeek)i][MienEnum.MT].TryAdd(chanel.Key, new List<string>
+                        {
+                            "Huế",
+                            "hue",
+                            "tth",
+                            "tthue",
+                        });
+                    }
+                    else
+                    {
+                        var ch = chanel.Value.RemoveUnicode();
+                        var notLower = ch;
+                        ch = ch.ToLower();
+                        dic[(DayOfWeek)i][MienEnum.MT].TryAdd(chanel.Key, new List<string>
+                        {
+                            chanel.Value,
+                            notLower,
+                            ch,
+                            ch.GetFirstChar(),
+                            ch.GetFirstCharOnlyFisrt(),
+                            ch.GetFirstCharOnlyForFisrt(),
+                            ch.Replace(" ",string.Empty),
+                        });
+                    }
+                }
+                dic[(DayOfWeek)i].TryAdd(MienEnum.MB, new Dictionary<int, List<string>>());
+                dic[(DayOfWeek)i][MienEnum.MB].TryAdd(8, new List<string> {"Miền Bắc", "Mien Bac", "MB","mb","hn" });
+            }
+
+
+            return dic;
+        }
         public static ConcurrentDictionary<int, List<string>> GetCurrentChanelCode()
         {
             ConcurrentDictionary<int, List<string>> dic = new ConcurrentDictionary<int, List<string>>();

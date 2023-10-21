@@ -1,5 +1,5 @@
 ﻿using KQ.Common.Enums;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using KQ.DataDto.Enum;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Concurrent;
@@ -18,11 +18,16 @@ namespace KQ.Common.Helpers
         public static ConcurrentDictionary<string, List<int>[]> _totalBaCangDic;
         public static ConcurrentDictionary<string, List<int>[]> _totalBonSoDic;
         public static ConcurrentDictionary<int, List<string>> _chanelCode;
+        public static ConcurrentDictionary<DayOfWeek, Dictionary<MienEnum, Dictionary<int, List<string>>>> _chanelCodeAll;
         public static ConcurrentDictionary<int, List<string>> _chanelCodeForTest;
 
         private static void UpdateChanelCode()
         {
             _chanelCode = CommonFunction.GetCurrentChanelCode();
+        }
+        private static void GetCurrentChanelCodeAll()
+        {
+            _chanelCodeAll = CommonFunction.GetCurrentChanelCodeAll();
         }
         private static void UpdateChanelCodeForTest()
         {
@@ -339,10 +344,10 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
                 InitDriver();
-                var check1 = UpdateKQ(null);
+                //var check1 = UpdateKQ(null);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
                 //var check3 = UpdateKQ(DayOfWeek.Tuesday);
-                //var check4 = UpdateKQ(DayOfWeek.Wednesday);
+                var check4 = UpdateKQ(DayOfWeek.Wednesday);
                 //var check5 = UpdateKQ(DayOfWeek.Thursday);
                 //var check6 = UpdateKQ(DayOfWeek.Friday);
                 //var check7 = UpdateKQ(DayOfWeek.Saturday);
@@ -374,6 +379,7 @@ namespace KQ.Common.Helpers
                 aTimer.Interval = 120000;
                 aTimer.Enabled = true;
                 UpdateChanelCode();
+                GetCurrentChanelCodeAll();
                 UpdateChanelCodeForTest();
                 InitAllChanel();
             }

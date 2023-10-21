@@ -12,6 +12,7 @@ namespace KQ.DataAccess.DBContext
 
         public virtual DbSet<User> User { get; set; } = null!;
         public virtual DbSet<TileUser> TileUser { get; set; } = null!;
+        public virtual DbSet<StoreKQ> StoreKQ { get; set; } = null!;
 
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

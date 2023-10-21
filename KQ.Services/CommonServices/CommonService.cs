@@ -2,17 +2,30 @@
 using KQ.Common.Extention;
 using KQ.Common.Helpers;
 using KQ.Data.Base;
+using KQ.DataAccess.Entities;
+using KQ.DataAccess.Interface;
+using KQ.DataAccess.UnitOfWork;
 using KQ.DataDto.Calculation;
+using KQ.DataDto.Enum;
 using KQ.Services.Calcualation;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using OpenQA.Selenium.Remote;
 
 namespace KQ.Services.CommonServices
 {
     public class CommonService : ICommonService
     {
         private readonly ICalcualationService _calcualationService;
-        public CommonService(ICalcualationService calcualationService)
+        private readonly ICalcualation2Service _calcualation2Service;
+        private readonly ICommonRepository<StoreKQ> _storeKQRepository;
+        private readonly ICommonUoW _commonUoW;
+        public CommonService(ICalcualationService calcualationService, ICalcualation2Service calcualation2Service, ICommonRepository<StoreKQ> storeKQRepository, ICommonUoW commonUoW)
         {
             _calcualationService = calcualationService;
+            _calcualation2Service = calcualation2Service;
+            _storeKQRepository = storeKQRepository;
+            _commonUoW = commonUoW;
         }
         public ResponseBase CheckKQ(DayOfWeek? day)
         {
@@ -26,7 +39,16 @@ namespace KQ.Services.CommonServices
                     BaCang = InnitRepository._totalBaCangDic[key],
                     BonSo = InnitRepository._totalBonSoDic[key],
                 };
-                    
+                _commonUoW.BeginTransaction();
+                _storeKQRepository.Insert(new StoreKQ
+                {
+                    CreatedDate = new DateTime(2023,10,18),
+                    HaiCon = JsonConvert.SerializeObject(data.Lo),
+                    BaCon = JsonConvert.SerializeObject(data.BaCang),
+                    BonCon = JsonConvert.SerializeObject(data.BonSo),
+                });
+                _commonUoW.Commit();
+
                 response.Data = data;
                 return response;
             }
@@ -39,6 +61,62 @@ namespace KQ.Services.CommonServices
                 response.Data = InnitRepository._chanelCode;
                 return response;
             }
+        }
+        public ResponseBase UnitTestCal3()
+        {
+            ResponseBase response = new ResponseBase();
+            List<string> result = new List<string>();
+            var teststos = new List<CalTest2RequestDto>
+            {
+                new CalTest2RequestDto{SynTaxe = "2d  72 89 04 83 27 dd100n 90 96 17 b25 15 33 b20 68 78 dd10n 78 d50n d140n 278 678 xc20n 3d 35 55 da1n"},
+                new CalTest2RequestDto{SynTaxe = "3d  34 56 78 dax20nb30"},
+                new CalTest2RequestDto{SynTaxe = "2d 11 22 33 b10 d20 d30 da15 223 670 xdau40n xcdao 50n"},
+                new CalTest2RequestDto{SynTaxe = "2d  72keo27 dd100n  027k072 xc30 bao10 0027kht1027 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  072kht527 xcdau100n xc30 05k95 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  113khc563 xcdau100n 563khc113 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  15khc95 dd100n 95k13 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  213kht513 xcdau100n 513kht213 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  72 89  04 83 27 dd100n bao50n 690 xc30n"},
+                new CalTest2RequestDto{SynTaxe = "2d   72 89  04 83 27 dd100n  bao50n 690 xc30n"},
+                new CalTest2RequestDto{SynTaxe = "1 dai 72 89 04 83 27 b100n 2d 067 345 b20"},
+                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 dui100ndax20"},
+                new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 d100d20nda20nb40"},
+
+                // Lỗi
+                new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n"},
+                new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  29ka79 82 dd100n"},
+                new CalTest2RequestDto{SynTaxe = "2d  72ka29 dd100n 27a72 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  72keo29 dd100n 27k72 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  13khc95 dd100n 95k13 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  212kht513 dd100n 513kht212 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  72keo127 dd100n 127k72 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n vl,la 23 36 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  45678 bao10"},
+                new CalTest2RequestDto{SynTaxe = "2d  4567 xc10"},
+                new CalTest2RequestDto{SynTaxe = "2d  4567 dd10"},
+            };
+            for(int i = 0; i < teststos.Count; i++)
+            {
+                if(i == 4)
+                {
+
+                }
+                var dto = new Cal3RequestDto
+                {
+                    SynTax = teststos[i].SynTaxe
+                };
+                dto.CreatedDate = teststos[i].DateTime == null ? new DateTime(2023, 10, 18) : (DateTime)teststos[i].DateTime;
+                dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
+
+                var re = (Cal2ResponseDto)_calcualation2Service.Cal3Request(dto).Data;
+                //response.Data = result;
+            }
+            Constants.IstestMode = false;
+            return response;
         }
         public ResponseBase UnitTest()
         {

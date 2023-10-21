@@ -220,5 +220,63 @@ namespace KQ.Common.Extention
 
             return lst;
         }
+        public static List<List<int>> Take2InList(this List<int> lst)
+        {
+            List<List<int> > result = new List<List<int>>();
+            for (int i = 0;i < lst.Count-1;i++)
+            {
+                for (int j = i + 1; j < lst.Count; j++)
+                    result.Add(new List<int> { i, j});
+            }
+
+            return result;
+        }
+        public static List<string> BaSoToBaoDao(this string str)
+        {
+            var list = new List<string> { 
+                str,
+                str[0].ToString()+ str[2].ToString() + str[1].ToString(),
+                str[1].ToString()+ str[0].ToString() + str[2].ToString(),
+                str[1].ToString()+ str[2].ToString() + str[0].ToString(),
+                str[2].ToString()+ str[0].ToString() + str[1].ToString(),
+                str[2].ToString()+ str[1].ToString() + str[0].ToString(),
+            };
+
+            return list.Distinct().ToList();
+        }
+        public static List<string> BonSoToBaoDao(this string str)
+        {
+            var list = new List<string> { 
+                str, 
+                str[0].ToString()+ str[1].ToString() + str[3].ToString() + str[2].ToString(),
+                str[0].ToString()+ str[2].ToString() + str[1].ToString() + str[3].ToString(),
+                str[0].ToString()+ str[2].ToString() + str[3].ToString() + str[1].ToString(),
+                str[0].ToString()+ str[3].ToString() + str[1].ToString() + str[2].ToString(),
+                str[0].ToString()+ str[3].ToString() + str[2].ToString() + str[1].ToString(),
+
+                str[1].ToString()+ str[0].ToString() + str[3].ToString() + str[2].ToString(),
+                str[1].ToString()+ str[0].ToString() + str[2].ToString() + str[3].ToString(),
+                str[1].ToString()+ str[2].ToString() + str[0].ToString() + str[3].ToString(),
+                str[1].ToString()+ str[2].ToString() + str[3].ToString() + str[0].ToString(),
+                str[1].ToString()+ str[3].ToString() + str[0].ToString() + str[1].ToString(),
+                str[1].ToString()+ str[3].ToString() + str[1].ToString() + str[0].ToString(),
+
+                str[2].ToString()+ str[0].ToString() + str[3].ToString() + str[1].ToString(),
+                str[2].ToString()+ str[0].ToString() + str[1].ToString() + str[3].ToString(),
+                str[2].ToString()+ str[1].ToString() + str[0].ToString() + str[3].ToString(),
+                str[2].ToString()+ str[1].ToString() + str[3].ToString() + str[0].ToString(),
+                str[2].ToString()+ str[3].ToString() + str[0].ToString() + str[1].ToString(),
+                str[2].ToString()+ str[3].ToString() + str[1].ToString() + str[0].ToString(),
+
+                str[3].ToString()+ str[0].ToString() + str[1].ToString() + str[2].ToString(),
+                str[3].ToString()+ str[0].ToString() + str[2].ToString() + str[1].ToString(),
+                str[3].ToString()+ str[1].ToString() + str[0].ToString() + str[2].ToString(),
+                str[3].ToString()+ str[1].ToString() + str[2].ToString() + str[0].ToString(),
+                str[3].ToString()+ str[2].ToString() + str[0].ToString() + str[1].ToString(),
+                str[3].ToString()+ str[2].ToString() + str[1].ToString() + str[0].ToString(),
+            };
+
+            return list.Distinct().ToList();
+        }
     }
 }

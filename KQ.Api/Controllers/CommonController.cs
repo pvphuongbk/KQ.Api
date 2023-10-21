@@ -40,5 +40,11 @@ namespace KQ.Api.Controllers
             var items = _commonService.UnitTest();
             return items;
         }
+        [HttpGet("unit-test2")]
+        public ResponseBase UnitTest2()
+        {
+            var items = _commonService.UnitTestCal3();
+            return items;
+        }
     }
 }
