@@ -3,6 +3,7 @@ using KQ.Common.Extention;
 using KQ.Common.Helpers;
 using KQ.Data.Base;
 using KQ.DataAccess.Entities;
+using KQ.DataAccess.Enum;
 using KQ.DataAccess.Interface;
 using KQ.DataAccess.UnitOfWork;
 using KQ.DataAccess.Utilities;
@@ -138,9 +139,11 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 10d 11 b10", MessageLoi = "10d 11", Mien = MienEnum.MB},                                   //59
                 new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 9d 11 b10", MessageLoi = "9d", Mien = MienEnum.MB},                                        //60
 
-                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100 n d20 n da20 nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 270},                  //61
-                new CalTest2RequestDto{SynTaxe = "ct 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50 dc 11 33 bao10n", Xac = 3570, Trung = 270},             //62
-                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 270},                        //63
+                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100 n d20 n da20 nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 250},                  //61
+                new CalTest2RequestDto{SynTaxe = "ct 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50 dc 11 33 bao10n", Xac = 3570, Trung = 250},             //62
+                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 250},
+                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40@ 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 250},                       //64
+                new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n@ 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},                        //65
             };
             for(int i = 0; i < teststos.Count; i++)
             {
@@ -154,6 +157,8 @@ namespace KQ.Services.CommonServices
                 };
                 dto.CreatedDate = teststos[i].DateTime == null ? new DateTime(2023, 10, 18) : (DateTime)teststos[i].DateTime;
                 dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
+                dto.CachTrungDaXien = CachTrungDa.NhieuCap;
+                dto.CachTrungDaThang = CachTrungDa.NhieuCap;
 
                 var re = (Cal3DetailDto)_calcualation2Service.Cal3Request(dto).Data;
                 if(re.Error == null)

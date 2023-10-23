@@ -6,5 +6,6 @@
         public int IDKhach { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Detail { get; set; }
+        public bool IsTinh { get; set; }
     }
 }

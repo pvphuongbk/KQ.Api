@@ -3,6 +3,7 @@ using KQ.Common.Extention;
 using KQ.Common.Helpers;
 using KQ.Data.Base;
 using KQ.DataAccess.Entities;
+using KQ.DataAccess.Enum;
 using KQ.DataAccess.Interface;
 using KQ.DataDto.Calculation;
 using KQ.DataDto.Enum;
@@ -20,20 +21,20 @@ namespace KQ.Services.Calcualation
         private readonly ICommonUoW _commonUoW;
         private string _chanelNotFound = "Không xác định được đài";
         private string _dax2dai = "Đá xiên phải đá từ 2 đài";
-        public Calcualation2Service(ICommonRepository<StoreKQ> storeKQRepository, ICommonUoW commonUoW, ICommonRepository<Details> detailsRepository)
+        public Calcualation2Service(ICommonRepository<StoreKQ> storeKQRepository, ICommonUoW commonUoW, ICommonRepository<Details> detailsRepository, ICommonRepository<TileUser> tileUserRepository)
         {
             _storeKQRepository = storeKQRepository;
             _commonUoW = commonUoW;
             _detailsRepository = detailsRepository;
         }
 
-        public ResponseBase Cal3Request(Cal3RequestDto dtos)
+        public ResponseBase Cal3Request(Cal3RequestDto dto)
         {
             try
             {
                 Stopwatch s1 = new Stopwatch();
                 s1.Start();
-                var array = ChuanHoa(dtos.SynTax);
+                var array = ChuanHoa(dto.SynTax);
                 int cursor = 0;
                 int cursorTemp = 0;
                 bool isStart = true;
@@ -48,7 +49,7 @@ namespace KQ.Services.Calcualation
                 List<CachChoi?> cachChoiTemp = new List<CachChoi?>();
                 Error error = null;
                 bool isCompleted = true;
-                if (dtos.Mien == MienEnum.MB)
+                if (dto.Mien == MienEnum.MB)
                 {
                     chanels.Add(8);
                     isStart = false;
@@ -61,7 +62,7 @@ namespace KQ.Services.Calcualation
 
                     if (isStart)
                     {
-                        var (check, mess) = GetChanelsStart(dtos.CreatedDate, ref chanels, dtos.Mien, array[i], array, ref i);
+                        var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanels, dto.Mien, array[i], array, ref i);
                         isStart = false;
                         if (check)
                         {
@@ -73,14 +74,14 @@ namespace KQ.Services.Calcualation
                         {
                             if(mess == _chanelNotFound)
                             {
-                                var dais = InnitRepository._chanelCodeAll[dtos.CreatedDate.DayOfWeek][dtos.Mien].Select(x => x.Value[3]);
+                                var dais = InnitRepository._chanelCodeAll[dto.CreatedDate.DayOfWeek][dto.Mien].Select(x => x.Value[3]);
                                 mess += $". Tên đài đúng: {string.Join(",", dais)}";
                                 int count = 0;
-                                for(int k = 0;k< dtos.SynTax.Length;k++)
+                                for(int k = 0;k< dto.SynTax.Length;k++)
                                 {
-                                    if (dtos.SynTax[k] != ' ' && !int.TryParse(dtos.SynTax[k].ToString(), out _))
+                                    if (dto.SynTax[k] != ' ' && !int.TryParse(dto.SynTax[k].ToString(), out _))
                                         count = k;
-                                    if (int.TryParse(dtos.SynTax[k].ToString(), out _))
+                                    if (int.TryParse(dto.SynTax[k].ToString(), out _))
                                     {
                                         count++;
                                         break;
@@ -104,7 +105,7 @@ namespace KQ.Services.Calcualation
                         {
                             List<int> chanelsTemp = new List<int>();
                             int ibe = i-1;
-                            var (check, mess) = GetChanelsStart(dtos.CreatedDate, ref chanelsTemp, dtos.Mien, array[i], array, ref i);
+                            var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                             if (check)
                             {
                                 if(!isCompleted)
@@ -280,7 +281,7 @@ namespace KQ.Services.Calcualation
                     else
                     {
                         List<int> chanelsTemp = new List<int>();
-                        var (check, mess) = GetChanelsStart(dtos.CreatedDate, ref chanelsTemp, dtos.Mien, array[i], array, ref i);
+                        var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                         if (check)
                         {
                             if(!isCompleted)
@@ -325,21 +326,21 @@ namespace KQ.Services.Calcualation
             Foo:
                 if (error == null)
                 {
-                    var detail = CreateDetail(dtos, cal3PrepareDtos);
-                    var isUpdate = UpdateTrungThuong(dtos, ref detail);
+                    var detail = CreateDetail(dto, cal3PrepareDtos);
+                    var isUpdate = UpdateTrungThuong(dto, ref detail);
                     if (isUpdate)
                     {
                         UpdateSumTrungThuong(ref detail);
                     }
 
-                    if (dtos.IsSave)
+                    if (dto.IsSave)
                     {
                         _commonUoW.BeginTransaction();
                         var json = JsonConvert.SerializeObject(detail);
                         Details de = new Details
                         {
-                            CreatedDate = dtos.CreatedDate,
-                            IDKhach = dtos.IDKhach,
+                            CreatedDate = dto.CreatedDate,
+                            IDKhach = dto.IDKhach,
                             Detail = json
                         };
                         _detailsRepository.Insert(de);
@@ -356,8 +357,8 @@ namespace KQ.Services.Calcualation
             }
             catch (Exception ex)
             {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateTrungThuong");
-                if (dtos.IsSave)
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "Cal3Request");
+                if (dto.IsSave)
                     _commonUoW.RollBack();
                 return new ResponseBase { Code = 501, Message = ex.Message };
             }
@@ -473,19 +474,22 @@ namespace KQ.Services.Calcualation
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
             var kq4So = new List<int>[8];
-            if (dtos.CreatedDate.Date != DateTime.Now.Date)
+            if (dtos.CreatedDate.Date < DateTime.Now.Date)
             {
                 var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == dtos.CreatedDate.Date).FirstOrDefault();
-                if (kq != null)
+                if (kq != null && !string.IsNullOrEmpty(kq.HaiCon) 
+                    && !string.IsNullOrEmpty(kq.BaCon) && !string.IsNullOrEmpty(kq.BonCon))
                 {
                     kq2So = JsonConvert.DeserializeObject<List<int>[]>(kq.HaiCon);
                     kq3So = JsonConvert.DeserializeObject<List<int>[]>(kq.BaCon);
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
             }
-            else
+            else if(dtos.CreatedDate.Date < DateTime.Now.Date)
             {
-                // Cap nhat gia tri hom nay
+                kq2So = InnitRepository._totalDic["Now"];
+                kq3So = InnitRepository._totalDic["Now"];
+                kq4So = InnitRepository._totalDic["Now"];
             }
             if (kq2So == null || kq2So.All(x => x.Count == 0) || kq3So == null || kq3So.All(x => x.Count == 0)
                 || kq4So == null || kq4So.All(x => x.Count == 0))
@@ -508,16 +512,42 @@ namespace KQ.Services.Calcualation
                     case CachChoi.Da:
                         var count1 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[0]);
                         var count2 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[1]);
-                        var count = count1 < count2 ? count1 : count2;
-                        pre.SlTrung = count;
-                        pre.SlTrung = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[0]);
-                        if (pre.SlTrung > 0)
+                        if(dtos.CachTrungDaThang == CachTrungDa.NhieuCap)
                         {
-                            string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
-                            if (meDaT.ContainsKey(key))
-                                meDaT[key] += pre.SlTrung * pre.SoTien;
-                            else
-                                meDaT.Add(key, pre.SlTrung * pre.SoTien);
+                            var count = count1 < count2 ? count1 : count2;
+                            pre.SlTrung = count;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaT.ContainsKey(key))
+                                    meDaT[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaT.Add(key, pre.SlTrung * pre.SoTien);
+                            }
+                        }
+                        else if(dtos.CachTrungDaThang == CachTrungDa.KyRuoi)
+                        {
+                            pre.SlTrung = (count1 + count2) / 2;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaT.ContainsKey(key))
+                                    meDaT[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaT.Add(key, pre.SlTrung * pre.SoTien);
+                            }
+                        }
+                        else
+                        {
+                            pre.SlTrung = (count1 > 0 &&  count2 > 0) ? 1 : 0;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaT.ContainsKey(key))
+                                    meDaT[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaT.Add(key, pre.SlTrung * pre.SoTien);
+                            }
                         }
                         break;
                     case CachChoi.DaX:
@@ -527,15 +557,42 @@ namespace KQ.Services.Calcualation
 
                         var count1x = kqx.Count(x => x == pre.SoIn[0]);
                         var count2x = kqx.Count(x => x == pre.SoIn[1]);
-                        var countx = count1x < count2x ? count1x : count2x;
-                        pre.SlTrung = countx;
-                        if (pre.SlTrung > 0)
+                        if (dtos.CachTrungDaXien == CachTrungDa.NhieuCap)
                         {
-                            string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
-                            if (meDaX.ContainsKey(key))
-                                meDaX[key] += pre.SlTrung * pre.SoTien;
-                            else
-                                meDaX.Add(key, pre.SlTrung * pre.SoTien);
+                            var countx = count1x < count2x ? count1x : count2x;
+                            pre.SlTrung = countx;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaX.ContainsKey(key))
+                                    meDaX[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaX.Add(key, pre.SlTrung * pre.SoTien);
+                            }
+                        }
+                        else if (dtos.CachTrungDaXien == CachTrungDa.KyRuoi)
+                        {
+                            pre.SlTrung = (count1x + count2x) / 2;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaX.ContainsKey(key))
+                                    meDaX[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaX.Add(key, pre.SlTrung * pre.SoTien);
+                            }
+                        }
+                        else
+                        {
+                            pre.SlTrung = (count1x > 0 && count2x > 0) ? 1 : 0;
+                            if (pre.SlTrung > 0)
+                            {
+                                string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
+                                if (meDaX.ContainsKey(key))
+                                    meDaX[key] += pre.SlTrung * pre.SoTien;
+                                else
+                                    meDaX.Add(key, pre.SlTrung * pre.SoTien);
+                            }
                         }
                         break;
                     case CachChoi.Dau:
@@ -703,8 +760,8 @@ namespace KQ.Services.Calcualation
                         break;
                 }
             }
-
-            if(meT2c.Any())
+            detail.IsTinh = true;
+            if (meT2c.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meT2c)
@@ -1546,6 +1603,7 @@ namespace KQ.Services.Calcualation
             sys = sys.Replace("\n", " ");
             sys = sys.Replace("\\", " ");
             sys = sys.Replace(":", " ");
+            sys = sys.Replace("@", " ");
             var array = sys.Split(" ").ToArray();
             foreach (var s in array)
             {
