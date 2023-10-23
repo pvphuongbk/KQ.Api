@@ -9,6 +9,13 @@ namespace KQ.DataDto.Calculation
         public List<string> TrungDetail { get; set; }
         public List<Detail> Details { get; set; }
         public bool IsTinh { get; set; }
+        public Error Error { get; set; }
+    }
+    public class Error
+    {
+        public int StartIndex { get; set; }
+        public int Count { get; set; }
+        public string Message { get; set; }
     }
     public class Detail
     {

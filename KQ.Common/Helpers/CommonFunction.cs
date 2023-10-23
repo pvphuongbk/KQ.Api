@@ -55,9 +55,9 @@ namespace KQ.Common.Helpers
                         dic[(DayOfWeek)i][MienEnum.MT].TryAdd(chanel.Key, new List<string>
                         {
                             "Huế",
-                            "hue",
+                            "ttHue",
                             "tth",
-                            "tthue",
+                            "hue",
                         });
                     }
                     else

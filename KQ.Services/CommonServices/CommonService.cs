@@ -69,6 +69,7 @@ namespace KQ.Services.CommonServices
             List<string> result = new List<string>();
             var teststos = new List<CalTest2RequestDto>
             {
+                // Miền nam
                 new CalTest2RequestDto{SynTaxe = "2d  72 89 04 83 10 dd100n 90 96 17 b25 15 33 b20 68 78 dd10n 78 d50n d140n 278 678 xc20n 3d 35 55 da1n"  //0
                 , Xac = 6976, Trung = 100},
                 new CalTest2RequestDto{SynTaxe = "3d 28 87 59 dax10n b10n", DateTime = new DateTime(2023,10,20),Xac = 8100, Trung =130},                   //1
@@ -84,27 +85,66 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "1 dai 72 89 04 83 27 b100n 2d 067 345 b20", Xac = 10360},                                                //11
                 new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 dui100ndax20", Xac = 13860, Trung = 20},                                          //12
                 new CalTest2RequestDto{SynTaxe = "dn,Cần Thơ st 72 89 04 d100d20nda20nb40", Xac = 20520, Trung = 140},                                     //13
+                new CalTest2RequestDto{SynTaxe = "Đài Chánh.10₫15.n.₫10n.72₫₫10n. 518b2n..438.731b1n.xc5n.511b2n.xc10n..11b5n.  2dai..59₫₫10n.29₫5n.₫15n. 429xc15n.359.b1n.xc5n.731b2n.xc20n." +
+                ".538.583b1n.xc6n. 38.83b5n.29.31.10b10n. 38.83da2n. 31.29.10₫a2n. 64.11.72da1n. 3dai.18.43b10n.", Xac = 4047, Trung = 42},                //14
 
-                //// Lỗi
-                //new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n"},
-                //new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  29ka79 82 dd100n"},
-                //new CalTest2RequestDto{SynTaxe = "2d  72ka29 dd100n 27a72 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  72keo29 dd100n 27k72 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  13khc95 dd100n 95k13 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  212kht513 dd100n 513kht212 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  72keo127 dd100n 127k72 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n vl,la 23 36 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  45678 bao10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  4567 xc10"},
-                //new CalTest2RequestDto{SynTaxe = "2d  4567 dd10"},
+                // Lỗi
+                new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n", MessageLoi = "29k79 xc100n"},                                                         //15
+                new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10", MessageLoi = "072keo527 dd100n"},                                //16
+                new CalTest2RequestDto{SynTaxe = "2d 11 b10n 29ka79 82 dd100n", MessageLoi = "29ka"},                                                      //17
+                new CalTest2RequestDto{SynTaxe = "vl la  72ka29 dd100n 27a72 bao10", MessageLoi = "vl la"},                                                //18
+                new CalTest2RequestDto{SynTaxe = "4d  72keo29 dd100n 27k72 bao10", MessageLoi = "4d"},                                                     //19
+                new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10", Mien = MienEnum.MB, MessageLoi = "2d"},                             //20
+                new CalTest2RequestDto{SynTaxe = "hn 11 22 dd100n 95k13 bao10 1d 23dd4n", Mien = MienEnum.MB,Xac = 23430, Trung = 210},                    //21
+                new CalTest2RequestDto{SynTaxe = "2d  11 dd100n 513kht212 bao10", MessageLoi = "513kht212"},                                               //22
+                new CalTest2RequestDto{SynTaxe = "2d  112 dd100n 3d 127k72 bao10", MessageLoi = "112 dd100n"},                                             //23
+                new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10", MessageLoi = "dd100n"},                        //24
+                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n VL,la 23 36 bao10", MessageLoi = "VL,la"},                             //25
+                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10", MessageLoi = "2t"},                                   //26
+                new CalTest2RequestDto{SynTaxe = "2d  45678 bao10", MessageLoi = "45678 bao10"},                                                           //27
+                new CalTest2RequestDto{SynTaxe = "2d  4567 xc10", MessageLoi = "4567 xc10"},                                                               //28
+                new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10", MessageLoi = "112khc563"},                                          //29
+                new CalTest2RequestDto{SynTaxe = "2d  456 dd10", MessageLoi = "456 dd10"},                                                                 //30
+                new CalTest2RequestDto{SynTaxe = "Đài Chánh.10₫15.n.₫10n.72₫₫10n. 518b2n..438.731b1n.xc5n.511b2n.xc10n..11b5n. " +                         
+                " 2dai..59₫₫10n.29₫5n.₫15n. 429xc15n.359.b1n.xc5n.731b2n.xc20n." +                                                                         
+                ".538.583b1n.xc6n. 38.83b5n.29.31.10b10n. 38.83da2n. 31.29.10₫a2n. 64.11.72da1n. 4dai.18.43b10n.", MessageLoi = "4dai"},                   //31
+                new CalTest2RequestDto{SynTaxe = "dc 34 56 78 d20b30", MessageLoi = "34 56 78 d20"},                                                       //32
+                new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2tfdfdf vl 23 36 bao10", MessageLoi = "2tfdfdf vl"},                   //33
+                new CalTest2RequestDto{SynTaxe = "dc 34 56 78 d20b30", MessageLoi = "34 56 78 d20", Mien = MienEnum.MB},                                   //34
+                new CalTest2RequestDto{SynTaxe = "dc 34 56 78 b30 1d 245 34 b10n", MessageLoi = "245 34", Mien = MienEnum.MB},                             //35
+                new CalTest2RequestDto{SynTaxe = "mb 34 56 78 b30 hn 2456 123 34 b10n", MessageLoi = "2456 123 34", Mien = MienEnum.MB},                   //36
+                new CalTest2RequestDto{SynTaxe = "hn 34 56 78 b30 hn 24 12 b10nb20", MessageLoi = "b10nb20", Mien = MienEnum.MB},                          //37
+                new CalTest2RequestDto{SynTaxe = "1d dd20b30 34 56 78 dc 24 12 b10nb20", MessageLoi = "dd20", Mien = MienEnum.MB},                         //38
+                new CalTest2RequestDto{SynTaxe = "1d 3467 b10n", Xac = 200, Trung =0, Mien = MienEnum.MB},                                                 //39
+                new CalTest2RequestDto{SynTaxe = "1d 346 dd10n", MessageLoi = "346 dd10n", Mien = MienEnum.MB},                                            //40
+                new CalTest2RequestDto{SynTaxe = "1d 34 xc10n xcdui10", MessageLoi = "34 xc10n", Mien = MienEnum.MB},                                      //41
+                new CalTest2RequestDto{SynTaxe = "1d 34 56 dx100 b10n", MessageLoi = "1d 34 56 dx100", Mien = MienEnum.MB},                                //42
+                new CalTest2RequestDto{SynTaxe = "1d 34 da100 b10n", MessageLoi = "34 da100", Mien = MienEnum.MB},                                         //43
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da00 b10n", MessageLoi = "da00", Mien = MienEnum.MB},                                           //44
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da1 b10n 2d 11 b10n", MessageLoi = "2d", Mien = MienEnum.MB},                                   //45
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 da1 b10n 2d b10n", MessageLoi = "b10n", Mien = MienEnum.MN},                                    //46
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 12 44", MessageLoi = "dc 34 45 12 44", Mien = MienEnum.MN},                                     //47
+                new CalTest2RequestDto{SynTaxe = "hn 34 56 78 b30 hn 24 12 b10b20", MessageLoi = "b10b20", Mien = MienEnum.MB},                            //48
+                new CalTest2RequestDto{SynTaxe = "hn 34 56 78 b30 hn 24 12 b10nb20n", MessageLoi = "b10nb20n", Mien = MienEnum.MB},                        //49
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 bao10n 2d 45 56", MessageLoi = "2d 45 56", Mien = MienEnum.MN},                                 //50
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 bao10n 2d", MessageLoi = "2d", Mien = MienEnum.MN},                                             //51
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 bao10n 2fdfd", MessageLoi = "2fdfd", Mien = MienEnum.MN},                                       //52
+                new CalTest2RequestDto{SynTaxe = "dc 34 45 2d 12 13 bao10n", MessageLoi = "dc 34 45", Mien = MienEnum.MN},                                 //53
+                new CalTest2RequestDto{SynTaxe = "dc 11 33 bao10n 34 45 2d 12 13 bao10n", MessageLoi = "34 45", Mien = MienEnum.MN},                       //54
+                new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n 2d 34 45 da10nb0n", MessageLoi = "b0n", Mien = MienEnum.MN},                             //55
+                new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},                         //56
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 1d b10", MessageLoi = "b10", Mien = MienEnum.MB},                                          //57
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 hn b10", MessageLoi = "b10", Mien = MienEnum.MB},                                          //58
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 10d 11 b10", MessageLoi = "10d 11", Mien = MienEnum.MB},                                   //59
+                new CalTest2RequestDto{SynTaxe = "1d 34 45 da10 9d 11 b10", MessageLoi = "9d", Mien = MienEnum.MB},                                        //60
+
+                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100 n d20 n da20 nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 270},                  //61
+                new CalTest2RequestDto{SynTaxe = "ct 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50 dc 11 33 bao10n", Xac = 3570, Trung = 270},             //62
+                new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 270},                        //63
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 5)
+                if(i == 60)
                 {
 
                 }
@@ -116,12 +156,23 @@ namespace KQ.Services.CommonServices
                 dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
 
                 var re = (Cal3DetailDto)_calcualation2Service.Cal3Request(dto).Data;
-                var totalX = re.Xac.HaiCB + re.Xac.HaiCD + re.Xac.DaT + re.Xac.DaX + re.Xac.BaCon + re.Xac.BonCon;
-                var totalT = re.Trung.HaiCB + re.Trung.HaiCD + re.Trung.DaT + re.Trung.DaX + re.Trung.BaCon + re.Trung.BonCon;
-                if (teststos[i].Xac == totalX && teststos[i].Trung == totalT)
-                    result.Add("Pass");
+                if(re.Error == null)
+                {
+                    var totalX = re.Xac.HaiCB + re.Xac.HaiCD + re.Xac.DaT + re.Xac.DaX + re.Xac.BaCon + re.Xac.BonCon;
+                    var totalT = re.Trung.HaiCB + re.Trung.HaiCD + re.Trung.DaT + re.Trung.DaX + re.Trung.BaCon + re.Trung.BonCon;
+                    if (teststos[i].Xac == totalX && teststos[i].Trung == totalT)
+                        result.Add("Pass");
+                    else
+                        result.Add("Fail");
+                }
                 else
-                    result.Add("Fail");
+                {
+                    var str = dto.SynTax.Substring(re.Error.StartIndex, re.Error.Count);
+                    if(str == teststos[i].MessageLoi)
+                        result.Add("Pass");
+                    else
+                        result.Add("Fail");
+                }
 
             }
             response.Data = result;

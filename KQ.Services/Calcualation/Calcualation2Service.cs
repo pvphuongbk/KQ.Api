@@ -7,7 +7,9 @@ using KQ.DataAccess.Interface;
 using KQ.DataDto.Calculation;
 using KQ.DataDto.Enum;
 using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace KQ.Services.Calcualation
 {
@@ -16,6 +18,8 @@ namespace KQ.Services.Calcualation
         private readonly ICommonRepository<StoreKQ> _storeKQRepository;
         private readonly ICommonRepository<Details> _detailsRepository;
         private readonly ICommonUoW _commonUoW;
+        private string _chanelNotFound = "Không xác định được đài";
+        private string _dax2dai = "Đá xiên phải đá từ 2 đài";
         public Calcualation2Service(ICommonRepository<StoreKQ> storeKQRepository, ICommonUoW commonUoW, ICommonRepository<Details> detailsRepository)
         {
             _storeKQRepository = storeKQRepository;
@@ -31,6 +35,7 @@ namespace KQ.Services.Calcualation
                 s1.Start();
                 var array = ChuanHoa(dtos.SynTax);
                 int cursor = 0;
+                int cursorTemp = 0;
                 bool isStart = true;
                 List<int> chanels = new List<int>();
                 List<int> numbers = new List<int>();
@@ -39,15 +44,19 @@ namespace KQ.Services.Calcualation
                 int numTemp = 0;
                 bool isDau = false;
                 CachChoi? cachChoi = null;
+                string messError = string.Empty;
                 List<CachChoi?> cachChoiTemp = new List<CachChoi?>();
+                Error error = null;
+                bool isCompleted = true;
                 if (dtos.Mien == MienEnum.MB)
                 {
                     chanels.Add(8);
                     isStart = false;
                 }
-                for (int i = 0; i < array.Length; i++)
+                int i = 0;
+                for (; i < array.Length; i++)
                 {
-                    if (array[i] == " " || (dtos.Mien == MienEnum.MB && (array[i] == "hn" || array[i] == "mb")))
+                    if (array[i] == " ")
                         continue;
 
                     if (isStart)
@@ -57,10 +66,36 @@ namespace KQ.Services.Calcualation
                         if (check)
                         {
                             cursor = i;
+                            cursorTemp = i;
+                            isCompleted = false;
                         }
                         else
                         {
-                            // lỗi
+                            if(mess == _chanelNotFound)
+                            {
+                                var dais = InnitRepository._chanelCodeAll[dtos.CreatedDate.DayOfWeek][dtos.Mien].Select(x => x.Value[3]);
+                                mess += $". Tên đài đúng: {string.Join(",", dais)}";
+                                int count = 0;
+                                for(int k = 0;k< dtos.SynTax.Length;k++)
+                                {
+                                    if (dtos.SynTax[k] != ' ' && !int.TryParse(dtos.SynTax[k].ToString(), out _))
+                                        count = k;
+                                    if (int.TryParse(dtos.SynTax[k].ToString(), out _))
+                                    {
+                                        count++;
+                                        break;
+                                    }
+                                }
+                                error = new Error { Message = mess, Count = count, StartIndex = 0 };
+                                break;
+                            }
+                            else
+                            {
+                                // lỗi
+                                var (startI, endI) = GetIndexForError(cursor, i, array);
+                                error = new Error { Message = mess, Count = endI, StartIndex = startI };
+                                break;
+                            }
                         }
                     }
                     else if (int.TryParse(array[i], out numTemp))
@@ -68,36 +103,55 @@ namespace KQ.Services.Calcualation
                         if (array[i].Length == 1)
                         {
                             List<int> chanelsTemp = new List<int>();
+                            int ibe = i-1;
                             var (check, mess) = GetChanelsStart(dtos.CreatedDate, ref chanelsTemp, dtos.Mien, array[i], array, ref i);
                             if (check)
                             {
-                                cal3PrepareDtos.ForEach(x => x.Chanels = chanels.CloneList());
+                                if(!isCompleted)
+                                {
+                                    error = CreateErrorForNotComplated(ref ibe, array, numbers, cursorTemp);
+                                    break;
+                                }
+
                                 chanels = chanelsTemp;
                                 numbers.Clear();
                                 numberStrs.Clear();
                                 cachChoi = null;
+                                cursor = i;
+                                isCompleted = false;
                             }
                             else
                             {
                                 // lỗi
+                                var (startI, endI) = GetIndexForError(cursor, i, array);
+                                error = new Error { Message = mess, Count = endI, StartIndex = startI };
+                                break;
                             }
                         }
                         else
                         {
+                            isCompleted = false;
                             numbers.Clear();
                             numberStrs.Clear();
                             numberStrs.Add(array[i]);
                             numbers.Add(numTemp);
                             var stri = array[i];
                             var (str, iTemp) = FindNextStr(array, i);
-                            if (str == "k" || str == "keo" || str == "khc" || str == "kht")
+                            if (str == "k" || str == "keo" || str == "khc" || str == "kht" || str == "kh")
                             {
                                 i = iTemp;
-                                HandlerKeo(str, stri, numTemp, array, ref i, ref numbers, ref numberStrs);
+                                var (check, mess) = HandlerKeo(str, stri, numTemp, array, ref i, ref numbers, ref numberStrs);
+                                if(!check)
+                                {
+                                    // lỗi
+                                    var (startI, endI) = GetIndexForError(cursor, i, array);
+                                    error = new Error { Message = mess, Count = endI, StartIndex = startI };
+                                    goto Foo;
+                                }
                             }
                             else
                             {
-                                while (int.TryParse(str, out numTemp))
+                                while (int.TryParse(str, out numTemp) && str.Length > 1)
                                 {
                                     numbers.Add(numTemp);
                                     numberStrs.Add(str);
@@ -108,12 +162,24 @@ namespace KQ.Services.Calcualation
 
                             if (numberStrs.Any(o => o.Length != numberStrs[0].Length))
                             {
-                                // Các số chơi phải cùng 2 hoặc 3 hoặc 4 con
+                                // Lỗi
+                                var (startI, endI) = GetIndexForError(cursor, i, array, true);
+                                error = new Error { StartIndex = startI, Count = endI, Message = "Các số chơi phải cùng 2 hoặc 3 hoặc 4 con" };
+                                break;
                             }
                         }
                     }
-                    else if (GetCachChoi(array[i], ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs))
+                    else if (GetCachChoi(array[i], ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError))
                     {
+                        isCompleted = true;
+                        int cursorDup = i;
+                        if (!string.IsNullOrEmpty(messError))
+                        {
+                            // lỗi
+                            var (startI, endI) = GetIndexForError(cursor, i, array);
+                            error = new Error { Message = messError, Count = endI, StartIndex = startI };
+                            break;
+                        }
                         cachChoiTemp.Add(cachChoi);
                         var sl = GetSl(array, ref i);
                         if (sl > 0)
@@ -122,6 +188,15 @@ namespace KQ.Services.Calcualation
                             if (!check1)
                             {
                                 //lỗi
+                                if (mess1 == _dax2dai)
+                                    cursor = cursorTemp;
+                                var (startI, endI) = GetIndexForError(cursor,i, array);
+                                error = new Error {StartIndex = startI, Count = endI, Message = mess1 };
+                                break;
+                            }
+                            else
+                            {
+                                TangCurso(ref cursor, ref cursorTemp, array, i);
                             }
                             cachChoi = null;
                             sl = 0;
@@ -131,28 +206,60 @@ namespace KQ.Services.Calcualation
                                 var (str, iTemp) = FindNextStr(array, i);
                                 if (str.StartsWith("n"))
                                     str = str.Substring(1, str.Length - 1);
-                                if (GetCachChoi(str, ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs))
+                                if (GetCachChoi(str, ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError))
                                 {
+                                    if (!string.IsNullOrEmpty(messError))
+                                    {
+                                        // lỗi
+                                        var (startI, endI) = GetIndexForError(cursor, i, array);
+                                        error = new Error { Message = messError, Count = endI, StartIndex = startI };
+                                        goto Foo;
+                                    }
                                     cachChoiTemp.Add(cachChoi);
                                     if (cachChoiTemp.Distinct().Count() != cachChoiTemp.Count)
                                     {
-                                        // lỗi trùng cách chơi
-                                        break;
+                                        // lỗi
+                                        var (strr, iTempp) = FindNextStr(array, iTemp);
+                                        if (int.TryParse(strr, out _))
+                                        {
+                                            iTemp = iTempp;
+                                            (strr, iTempp) = FindNextStr(array, iTemp);
+                                            if (strr.StartsWith("n"))
+                                                iTemp = iTempp;
+                                        }
+                                        var (startI, endI) = GetIndexForError(cursorDup, iTemp, array);
+                                        error = new Error { StartIndex = startI, Count = endI, Message = "Lỗi trùng cách chơi" };
+                                        goto Foo;
                                     }
                                     i = iTemp;
                                     var sl2 = GetSl(array, ref i);
+                                    TangCurso(ref cursor, ref cursorTemp, array, i);
                                     if (sl2 > 0)
                                     {
                                         var (check2, mess2) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl2);
                                         if (!check2)
                                         {
                                             //lỗi
+                                            var (startI, endI) = GetIndexForError(cursor, i, array);
+                                            error = new Error { Message = messError, Count = endI, StartIndex = startI };
+                                            goto Foo;
+                                        }
+                                        else
+                                        {
+                                            TangCurso(ref cursor, ref cursorTemp, array, i);
                                         }
                                         cachChoi = null;
                                     }
                                     else
                                     {
                                         check = false;
+                                        var (strr, iTempp) = FindNextStr(array, i);
+                                        if (strr.StartsWith("n"))
+                                            i = iTempp;
+                                        //lỗi
+                                        var (startI, endI) = GetIndexForError(iTemp, i, array, false);
+                                        error = new Error { StartIndex = startI, Count = endI, Message = "Số tiền chơi phải lớn hơn 0" };
+                                        goto Foo;
                                     }
                                 }
                                 else
@@ -163,7 +270,10 @@ namespace KQ.Services.Calcualation
                         }
                         else
                         {
-                            // lỗi
+                            //lỗi
+                            var (startI, endI) = GetIndexForError(cursorDup, i, array, false);
+                            error = new Error { StartIndex = startI, Count = endI, Message = "Số tiền chơi phải lớn hơn 0" };
+                            break;
                         }
                         cachChoiTemp.Clear();
                     }
@@ -173,43 +283,76 @@ namespace KQ.Services.Calcualation
                         var (check, mess) = GetChanelsStart(dtos.CreatedDate, ref chanelsTemp, dtos.Mien, array[i], array, ref i);
                         if (check)
                         {
-                            cal3PrepareDtos.ForEach(x => x.Chanels = chanels.CloneList());
+                            if(!isCompleted)
+                            {
+                                // lỗi
+                                error = CreateErrorForNotComplated(ref i, array, numbers, cursorTemp);
+                                break;
+                            }
+                            //cal3PrepareDtos.ForEach(x => x.Chanels = chanels.CloneList());
                             chanels = chanelsTemp;
                             numbers.Clear();
                             numberStrs.Clear();
                             cachChoi = null;
+                            isCompleted = false;
+                            cursor = i;
+                            cursorTemp = i;
                         }
                         else
                         {
                             // lỗi
+                            int count = i;
+                            for (int k = i + 1; k < array.Length; k++)
+                            {
+                                if (array[k] != " " && !int.TryParse(array[k], out _))
+                                    count = k;
+                                if (int.TryParse(array[k], out _))
+                                {
+                                    break;
+                                }
+                            }
+                            var (startI, endI) = GetIndexForError(cursor, count, array, false);
+                            error = new Error { StartIndex = startI, Count = endI, Message = "Sai cú pháp" };
                             break;
                         }
                     }
                 }
-
-                var detail = CreateDetail(dtos, cal3PrepareDtos);
-                var isUpdate = UpdateTrungThuong(dtos, ref detail);
-                if (isUpdate)
+                if (!isCompleted && error == null)
                 {
-                    UpdateSumTrungThuong(ref detail);
+                    // lỗi
+                    error = CreateErrorForNotComplated(ref i, array, numbers, cursorTemp);
                 }
-
-                if (dtos.IsSave)
+            Foo:
+                if (error == null)
                 {
-                    _commonUoW.BeginTransaction();
-                    var json = JsonConvert.SerializeObject(detail);
-                    Details de = new Details
+                    var detail = CreateDetail(dtos, cal3PrepareDtos);
+                    var isUpdate = UpdateTrungThuong(dtos, ref detail);
+                    if (isUpdate)
                     {
-                        CreatedDate = dtos.CreatedDate,
-                        IDKhach = dtos.IDKhach,
-                        Detail = json
-                    };
-                    _detailsRepository.Insert(de);
+                        UpdateSumTrungThuong(ref detail);
+                    }
+
+                    if (dtos.IsSave)
+                    {
+                        _commonUoW.BeginTransaction();
+                        var json = JsonConvert.SerializeObject(detail);
+                        Details de = new Details
+                        {
+                            CreatedDate = dtos.CreatedDate,
+                            IDKhach = dtos.IDKhach,
+                            Detail = json
+                        };
+                        _detailsRepository.Insert(de);
+                        _commonUoW.Commit();
+                    }
+                    s1.Stop();
+                    return new ResponseBase { Data = detail };
                 }
-                s1.Stop();
-                if (dtos.IsSave)
-                    _commonUoW.Commit();
-                return new ResponseBase { Data = detail };
+                else
+                {
+                    s1.Stop();
+                    return new ResponseBase { Data = new Cal3DetailDto { Error = error } };
+                }
             }
             catch (Exception ex)
             {
@@ -218,6 +361,92 @@ namespace KQ.Services.Calcualation
                     _commonUoW.RollBack();
                 return new ResponseBase { Code = 501, Message = ex.Message };
             }
+        }
+        public void TangCurso(ref int cursor, ref int cursorTemp, string[] array, int i)
+        {
+            if (array[i] == "n" && array.Length > (i + 1))
+            {
+                cursorTemp = i + 1;
+                cursor = i + 1;
+            }
+            else
+            {
+                cursorTemp = i;
+                cursor = i;
+            }
+        }
+        public Error CreateErrorForNotComplated(ref int i, string[] array, List<int> numbers, int cursorTemp)
+        {
+            // lỗi
+            string mes = "Không xác định được cách chơi";
+            if (!numbers.Any())
+                mes = "Không xác định được số chơi và cách chơi";
+            if (i >= array.Length)
+                i = array.Length - 1;
+            var (startI, endI) = GetIndexForError(cursorTemp, i, array, false);
+            var error = new Error { StartIndex = startI, Count = endI, Message = mes };
+            return error;
+        }
+        public (int, int) GetIndexForError(int cursor, int i, string[] array, bool getNext = true)
+        {
+            int start = 0;
+            int end = 0;
+            int current = 0;
+            bool isHave = false;
+            for (int j = cursor; j < array.Length; j++)
+            {
+                if (array[j] != " ")
+                    break;
+                cursor++;
+            }
+            if (getNext)
+            {
+                for (int j = cursor + 1; j < array.Length; j++)
+                {
+                    if (array[j] != " ")
+                    {
+                        if (isHave)
+                            cursor++;
+                        break;
+                    }
+                    cursor++;
+                    isHave = true;
+                }
+            }
+            //for (int j = cursor; j < array.Length; j++)
+            //{
+            //    if (array[j] != " ")
+            //        break;
+            //    cursor++;
+            //}
+            //int countEmpty = cursor;
+            //if (cursor < i)
+            //{
+            //    for (int j = cursor + 1; j < array.Length; j++)
+            //    {
+            //        if (array[j] != " ")
+            //            break;
+            //        countEmpty++;
+            //    }
+            //    cursor = countEmpty == cursor ? cursor : countEmpty + 1;
+            //}
+            for (int j = i; j >= 0; j--)
+            {
+                if (array[j] != " ")
+                {
+                    i = j;
+                    break;
+                }
+            }
+            for (int j =0;j<array.Length;j++)
+            {
+                if (cursor != 0 && j == cursor)
+                    start = current;
+                current += array[j].Length;
+                if (j == i)
+                    end = current;
+            }
+            return (start, end - start);
         }
         public void UpdateSumTrungThuong(ref Cal3DetailDto detail)
         {
@@ -901,6 +1130,7 @@ namespace KQ.Services.Calcualation
                             else if (le == 4)
                                 numberStrs.Add(k.ToString("0000"));
                         }
+                        result = true;
                     }
                 }
             }
@@ -918,6 +1148,11 @@ namespace KQ.Services.Calcualation
             if (!numberStrs.Any())
             {
                 mess = $"Số phải đứng trước cách chơi. Ví dụ : 2d 23 54 {cachChoi.ToString().ToLower()}{sl}n";
+                return (result, mess);
+            }
+            else if (cachChoi == null)
+            {
+                mess = $"Không xác định được cách chơi";
                 return (result, mess);
             }
 
@@ -938,9 +1173,12 @@ namespace KQ.Services.Calcualation
                 cachChoi = CachChoi.DaX;
             }
 
-
-            if ((cachChoi == CachChoi.B || cachChoi == CachChoi.Dau || cachChoi == CachChoi.Duoi
-                || cachChoi == CachChoi.DD || cachChoi == CachChoi.Da || cachChoi == CachChoi.DaX) && numberStrs.All(x => x.Length != 2))
+            if(cachChoi == CachChoi.B && numberStrs.All(x => x.Length != 2))
+            {
+                mess = "Cách chơi này chỉ chơi được 2 hoặc 3 con";
+            }
+            else if ((cachChoi == CachChoi.Dau || cachChoi == CachChoi.Duoi || cachChoi == CachChoi.DD || cachChoi == CachChoi.Da ||
+                cachChoi == CachChoi.DaX) && numberStrs.All(x => x.Length != 2))
             {
                 mess = "Cách chơi này chỉ chơi được 2 con";
             }
@@ -951,7 +1189,7 @@ namespace KQ.Services.Calcualation
             }
             else if (cachChoi == CachChoi.DaX && chanels.Count < 2)
             {
-                mess = "Đá xiên phải đá từ 2 đài";
+                mess = _dax2dai;
             }
             else if ((cachChoi == CachChoi.DaX || cachChoi == CachChoi.Da) && numbers.Count < 2)
             {
@@ -984,13 +1222,13 @@ namespace KQ.Services.Calcualation
                 {
                     var (strNext2, iTemp2) = FindNextStr(array, i);
                     if (strNext2 == "n")
-                        i = iTemp2 + 1;
+                        i = iTemp2;
                 }
             }
             return result;
         }
         public bool GetCachChoi(string str, ref CachChoi? cachChoi, string[] array, ref int i, ref List<Cal3PrepareDto> cal3PrepareDtos,
-                                    ref List<CachChoi?> cachChoiTemp, List<int> chanels, List<int> numbers, List<string> numberStrs)
+                                    ref List<CachChoi?> cachChoiTemp, List<int> chanels, List<int> numbers, List<string> numberStrs, ref string messError)
         {
             bool result = true;
             var (strNext, iTemp) = FindNextStr(array, i);
@@ -1086,14 +1324,19 @@ namespace KQ.Services.Calcualation
                         }
                         if (s == "d")
                         {
-                            i = j;
-                            result = true;
                             cachChoi = CachChoi.Dau;
                             cachChoiTemp.Add(cachChoi);
                             CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl);
                             cachChoi = CachChoi.Duoi;
+                            result = true;
+                            i = j;
                         }
-
+                        else
+                        {
+                            messError = "Cú pháp d phải được nhập 2 lần mới đúng. Vd : d5n d6n";
+                            result = true;
+                            i = j - 1;
+                        }
                     }
                 }
             }
@@ -1111,7 +1354,13 @@ namespace KQ.Services.Calcualation
             for (int i = 0; i < arr.Length; i++)
             {
                 var cstr = arr[i].ToString();
-                if (int.TryParse(cstr, out _))
+                if(isNumber && cstr == "n")
+                {
+                    lst.Add(str);
+                    lst.Add("n");
+                    str = "";
+                }
+                else if(int.TryParse(cstr, out _))
                 {
                     if (!isNumber && !string.IsNullOrEmpty(str))
                     {
@@ -1204,7 +1453,10 @@ namespace KQ.Services.Calcualation
                     var slDai = InnitRepository._chanelCodeAll[date.DayOfWeek][mien].Count;
                     if (slDai < num)
                     {
-                        mess = $"{date.ToString("dd-mm-yyyy")} chỉ có {slDai} đài";
+                        if(mien == MienEnum.MB)
+                            mess = $"Miền bắc chỉ có 1 đài";
+                        else
+                            mess = $"{date.ToString("dd-MM-yyyy")} chỉ có {slDai} đài";
                         result = false;
                     }
                     else
@@ -1214,7 +1466,14 @@ namespace KQ.Services.Calcualation
                 }
                 else
                 {
-                    mess = $"Sai cách xác định đài. Ví dụ {num}d hoặc {num}dai mới đúng !";
+                    for(int k = i + 1; k < array.Length;k++)
+                    {
+                        if (int.TryParse(array[k], out _))
+                            break;
+                        i = k;
+                    }
+                    mess = $"Sai cách xác định đài. Ví dụ 2d hoặc 3dai mới đúng !";
+                    result = false;
                 }
                 return (result, mess);
             }
@@ -1259,11 +1518,18 @@ namespace KQ.Services.Calcualation
                     }
                 }
             }
+            for(int k = i;k>=0;k--)
+            {
+                if (array[k] == " ")
+                    i--;
+                else
+                    break;
+            }
             if (chanelsTemp.Any())
                 chanels = chanelsTemp.CloneList();
             else
             {
-                mess = $"Không xác định được đài";
+                mess = _chanelNotFound;
                 result = false;
             }
             return (result, mess);

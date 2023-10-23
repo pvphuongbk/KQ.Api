@@ -9,6 +9,6 @@ namespace KQ.DataDto.Calculation
         public int Trung { get; set; }
         public string MessageLoi { get; set; }
         public DateTime? DateTime { get; set; }
-        public MienEnum? Mien { get; set;}
+        public MienEnum? Mien { get; set; }
     }
 }
