@@ -136,6 +136,7 @@ namespace KQ.Services.Users
                             Name = phonebook.Name,
                             PhoneNumber = phonebook.PhoneNumber,
                             IsChu = phonebook.IsChu,
+                            UserID = phonebook.UserID,
                         };
                         phonebook.ConvertConfigTo(item);
 
