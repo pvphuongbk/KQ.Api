@@ -33,12 +33,6 @@ namespace KQ.Services.Users
                 {
                     ID = u.ID,
                     Name = u.Name,
-                    TileXac = u.TileXac,
-                    TileThuong = u.TileThuong,
-                    TileBaSo = u.TileBaSo,
-                    DaThang = u.DaThang,
-                    DaXien = u.DaXien,
-                    BonSo = u.BonSo,
                     PhoneNumber = u.PhoneNumber,
                     IsChu = u.IsChu,
                 };
@@ -66,12 +60,6 @@ namespace KQ.Services.Users
                     {
                         ID = u.ID,
                         Name = u.Name,
-                        TileXac = u.TileXac,
-                        TileThuong = u.TileThuong,
-                        TileBaSo = u.TileBaSo,
-                        DaThang = u.DaThang,
-                        DaXien = u.DaXien,
-                        BonSo = u.BonSo,
                         PhoneNumber = u.PhoneNumber
                     };
                     u.ConvertConfigTo(dto);
@@ -98,12 +86,6 @@ namespace KQ.Services.Users
                     {
                         ID = u.ID,
                         Name = u.Name,
-                        TileXac = u.TileXac,
-                        TileThuong = u.TileThuong,
-                        TileBaSo = u.TileBaSo,
-                        DaThang = u.DaThang,
-                        DaXien = u.DaXien,
-                        BonSo = u.BonSo,
                         PhoneNumber = u.PhoneNumber
                     };
                     u.ConvertConfigTo(userDto);
@@ -138,12 +120,6 @@ namespace KQ.Services.Users
                         if(up != null)
                         {
                             item.Name = up.Name;
-                            item.TileXac = up.TileXac;
-                            item.TileThuong = up.TileThuong;
-                            item.TileBaSo = up.TileBaSo;
-                            item.DaThang = up.DaThang;
-                            item.DaXien = up.DaXien;
-                            item.BonSo = up.BonSo;
                             item.PhoneNumber = up.PhoneNumber;
                             item.IsChu = up.IsChu;
                         }
@@ -158,13 +134,6 @@ namespace KQ.Services.Users
                         var item = new TileUser
                         {
                             Name = phonebook.Name,
-                            TileThuong = phonebook.TileThuong,
-                            TileXac = phonebook.TileXac,
-                            DaThang = phonebook.DaThang,
-                            DaXien = phonebook.DaXien,
-                            BonSo = phonebook.BonSo,
-                            UserID = phonebook.UserID,
-                            TileBaSo = phonebook.TileBaSo,
                             PhoneNumber = phonebook.PhoneNumber,
                             IsChu = phonebook.IsChu,
                         };
@@ -196,12 +165,6 @@ namespace KQ.Services.Users
                 }
                 user.UserName = request.UserName;
                 user.PhoneNumber = request.PhoneNumber;
-                user.TileXac = request.TileXac;
-                user.TileThuong = request.TileThuong;
-                user.TileBaSo = request.TileBaSo;
-                user.DaThang = request.DaThang;
-                user.DaXien = request.DaXien;
-                user.BonSo = request.BonSo;
                 request.ConvertConfigTo(user);
                 _commonUoW.Commit();
                 return new ResponseBase();
