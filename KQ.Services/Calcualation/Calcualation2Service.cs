@@ -33,6 +33,7 @@ namespace KQ.Services.Calcualation
             try
             {
                 Stopwatch s1 = new Stopwatch();
+                #region init
                 s1.Start();
                 var array = ChuanHoa(dto.SynTax);
                 int cursor = 0;
@@ -49,6 +50,7 @@ namespace KQ.Services.Calcualation
                 List<CachChoi?> cachChoiTemp = new List<CachChoi?>();
                 Error error = null;
                 bool isCompleted = true;
+                #endregion
                 if (dto.Mien == MienEnum.MB)
                 {
                     chanels.Add(8);
