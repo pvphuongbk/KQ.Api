@@ -2,7 +2,6 @@
 using KQ.DataDto.Common;
 using KQ.DataDto.Enum;
 using System.Collections.Concurrent;
-using System.Threading.Channels;
 
 namespace KQ.Common.Helpers
 {
@@ -263,6 +262,20 @@ namespace KQ.Common.Helpers
                             new ChanelDto { Key = 6, Value = "Kon Tum" },
                             new ChanelDto { Key = 7, Value = "Huế" }
                 };
+        }
+
+        public static ConcurrentDictionary<int, List<string>> GetChanelCodeForNow()
+        {
+            ConcurrentDictionary<int, List<string>> result = new ConcurrentDictionary<int, List<string>>();
+            foreach (var pv in InnitRepository._chanelCodeAll[DateTime.Now.DayOfWeek])
+            {
+                foreach (var item in pv.Value)
+                {
+                    result.TryAdd(item.Key, item.Value);
+                }
+            }
+
+            return result;
         }
     }
 }

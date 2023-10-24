@@ -7,5 +7,7 @@
         public DateTime CreatedDate { get; set; }
         public string Detail { get; set; }
         public bool IsTinh { get; set; }
+        public DateTime HandlByDate { get; set; }
+        public string Message { get; set; }
     }
 }

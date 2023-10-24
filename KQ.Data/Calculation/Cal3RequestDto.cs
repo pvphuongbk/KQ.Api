@@ -7,7 +7,7 @@ namespace KQ.DataDto.Calculation
     public class Cal3RequestDto
     {
         public string SynTax { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime HandlByDate { get; set; }
         public int IDKhach { get; set; }
         public MienEnum Mien { get; set; }
         public bool IsSave { get; set; }

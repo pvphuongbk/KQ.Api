@@ -62,7 +62,7 @@ namespace KQ.Services.Calcualation
 
                     if (isStart)
                     {
-                        var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanels, dto.Mien, array[i], array, ref i);
+                        var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanels, dto.Mien, array[i], array, ref i);
                         isStart = false;
                         if (check)
                         {
@@ -74,7 +74,7 @@ namespace KQ.Services.Calcualation
                         {
                             if(mess == _chanelNotFound)
                             {
-                                var dais = InnitRepository._chanelCodeAll[dto.CreatedDate.DayOfWeek][dto.Mien].Select(x => x.Value[3]);
+                                var dais = InnitRepository._chanelCodeAll[dto.HandlByDate.DayOfWeek][dto.Mien].Select(x => x.Value[3]);
                                 mess += $". Tên đài đúng: {string.Join(",", dais)}";
                                 int count = 0;
                                 for(int k = 0;k< dto.SynTax.Length;k++)
@@ -105,7 +105,7 @@ namespace KQ.Services.Calcualation
                         {
                             List<int> chanelsTemp = new List<int>();
                             int ibe = i-1;
-                            var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
+                            var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                             if (check)
                             {
                                 if(!isCompleted)
@@ -281,7 +281,7 @@ namespace KQ.Services.Calcualation
                     else
                     {
                         List<int> chanelsTemp = new List<int>();
-                        var (check, mess) = GetChanelsStart(dto.CreatedDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
+                        var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                         if (check)
                         {
                             if(!isCompleted)
@@ -339,9 +339,12 @@ namespace KQ.Services.Calcualation
                         var json = JsonConvert.SerializeObject(detail);
                         Details de = new Details
                         {
-                            CreatedDate = dto.CreatedDate,
+                            CreatedDate = DateTime.Now,
                             IDKhach = dto.IDKhach,
-                            Detail = json
+                            Detail = json,
+                            HandlByDate = dto.HandlByDate,
+                            IsTinh = detail.IsTinh,
+                            Message = dto.SynTax
                         };
                         _detailsRepository.Insert(de);
                         _commonUoW.Commit();
@@ -474,9 +477,9 @@ namespace KQ.Services.Calcualation
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
             var kq4So = new List<int>[8];
-            if (dtos.CreatedDate.Date < DateTime.Now.Date)
+            if (dtos.HandlByDate.Date < DateTime.Now.Date)
             {
-                var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == dtos.CreatedDate.Date).FirstOrDefault();
+                var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == dtos.HandlByDate.Date).FirstOrDefault();
                 if (kq != null && !string.IsNullOrEmpty(kq.HaiCon) 
                     && !string.IsNullOrEmpty(kq.BaCon) && !string.IsNullOrEmpty(kq.BonCon))
                 {
@@ -485,7 +488,7 @@ namespace KQ.Services.Calcualation
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
             }
-            else if(dtos.CreatedDate.Date < DateTime.Now.Date)
+            else if(dtos.HandlByDate.Date < DateTime.Now.Date)
             {
                 kq2So = InnitRepository._totalDic["Now"];
                 kq3So = InnitRepository._totalDic["Now"];
@@ -817,7 +820,7 @@ namespace KQ.Services.Calcualation
                 TrungDetail = new List<string>(),
                 Xac = new Summary()
             };
-            var slDai = InnitRepository._chanelCodeAll[dtos.CreatedDate.DayOfWeek][dtos.Mien];
+            var slDai = InnitRepository._chanelCodeAll[dtos.HandlByDate.DayOfWeek][dtos.Mien];
             int sl2Con = dtos.Mien == MienEnum.MB ? 27 : 18;
             int sl2Dau = dtos.Mien == MienEnum.MB ? 4 : 1;
             int sl3Con = dtos.Mien == MienEnum.MB ? 23 : 17;
@@ -1126,6 +1129,26 @@ namespace KQ.Services.Calcualation
                         }
                         break;
                     case CachChoi.BonConDao:
+                        foreach (var dai in pre.Chanels)
+                        {
+                            var daiStr = slDai[dai][3];
+                            foreach (var numStr in pre.NumbersStr)
+                            {
+                                foreach (var dao in numStr.BonSoToBaoDao())
+                                {
+                                    detail.Details.Add(new Detail
+                                    {
+                                        CachChoi = CachChoi.BaoBonCon,
+                                        DaiIn = new List<int> { dai },
+                                        Dai = daiStr,
+                                        So = new List<string> { dao },
+                                        SoIn = new List<int> { int.Parse(dao) },
+                                        SoTien = pre.Sl
+                                    });
+                                    detail.Xac.BonCon += sl4Con * pre.Sl;
+                                }
+                            }
+                        }
                         break;
                 }
             }

@@ -149,13 +149,13 @@ namespace KQ.Common.Extention
             else
                 return false;
         }
-        public static List<int> BaSoToBaoDao(this int it)
-        {
-            var str = it.ToString("000");
-            return new List<int> { int.Parse(str), int.Parse(str[0].ToString()+ str[2].ToString() + str[1].ToString()),
-                int.Parse(str[1].ToString() + str[0].ToString() + str[2].ToString()),int.Parse(str[1].ToString()+ str[2].ToString() + str[0].ToString()),
-                int.Parse(str[2].ToString()+ str[0].ToString() + str[1].ToString()),int.Parse(str[2].ToString()+ str[1].ToString() + str[0].ToString()) };
-        }
+        //public static List<int> BaSoToBaoDao(this int it)
+        //{
+        //    var str = it.ToString("000");
+        //    return new List<int> { int.Parse(str), int.Parse(str[0].ToString()+ str[2].ToString() + str[1].ToString()),
+        //        int.Parse(str[1].ToString() + str[0].ToString() + str[2].ToString()),int.Parse(str[1].ToString()+ str[2].ToString() + str[0].ToString()),
+        //        int.Parse(str[2].ToString()+ str[0].ToString() + str[1].ToString()),int.Parse(str[2].ToString()+ str[1].ToString() + str[0].ToString()) };
+        //}
         public static int StringToInt(this string it)
         {
             return int.Parse(it);
@@ -163,7 +163,7 @@ namespace KQ.Common.Extention
         public static List<string> ChanelIntToString(this List<int> it)
         {
             List<string> list = new List<string>();
-            var chanels = InnitRepository._chanelCode;
+            var chanels = CommonFunction.GetChanelCodeForNow();
             if (Constants.Constants.IstestMode)
             {
                 chanels = InnitRepository._chanelCodeForTest;

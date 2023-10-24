@@ -58,11 +58,9 @@ namespace KQ.Services.CommonServices
         public ResponseBase CheckChanelCode()
         {
             ResponseBase response = new ResponseBase();
-            lock (InnitRepository._chanelCode)
-            {
-                response.Data = InnitRepository._chanelCode;
-                return response;
-            }
+            var codes = CommonFunction.GetChanelCodeForNow();
+            response.Data = codes;
+            return response;
         }
         public ResponseBase UnitTestCal3()
         {
@@ -144,6 +142,8 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 250},
                 new CalTest2RequestDto{SynTaxe = "Cần Thơ 72 89 d100d20nda20nb40@ 2d 34 b10 3d 10d100d50", Xac = 3210, Trung = 250},                       //64
                 new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n@ 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},                        //65
+                new CalTest2RequestDto{SynTaxe = "3d 1234 baodao", MessageLoi = "b0n", Mien = MienEnum.MN},                                                //65
+                new CalTest2RequestDto{SynTaxe = "3d 1233 baodao", MessageLoi = "b0n", Mien = MienEnum.MN},                                                //65
             };
             for(int i = 0; i < teststos.Count; i++)
             {
@@ -155,7 +155,7 @@ namespace KQ.Services.CommonServices
                 {
                     SynTax = teststos[i].SynTaxe,
                 };
-                dto.CreatedDate = teststos[i].DateTime == null ? new DateTime(2023, 10, 18) : (DateTime)teststos[i].DateTime;
+                dto.HandlByDate = teststos[i].DateTime == null ? new DateTime(2023, 10, 18) : (DateTime)teststos[i].DateTime;
                 dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
                 dto.CachTrungDaXien = CachTrungDa.NhieuCap;
                 dto.CachTrungDaThang = CachTrungDa.NhieuCap;

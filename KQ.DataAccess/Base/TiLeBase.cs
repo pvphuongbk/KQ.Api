@@ -51,12 +51,12 @@ namespace KQ.DataAccess.Base
         public double BCoBonCon { get; set; }
         public double BTrungBonCon { get; set; }
         public double BPhanTramTong { get; set; }
-        public double BCoXienHai { get; set; }
-        public double BTrungXienHai { get; set; }
-        public double BCoXienBa { get; set; }
-        public double BTrungXienBa { get; set; }
-        public double BCoXienBon { get; set; }
-        public double BTrungXienBon { get; set; }
+        public double? BCoXienHai { get; set; }
+        public double? BTrungXienHai { get; set; }
+        public double? BCoXienBa { get; set; }
+        public double? BTrungXienBa { get; set; }
+        public double? BCoXienBon { get; set; }
+        public double? BTrungXienBon { get; set; }
         #endregion
     }
 }

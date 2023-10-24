@@ -34,5 +34,7 @@ namespace KQ.DataDto.Enum
         XCDauDao = 13,
         [Description("Xỉu chủ đuôi đảo")]
         XCDuoiDao = 14,
+        [Description("Bốn số đảo")]
+        BonSoDao = 15,
     }
 }
