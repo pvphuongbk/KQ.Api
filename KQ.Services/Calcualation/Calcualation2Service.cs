@@ -496,8 +496,8 @@ namespace KQ.Services.Calcualation
                 kq3So = InnitRepository._totalDic["Now"];
                 kq4So = InnitRepository._totalDic["Now"];
             }
-            if (kq2So == null || kq2So.All(x => x.Count == 0) || kq3So == null || kq3So.All(x => x.Count == 0)
-                || kq4So == null || kq4So.All(x => x.Count == 0))
+            if (kq2So == null || kq2So.All(x => x == null) || kq3So == null || kq3So.All(x => x == null)
+                || kq4So == null || kq4So.All(x => x == null))
                 return false;
             foreach (var pre in detail.Details)
             {

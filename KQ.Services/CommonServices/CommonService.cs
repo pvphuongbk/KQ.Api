@@ -147,7 +147,7 @@ namespace KQ.Services.CommonServices
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 60)
+                if(i == 14)
                 {
 
                 }
