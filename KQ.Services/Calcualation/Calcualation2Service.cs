@@ -329,7 +329,7 @@ namespace KQ.Services.Calcualation
                 if (error == null)
                 {
                     var detail = CreateDetail(dto, cal3PrepareDtos);
-                    var isUpdate = UpdateTrungThuong(dto, ref detail);
+                    var isUpdate = UpdateTrungThuong(dto.HandlByDate, dto.CachTrungDaThang, dto.CachTrungDaXien, dto.Mien, ref detail);
                     if (isUpdate)
                     {
                         UpdateSumTrungThuong(ref detail);
@@ -343,6 +343,7 @@ namespace KQ.Services.Calcualation
                         {
                             CreatedDate = DateTime.Now,
                             IDKhach = dto.IDKhach,
+                            UserID = dto.UserID,
                             Detail = json,
                             HandlByDate = dto.HandlByDate,
                             IsTinh = detail.IsTinh,
@@ -467,7 +468,7 @@ namespace KQ.Services.Calcualation
             detail.Trung.BonCon = detail.Details.Where(x => (x.CachChoi == CachChoi.BaoBonCon || x.CachChoi == CachChoi.BonConDao) && x.SlTrung > 0)
                     .Sum(x => x.SoTien * x.SlTrung);
         }
-        public bool UpdateTrungThuong(Cal3RequestDto dtos, ref Cal3DetailDto detail)
+        public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien,MienEnum mien, ref Cal3DetailDto detail)
         {
             Dictionary<string, int> meT2c = new Dictionary<string, int>();
             Dictionary<string, int> meDD = new Dictionary<string, int>();
@@ -479,9 +480,9 @@ namespace KQ.Services.Calcualation
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
             var kq4So = new List<int>[8];
-            if (dtos.HandlByDate.Date < DateTime.Now.Date)
+            if (handlByDate < DateTime.Now.Date)
             {
-                var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == dtos.HandlByDate.Date).FirstOrDefault();
+                var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == handlByDate.Date).FirstOrDefault();
                 if (kq != null && !string.IsNullOrEmpty(kq.HaiCon) 
                     && !string.IsNullOrEmpty(kq.BaCon) && !string.IsNullOrEmpty(kq.BonCon))
                 {
@@ -490,7 +491,7 @@ namespace KQ.Services.Calcualation
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
             }
-            else if(dtos.HandlByDate.Date < DateTime.Now.Date)
+            else if(handlByDate.Date < DateTime.Now.Date)
             {
                 kq2So = InnitRepository._totalDic["Now"];
                 kq3So = InnitRepository._totalDic["Now"];
@@ -517,7 +518,7 @@ namespace KQ.Services.Calcualation
                     case CachChoi.Da:
                         var count1 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[0]);
                         var count2 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[1]);
-                        if(dtos.CachTrungDaThang == CachTrungDa.NhieuCap)
+                        if(dathang == CachTrungDa.NhieuCap)
                         {
                             var count = count1 < count2 ? count1 : count2;
                             pre.SlTrung = count;
@@ -530,7 +531,7 @@ namespace KQ.Services.Calcualation
                                     meDaT.Add(key, pre.SlTrung * pre.SoTien);
                             }
                         }
-                        else if(dtos.CachTrungDaThang == CachTrungDa.KyRuoi)
+                        else if(dathang == CachTrungDa.KyRuoi)
                         {
                             pre.SlTrung = (count1 + count2) / 2;
                             if (pre.SlTrung > 0)
@@ -562,7 +563,7 @@ namespace KQ.Services.Calcualation
 
                         var count1x = kqx.Count(x => x == pre.SoIn[0]);
                         var count2x = kqx.Count(x => x == pre.SoIn[1]);
-                        if (dtos.CachTrungDaXien == CachTrungDa.NhieuCap)
+                        if (daxien == CachTrungDa.NhieuCap)
                         {
                             var countx = count1x < count2x ? count1x : count2x;
                             pre.SlTrung = countx;
@@ -575,7 +576,7 @@ namespace KQ.Services.Calcualation
                                     meDaX.Add(key, pre.SlTrung * pre.SoTien);
                             }
                         }
-                        else if (dtos.CachTrungDaXien == CachTrungDa.KyRuoi)
+                        else if (daxien == CachTrungDa.KyRuoi)
                         {
                             pre.SlTrung = (count1x + count2x) / 2;
                             if (pre.SlTrung > 0)
@@ -601,7 +602,7 @@ namespace KQ.Services.Calcualation
                         }
                         break;
                     case CachChoi.Dau:
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             var kqd = kq2So[pre.DaiIn[0] - 1].GetRange(23, 4);
                             var countd = kqd.Count(x => x == pre.SoIn[0]);
@@ -622,7 +623,7 @@ namespace KQ.Services.Calcualation
                         }
                         break;
                     case CachChoi.Duoi:
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             if (kq2So[pre.DaiIn[0] - 1].First() == pre.SoIn[0])
                                 pre.SlTrung = 1;
@@ -643,7 +644,7 @@ namespace KQ.Services.Calcualation
                         break;
                     case CachChoi.DD:
                         List<int> kqdd = new List<int>();
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             kqdd.Add(kq2So[pre.DaiIn[0] - 1].First());
                             kqdd.AddRange(kq2So[pre.DaiIn[0] - 1].GetRange(23, 4));
@@ -687,7 +688,7 @@ namespace KQ.Services.Calcualation
                         break;
                     case CachChoi.XcDau:
                     case CachChoi.XcDauDao:
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             var kqd = kq3So[pre.DaiIn[0] - 1].GetRange(20, 3);
                             var countd = kqd.Count(x => x == pre.SoIn[0]);
@@ -709,7 +710,7 @@ namespace KQ.Services.Calcualation
                         break;
                     case CachChoi.XcDuoiDao:
                     case CachChoi.XcDui:
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             if (kq3So[pre.DaiIn[0] - 1].First() == pre.SoIn[0])
                                 pre.SlTrung = 1;
@@ -731,7 +732,7 @@ namespace KQ.Services.Calcualation
                     case CachChoi.XcDao:
                     case CachChoi.Xc:
                         List<int> kqxc = new List<int>();
-                        if (dtos.Mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                         {
                             kqxc.Add(kq3So[pre.DaiIn[0] - 1].First());
                             kqxc.AddRange(kq2So[pre.DaiIn[0] - 1].GetRange(20, 3));

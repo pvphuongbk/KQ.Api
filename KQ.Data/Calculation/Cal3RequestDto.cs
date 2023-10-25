@@ -9,6 +9,7 @@ namespace KQ.DataDto.Calculation
         public string SynTax { get; set; }
         public DateTime HandlByDate { get; set; }
         public int IDKhach { get; set; }
+        public int UserID { get; set; }
         public MienEnum Mien { get; set; }
         public bool IsSave { get; set; }
         public CachTrungDa CachTrungDaThang { get; set; }

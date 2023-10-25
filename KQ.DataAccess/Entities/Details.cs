@@ -4,6 +4,7 @@
     {
         public int ID { get; set; }
         public int IDKhach { get; set; }
+        public int UserID { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Detail { get; set; }
         public bool IsTinh { get; set; }
