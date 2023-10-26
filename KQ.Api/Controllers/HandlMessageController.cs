@@ -30,5 +30,11 @@ namespace KQ.Api.Controllers
             var items = _handlMessageService.MessageByDay(request);
             return items;
         }
+        [HttpDelete("{id}")]
+        public ResponseBase Delete(int id)
+        {
+            var items = _handlMessageService.Delete(id);
+            return items;
+        }
     }
 }

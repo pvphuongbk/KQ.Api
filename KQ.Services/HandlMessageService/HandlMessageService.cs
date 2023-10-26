@@ -26,7 +26,32 @@ namespace KQ.Services.HandlMessageService
             _commonUoW = commonUoW;
             _tileUserRepository = tileUserRepository;
         }
+        public ResponseBase Delete(int id)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                var mess = _detailsRepository.FindAll(x => x.ID == id).FirstOrDefault();
+                if (mess != null)
+                {
+                    _commonUoW.BeginTransaction();
+                    _detailsRepository.Remove(mess);
+                    _commonUoW.Commit();
+                }
+                else
+                {
+                    response.Message = "Tin không tồn tại";
+                }
+            }
+            catch (Exception ex)
+            {
+                _commonUoW.RollBack();
+                response.Code = 500;
+                response.Message = ex.Message;
+            }
 
+            return response;
+        }
         public ResponseBase MessageByDay(MessgeByDayRequest request)
         {
             try

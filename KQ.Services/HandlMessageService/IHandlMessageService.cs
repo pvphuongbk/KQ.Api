@@ -7,5 +7,6 @@ namespace KQ.Services.HandlMessageService
     public interface IHandlMessageService
     {
         public ResponseBase MessageByDay(MessgeByDayRequest request);
+        public ResponseBase Delete(int id);
     }
 }
