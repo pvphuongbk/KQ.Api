@@ -1,4 +1,6 @@
-﻿namespace KQ.DataAccess.Entities
+﻿using KQ.DataAccess.Enum;
+
+namespace KQ.DataAccess.Entities
 {
     public partial class Details
     {
@@ -10,5 +12,6 @@
         public bool IsTinh { get; set; }
         public DateTime HandlByDate { get; set; }
         public string Message { get; set; }
+        public MienEnum Mien { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using KQ.Common.Enums;
 using KQ.Common.Repository;
-using KQ.DataDto.Enum;
+using KQ.DataAccess.Enum;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;

@@ -1,4 +1,5 @@
-﻿using KQ.DataDto.Enum;
+﻿using KQ.DataAccess.Enum;
+using KQ.DataDto.Enum;
 
 namespace KQ.DataDto.Calculation
 {

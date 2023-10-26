@@ -52,11 +52,84 @@ namespace KQ.Services.HandlMessageService
 
             return response;
         }
+        public ResponseBase CountByDayRequest(CountByDayRequest request)
+        {
+            try
+            {
+                List<CountByDayResponse> lst = new List<CountByDayResponse>();
+                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date && x.UserID == request.UserID).ToList();
+                List<Details> listUpdate = new List<Details>();
+                int no = 0;
+                var tiles = _tileUserRepository.FindAll(x => details.Select(x => x.IDKhach).Distinct().Contains(x.ID)).ToList();
+                foreach (var item in details)
+                {
+                    var tile = tiles.FirstOrDefault(x => x.ID == item.IDKhach);
+                    var tileDto = GetAllTiLeByMien(tile, item.Mien);
+                    var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                    if (!detail.IsTinh)
+                    {
+                        var isUpdate = _calcualation2Service.UpdateTrungThuong(request.HandlDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, item.Mien, ref detail);
+                        if (isUpdate)
+                        {
+                            _calcualation2Service.UpdateSumTrungThuong(ref detail);
+                            item.IsTinh = true;
+                            item.Detail = JsonConvert.SerializeObject(detail);
+                            listUpdate.Add(item);
+                        }
+                    }
+                    var counting = lst.FirstOrDefault(x => x.IDKhach == item.IDKhach);
+                    if (counting == null)
+                    {
+                        counting = new CountByDayResponse { IDKhach = item.IDKhach, Name = tile.Name};
+                        lst.Add(counting);
+                    }
+
+                    var tongCo = (detail.Xac.HaiCB * tileDto.CoBaoHaiCon) + (detail.Xac.HaiCD * tileDto.CoHaiConDD)
+                            + (detail.Xac.DaT * tileDto.CoDaThang) + (detail.Xac.DaX * tileDto.CoDaXien) + (detail.Xac.BaCon * tileDto.CoBaCon)
+                            + (detail.Xac.BonCon * tileDto.CoBonCon);
+
+                    var tongTrung = (detail.Trung.HaiCB * tileDto.TrungBaoHaiCon) + (detail.Trung.HaiCD * tileDto.TrungHaiConDD)
+                                + (detail.Trung.DaT * tileDto.TrungDaThang) + (detail.Trung.DaX * tileDto.TrungDaXien)
+                                + (detail.Trung.BaCon * tileDto.TrungBaCon) + (detail.Trung.BonCon * tileDto.TrungBonCon);
+
+                    var tong = ((tongCo - tongTrung)* tileDto.PhanTramTong)/100;
+                    if (tile.IsChu)
+                        tong = 0 - tong;
+                    counting.Total += tong;
+                    switch (item.Mien)
+                    {
+                        case MienEnum.MN:
+                            counting.MienNam += tong;
+                            break;
+                        case MienEnum.MT:
+                            counting.MienTrung += tong;
+                            break;
+                        default:
+                            counting.MienTrung += tong;
+                            break;
+                    }
+                }
+
+                if (listUpdate.Any())
+                {
+                    _commonUoW.BeginTransaction();
+                    _detailsRepository.UpdateMultiple(listUpdate.AsQueryable());
+                    _commonUoW.Commit();
+                }
+
+                return new ResponseBase { Data = lst };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseBase { Code = 500, Message = ex.Message };
+            }
+        }
         public ResponseBase MessageByDay(MessgeByDayRequest request)
         {
             try
             {
-                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date && x.IDKhach == request.IDKhach).ToList();
+                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date 
+                                                && x.IDKhach == request.IDKhach && x.Mien == request.Mien).ToList();
                 var tile = _tileUserRepository.GetById(request.IDKhach);
                 MessgeByDayResponse result = new MessgeByDayResponse
                 {
@@ -110,7 +183,8 @@ namespace KQ.Services.HandlMessageService
                 if (tile.IsChu)
                     tong = 0 - tong;
                 result.IsThu = tong >= 0;
-                result.Message = $"{tong}*{tileDto.PhanTramTong}%={tong * tileDto.PhanTramTong}";
+                result.Message = $"{tong.ToString("N0",System.Globalization.CultureInfo.GetCultureInfo("de"))}*{tileDto.PhanTramTong}" +
+                $"%={((tong * tileDto.PhanTramTong)/100).ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("de"))}";
                 if (listUpdate.Any())
                 {
                     _commonUoW.BeginTransaction();

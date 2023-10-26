@@ -1,6 +1,6 @@
 ﻿using KQ.Common.Extention;
+using KQ.DataAccess.Enum;
 using KQ.DataDto.Common;
-using KQ.DataDto.Enum;
 using System.Collections.Concurrent;
 
 namespace KQ.Common.Helpers

@@ -10,7 +10,7 @@ using KQ.DataDto.Enum;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
-using System.Linq;
+using KQ.DataAccess.Enum;
 
 namespace KQ.Services.Calcualation
 {
@@ -349,7 +349,8 @@ namespace KQ.Services.Calcualation
                                 Detail = json,
                                 HandlByDate = dto.HandlByDate,
                                 IsTinh = detail.IsTinh,
-                                Message = dto.SynTax
+                                Message = dto.SynTax,
+                                Mien = dto.Mien,
                             };
                             _detailsRepository.Insert(de);
                         }
