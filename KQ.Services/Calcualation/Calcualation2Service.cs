@@ -339,17 +339,33 @@ namespace KQ.Services.Calcualation
                     {
                         _commonUoW.BeginTransaction();
                         var json = JsonConvert.SerializeObject(detail);
-                        Details de = new Details
+                        if (dto.IDMessage == null)
                         {
-                            CreatedDate = DateTime.Now,
-                            IDKhach = dto.IDKhach,
-                            UserID = dto.UserID,
-                            Detail = json,
-                            HandlByDate = dto.HandlByDate,
-                            IsTinh = detail.IsTinh,
-                            Message = dto.SynTax
-                        };
-                        _detailsRepository.Insert(de);
+                            Details de = new Details
+                            {
+                                CreatedDate = DateTime.Now,
+                                IDKhach = dto.IDKhach,
+                                UserID = dto.UserID,
+                                Detail = json,
+                                HandlByDate = dto.HandlByDate,
+                                IsTinh = detail.IsTinh,
+                                Message = dto.SynTax
+                            };
+                            _detailsRepository.Insert(de);
+                        }
+                        else
+                        {
+                            var mess = _detailsRepository.GetById(dto.IDMessage);
+                            if(mess != null)
+                            {
+                                mess.Detail = json;
+                                mess.IsTinh = detail.IsTinh;
+                                mess.CreatedDate = DateTime.Now;
+                                mess.Message = dto.SynTax;
+                                _detailsRepository.Update(mess);
+                            }
+                        }
+
                         _commonUoW.Commit();
                     }
                     s1.Stop();

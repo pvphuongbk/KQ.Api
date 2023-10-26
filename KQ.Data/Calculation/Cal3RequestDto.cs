@@ -12,6 +12,7 @@ namespace KQ.DataDto.Calculation
         public int UserID { get; set; }
         public MienEnum Mien { get; set; }
         public bool IsSave { get; set; }
+        public int? IDMessage { get; set; }
         public CachTrungDa CachTrungDaThang { get; set; }
         public CachTrungDa CachTrungDaXien { get; set; }
     }

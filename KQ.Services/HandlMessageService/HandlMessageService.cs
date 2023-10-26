@@ -39,9 +39,11 @@ namespace KQ.Services.HandlMessageService
                     Total = new Total { QuaCo = new QuaCo(), Trung = new Summary(), Xac = new Summary() },
                 };
                 List<Details> listUpdate = new List<Details>();
-                var tileDto = GetCachTrungDa(tile, request.Mien);
+                var tileDto = GetAllTiLeByMien(tile, request.Mien);
+                int no = 0;
                 foreach (var item in details)
                 {
+                    no++;
                     var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
                     if (!detail.IsTinh)
                     {
@@ -54,7 +56,8 @@ namespace KQ.Services.HandlMessageService
                             listUpdate.Add(item);
                         }
                     }
-                    result.DetailMessage.Add(new DetailMessage { CalDetail = detail, Message = item.Message });
+                    result.DetailMessage.Add(new DetailMessage { CalDetail = detail, Message = item.Message, 
+                        CreatedDate = item.CreatedDate, HandlByDate = item.HandlByDate, ID = item.ID, No = no});
                     result.Total.Xac.HaiCB += detail.Xac.HaiCB;
                     result.Total.Xac.HaiCD += detail.Xac.HaiCD;
                     result.Total.Xac.DaT += detail.Xac.DaT;
@@ -97,7 +100,7 @@ namespace KQ.Services.HandlMessageService
                 return new ResponseBase { Code = 500, Message = ex.Message };
             }
         }
-        private TileDto GetCachTrungDa(TileUser tileUser, MienEnum mien)
+        private TileDto GetAllTiLeByMien(TileUser tileUser, MienEnum mien)
         {
             if (mien == MienEnum.MN)
                 return new TileDto

@@ -1,4 +1,6 @@
-﻿namespace KQ.DataDto.Enum
+﻿using System.ComponentModel;
+
+namespace KQ.DataDto.Enum
 {
     public enum CachChoi
     {
