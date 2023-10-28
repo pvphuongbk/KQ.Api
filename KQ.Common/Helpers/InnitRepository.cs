@@ -12,6 +12,7 @@ namespace KQ.Common.Helpers
 {
     public class InnitRepository
     {
+        static double _time = 120000;
         static bool checkS = false;
         static bool checkN = false;
         static bool checkT = false;
@@ -43,17 +44,28 @@ namespace KQ.Common.Helpers
             try
             {
                 var now = DateTime.Now.TimeOfDay;
-                if (!checkS && now < new TimeSpan(6, 30, 0))
+                if(now < new TimeSpan(0, 3, 0))
                 {
+                    checkS = false;
                     checkN = false;
                     checkT = false;
                     checkB = false;
-
+                }
+                else if (!checkS && now < new TimeSpan(6, 30, 0))
+                {
                     var haicon = JsonConvert.SerializeObject(_totalDic["Now"]);
                     var bacon = JsonConvert.SerializeObject(_totalBaCangDic["Now"]);
                     var boncon = JsonConvert.SerializeObject(_totalBonSoDic["Now"]);
-
-                    checkS = StoreKQRepository.InsertStoreKQ(DateTime.Now.AddDays(-1), haicon, bacon, boncon);
+                    try
+                    {
+                        checkS = StoreKQRepository.InsertStoreKQ(DateTime.Now.AddDays(-1), haicon, bacon, boncon);
+                    }
+                    catch (Exception ex)
+                    {
+                        checkS = false;
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "StartDate");
+                    }
+                    
                     if(now > new TimeSpan(6, 30, 0) && !checkS)
                     {
                         //Gửi tin nhắn zalo
@@ -88,6 +100,11 @@ namespace KQ.Common.Helpers
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        checkN = false;
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateMienNam");
+                    }
                     finally
                     {
                         DisposeDriver();
@@ -118,6 +135,11 @@ namespace KQ.Common.Helpers
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        checkT = false;
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateMienTrung");
+                    }
                     finally
                     {
                         DisposeDriver();
@@ -147,6 +169,11 @@ namespace KQ.Common.Helpers
                                     Thread.Sleep(5000);
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        checkB = false;
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateMienBac");
                     }
                     finally
                     {
@@ -208,7 +235,7 @@ namespace KQ.Common.Helpers
             {
                 FileHelper.GeneratorFileByDay(FileStype.Log, $"Khởi động hệ thống lúc {DateTime.Now.ToString("HH:mm:ss")}.", "Init");
                 aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-                aTimer.Interval = 120000;
+                aTimer.Interval = _time;
                 aTimer.Enabled = true;
                 GetCurrentChanelCodeAll();
                 UpdateChanelCodeForTest();
