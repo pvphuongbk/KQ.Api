@@ -1,6 +1,7 @@
 ﻿using KQ.Common.Enums;
 using KQ.Common.Repository;
 using KQ.DataAccess.Enum;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -44,7 +45,8 @@ namespace KQ.Common.Helpers
             try
             {
                 var now = DateTime.Now.TimeOfDay;
-                if(now < new TimeSpan(0, 3, 0))
+                var nowT = DateTime.Now;
+                if (now < new TimeSpan(0, 3, 0))
                 {
                     checkS = false;
                     checkN = false;
@@ -93,7 +95,7 @@ namespace KQ.Common.Helpers
                         {
                             while (!checkN && countCheck < 2)
                             {
-                                checkN = UpdateKQMN(null, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkN && countCheck < 3)
                                     Thread.Sleep(5000);
@@ -128,7 +130,7 @@ namespace KQ.Common.Helpers
                         {
                             while (!checkT && countCheck < 2)
                             {
-                                checkT = UpdateKQMT(null, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkT = UpdateKQMT(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkT && countCheck < 3)
                                     Thread.Sleep(5000);
@@ -163,7 +165,7 @@ namespace KQ.Common.Helpers
                         {
                             while (!checkB && countCheck < 2)
                             {
-                                checkB = UpdateKQMB(null, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkB = UpdateKQMB(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkB && countCheck < 3)
                                     Thread.Sleep(5000);
@@ -211,8 +213,9 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic = new ConcurrentDictionary<string, List<int>[]>();
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
-                //InitDriver();
-                var check1 = UpdateKQ(null);
+                InitDriver();
+                InnitRepository.UpdateKQMNMinhNgoc(DayOfWeek.Saturday, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
 
                 return true;
@@ -225,7 +228,7 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-               // DisposeDriver();
+               DisposeDriver();
             }
 
         }
@@ -453,6 +456,91 @@ namespace KQ.Common.Helpers
             {
             }
         }
+
+        public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        {
+            try
+            {
+                var now = DateTime.Now.TimeOfDay;
+                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
+                drivers.Navigate().GoToUrl(link);
+                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                int count = 0;
+                int countList = 0;
+                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+                int max = dayCheck == DayOfWeek.Saturday ? 4 : 3;
+                int maxLine = dayCheck == DayOfWeek.Saturday ? 36 : 27;
+                IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
+                foreach (IWebElement element in allElement)
+                {
+                    string cellText = element.Text;
+                    if (cellText.Contains("G") || cellText.Contains("Đ"))
+                        continue;
+                    count++;
+                    foreach (var txt in cellText.Split("\r\n"))
+                    {
+                        int num = 0;
+                        var check = int.TryParse(txt, out num);
+                        if (check)
+                        {
+                            var numLo = num % 100;
+                            sumListTemp[countList].Add(numLo);
+                            if (count > max)
+                            {
+                                var numBa = num % 1000;
+                                baCangListTemp[countList].Add(numBa);
+                            }
+                            if (count > (max * 2))
+                            {
+                                var numBa = num % 10000;
+                                bonSoListTemp[countList].Add(numBa);
+                            }
+                        }
+                    }
+                    countList++;
+                    if (count == maxLine)
+                        break;
+                    if (countList == max)
+                        countList = 0;
+                }
+                if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                    && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
+                {
+                    // Cập nhật 2 số
+                    sumList[0] = sumListTemp[0];
+                    sumList[1] = sumListTemp[1];
+                    sumList[2] = sumListTemp[2];
+                    sumList[3] = sumListTemp[3];
+
+                    // Cập nhật 3 số
+                    sumBaList[0] = baCangListTemp[0];
+                    sumBaList[1] = baCangListTemp[1];
+                    sumBaList[2] = baCangListTemp[2];
+                    sumBaList[3] = baCangListTemp[3];
+
+                    // Cập nhật 4 số
+                    sumBonList[0] = bonSoListTemp[0];
+                    sumBonList[1] = bonSoListTemp[1];
+                    sumBonList[2] = bonSoListTemp[2];
+                    sumBonList[3] = bonSoListTemp[3];
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
+                return false;
+            }
+            finally
+            {
+            }
+        }
+
         private static bool UpdateKQMN(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList,List<int>[] sumBonList)
         {
             try
@@ -543,7 +631,7 @@ namespace KQ.Common.Helpers
             var options = new ChromeOptions();
             options.AddArguments("--window-position=-32000,-32000");
             drivers = new ChromeDriver("C:\\tesst\\driver", options);
-            //drivers = new ChromeDriver("D:\\Private\\KQ.Api", options);
+            //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
             //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
 
             //FirefoxOptions options = new FirefoxOptions();
