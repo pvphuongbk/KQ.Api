@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Timers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace KQ.Common.Helpers
 {
@@ -32,12 +34,12 @@ namespace KQ.Common.Helpers
         private static void UpdateChanelCodeForTest()
         {
             _chanelCodeForTest = new ConcurrentDictionary<int, List<string>>();
-            _chanelCodeForTest.TryAdd(1, new List<string> { "Vĩnh Long","VinhLong","vinhlong", "Vinh Long", "vlong", "vlong", "vl" });
+            _chanelCodeForTest.TryAdd(1, new List<string> { "Vĩnh Long", "VinhLong", "vinhlong", "Vinh Long", "vlong", "vlong", "vl" });
             _chanelCodeForTest.TryAdd(2, new List<string> { "Bình Dương", "BinhDuong", "binhduong", "Binh Duong", "bduong", "binhDuong", "bd" });
-            _chanelCodeForTest.TryAdd(3, new List<string> { "TPHCM", "TP", "tp", "tphcm"});
-            _chanelCodeForTest.TryAdd(5, new List<string> { "Khánh Hòa", "Khanh Hoa", "khanh hoa","khanhhoa","kh"});
-            _chanelCodeForTest.TryAdd(6, new List<string> { "Kom Tum", "komtum", "kt","kom tum"});
-            _chanelCodeForTest.TryAdd(7, new List<string> { "Huế", "hue","h"});
+            _chanelCodeForTest.TryAdd(3, new List<string> { "TPHCM", "TP", "tp", "tphcm" });
+            _chanelCodeForTest.TryAdd(5, new List<string> { "Khánh Hòa", "Khanh Hoa", "khanh hoa", "khanhhoa", "kh" });
+            _chanelCodeForTest.TryAdd(6, new List<string> { "Kom Tum", "komtum", "kt", "kom tum" });
+            _chanelCodeForTest.TryAdd(7, new List<string> { "Huế", "hue", "h" });
             _chanelCodeForTest.TryAdd(8, new List<string> { "Miền bắc", "MB" });
         }
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -67,12 +69,12 @@ namespace KQ.Common.Helpers
                         checkS = false;
                         FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "StartDate");
                     }
-                    
-                    if(now > new TimeSpan(6, 30, 0) && !checkS)
+
+                    if (now > new TimeSpan(6, 30, 0) && !checkS)
                     {
                         //Gửi tin nhắn zalo
                     }
-                    else if(checkS)
+                    else if (checkS)
                     {
                         _totalDic.Clear();
                         _totalDic.TryAdd("Now", new List<int>[8]);
@@ -87,10 +89,12 @@ namespace KQ.Common.Helpers
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     int countCheck = 0;
+                    string dai = "";
                     InitDriver();
                     // Cập nhật đài miền nam
                     try
                     {
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkN && countCheck < 2)
@@ -99,6 +103,21 @@ namespace KQ.Common.Helpers
                                 countCheck++;
                                 if (!checkN && countCheck < 3)
                                     Thread.Sleep(5000);
+                            }
+                        }
+                        if (!checkN && now > new TimeSpan(16, 45, 0))
+                        {
+                            countCheck = 0;
+                            dai = "Minh Ngọc";
+                            lock (_totalDic)
+                            {
+                                while (!checkN && countCheck < 2)
+                                {
+                                    checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    countCheck++;
+                                    if (!checkN && countCheck < 3)
+                                        Thread.Sleep(5000);
+                                }
                             }
                         }
                     }
@@ -111,21 +130,23 @@ namespace KQ.Common.Helpers
                     {
                         DisposeDriver();
                     }
-                    
+
                     s1.Stop();
-                    if(checkN)
+                    if (checkN)
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
+                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
                 else if (!checkT && now > new TimeSpan(17, 31, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     InitDriver();
+                    string dai = "";
                     int countCheck = 0;
                     try
                     {
                         // Cập nhật đài miền trung
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkT && countCheck < 2)
@@ -134,6 +155,21 @@ namespace KQ.Common.Helpers
                                 countCheck++;
                                 if (!checkT && countCheck < 3)
                                     Thread.Sleep(5000);
+                            }
+                        }
+                        if (!checkT && now > new TimeSpan(17, 45, 0))
+                        {
+                            countCheck = 0;
+                            dai = "Minh Ngọc";
+                            lock (_totalDic)
+                            {
+                                while (!checkT && countCheck < 3)
+                                {
+                                    checkT = UpdateKQMTMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    countCheck++;
+                                    if (!checkT && countCheck < 3)
+                                        Thread.Sleep(5000);
+                                }
                             }
                         }
                     }
@@ -146,29 +182,46 @@ namespace KQ.Common.Helpers
                     {
                         DisposeDriver();
                     }
-                    
+
                     s1.Stop();
-                    if(checkT)
+                    if (checkT)
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
+                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
                 else if (!checkB && now > new TimeSpan(18, 31, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     int countCheck = 0;
+                    string dai = "";
                     InitDriver();
                     // Cập nhật đài miền bắc
                     try
                     {
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
-                            while (!checkB && countCheck < 2)
+                            while (!checkB && countCheck < 3)
                             {
                                 checkB = UpdateKQMB(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkB && countCheck < 3)
                                     Thread.Sleep(5000);
+                            }
+                        }
+                        if (!checkB && now > new TimeSpan(18, 45, 0))
+                        {
+                            countCheck = 0;
+                            dai = "Minh Ngọc";
+                            lock (_totalDic)
+                            {
+                                while (!checkB && countCheck < 3)
+                                {
+                                    checkB = UpdateKQMBMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    countCheck++;
+                                    if (!checkB && countCheck < 3)
+                                        Thread.Sleep(5000);
+                                }
                             }
                         }
                     }
@@ -181,11 +234,11 @@ namespace KQ.Common.Helpers
                     {
                         DisposeDriver();
                     }
-                    
+
                     s1.Stop();
-                    if(checkB)
+                    if (checkB)
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
-                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}", "UpdateOnTime");
+                            $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
             }
             catch (Exception ex)
@@ -203,7 +256,7 @@ namespace KQ.Common.Helpers
                     _totalDic = new ConcurrentDictionary<string, List<int>[]>();
                     _totalDic.TryAdd("Now", new List<int>[8]);
                 }
-                if(_totalBaCangDic == null)
+                if (_totalBaCangDic == null)
                 {
                     _totalBaCangDic = new ConcurrentDictionary<string, List<int>[]>();
                     _totalBaCangDic.TryAdd("Now", new List<int>[8]);
@@ -214,7 +267,6 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
                 InitDriver();
-                InnitRepository.UpdateKQMNMinhNgoc(DayOfWeek.Saturday, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                 var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
 
@@ -228,7 +280,7 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-               DisposeDriver();
+                DisposeDriver();
             }
 
         }
@@ -268,6 +320,17 @@ namespace KQ.Common.Helpers
                     if (!checkN && countCheck < 3)
                         Thread.Sleep(5000);
                 }
+                if (!checkN)
+                {
+                    countCheck = 0;
+                    while (!checkN && countCheck < 3)
+                    {
+                        checkN = UpdateKQMNMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        countCheck++;
+                        if (!checkN && countCheck < 3)
+                            Thread.Sleep(5000);
+                    }
+                }
                 countCheck = 0;
                 // Cập nhật đài miền nam
                 while (!checkT && countCheck < 3)
@@ -277,6 +340,17 @@ namespace KQ.Common.Helpers
                     if (!checkT && countCheck < 3)
                         Thread.Sleep(5000);
                 }
+                if (!checkT)
+                {
+                    countCheck = 0;
+                    while (!checkT && countCheck < 3)
+                    {
+                        checkT = UpdateKQMTMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        countCheck++;
+                        if (!checkT && countCheck < 3)
+                            Thread.Sleep(5000);
+                    }
+                }
                 countCheck = 0;
                 // Cập nhật đài miền nam
                 while (!checkB && countCheck < 3)
@@ -285,6 +359,17 @@ namespace KQ.Common.Helpers
                     countCheck++;
                     if (!checkB && countCheck < 3)
                         Thread.Sleep(5000);
+                }
+                if (!checkB)
+                {
+                    countCheck = 0;
+                    while (!checkB && countCheck < 3)
+                    {
+                        checkB = UpdateKQMBMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        countCheck++;
+                        if (!checkB && countCheck < 3)
+                            Thread.Sleep(5000);
+                    }
                 }
                 s1.Stop();
                 FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật tất cả dữ liệu lúc {DateTime.Now.ToString("HH:mm:ss")}." +
@@ -319,12 +404,12 @@ namespace KQ.Common.Helpers
                     string cellText = element.Text;
                     if (cellText.Contains("G"))
                         continue;
-                    if(cellText.Contains("Mã"))
+                    if (cellText.Contains("Mã"))
                     {
                         checkMaDB = true;
                         continue;
                     }
-                    if(checkMaDB == true)
+                    if (checkMaDB == true)
                     {
                         checkMaDB = false;
                         continue;
@@ -456,54 +541,185 @@ namespace KQ.Common.Helpers
             {
             }
         }
+        public static bool UpdateKQMBMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        {
+            try
+            {
+                var now = DateTime.Now.TimeOfDay;
+
+                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-bac.html";
+                drivers.Navigate().GoToUrl(link);
+                List<int> sumListTemp = new List<int>();
+                List<int> baCangListTemp = new List<int>();
+                List<int> bonSoListTemp = new List<int>();
+                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/" +
+                    "td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[5]/div[2]/div/table/tbody/tr/td/table/tbody"));
+                if (!allElement.Any())
+                    return false;
+                var array = allElement[0].Text.Split("\r\n");
+                for (int i = 0; i <= 37; i++)
+                {
+                    int num = 0;
+                    var check = int.TryParse(array[i], out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp.Add(numLo);
+                        if (i <= 32)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp.Add(numBa);
+                        }
+                        if (i <= 28)
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp.Add(numBa);
+                        }
+                    }
+                }
+                if (sumListTemp != null && sumListTemp.Count == 27)
+                {
+                    // Update 2 số
+                    sumList[7] = sumListTemp;
+
+                    // Update 3 số
+                    sumBaList[7] = baCangListTemp;
+
+                    // Update 4 số
+                    sumBonList[7] = bonSoListTemp;
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
+                return false;
+            }
+            finally
+            {
+            }
+        }
+        public static bool UpdateKQMTMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        {
+            try
+            {
+                var now = DateTime.Now.TimeOfDay;
+
+                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
+                drivers.Navigate().GoToUrl(link);
+                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+                int max = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 3 : 2;
+                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
+                    "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
+                if (!allElement.Any())
+                    return false;
+                var array = allElement[0].Text.Split("\r\n");
+                for (int i = 0; i < max; i++)
+                {
+                    int start = 13 + 20 * i;
+                    int end = start + 18;
+                    for (int j = start; j < end; j++)
+                    {
+                        int num = 0;
+                        var check = int.TryParse(array[j], out num);
+                        if (check)
+                        {
+                            var numLo = num % 100;
+                            sumListTemp[i].Add(numLo);
+                            if (j > start)
+                            {
+                                var numBa = num % 1000;
+                                baCangListTemp[i].Add(numBa);
+                            }
+                            if (j > (start + 1))
+                            {
+                                var numBa = num % 10000;
+                                bonSoListTemp[i].Add(numBa);
+                            }
+                        }
+                    }
+                }
+                if (sumListTemp.Length == 3 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                     && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && dayCheck != DayOfWeek.Sunday) || sumListTemp[2].Count == 18))
+                {
+                    // Cập nhật 2 số
+                    sumList[4] = sumListTemp[0];
+                    sumList[5] = sumListTemp[1];
+                    sumList[6] = sumListTemp[2];
+
+                    // Cập nhật 3 số
+                    sumBaList[4] = baCangListTemp[0];
+                    sumBaList[5] = baCangListTemp[1];
+                    sumBaList[6] = baCangListTemp[2];
+
+                    // Cập nhật 4 số
+                    sumBonList[4] = bonSoListTemp[0];
+                    sumBonList[5] = bonSoListTemp[1];
+                    sumBonList[6] = bonSoListTemp[2];
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
+                return false;
+            }
+            finally
+            {
+            }
+        }
 
         public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
         {
             try
             {
                 var now = DateTime.Now.TimeOfDay;
-                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
+
+                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-nam.html";
                 drivers.Navigate().GoToUrl(link);
                 List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                int count = 0;
-                int countList = 0;
                 DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
                 int max = dayCheck == DayOfWeek.Saturday ? 4 : 3;
-                int maxLine = dayCheck == DayOfWeek.Saturday ? 36 : 27;
-                IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
-                foreach (IWebElement element in allElement)
+                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
+                    "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
+                if (!allElement.Any())
+                    return false;
+                var array = allElement[0].Text.Split("\r\n");
+                for (int i = 0; i < max; i++)
                 {
-                    string cellText = element.Text;
-                    if (cellText.Contains("G") || cellText.Contains("Đ"))
-                        continue;
-                    count++;
-                    foreach (var txt in cellText.Split("\r\n"))
+                    int start = 13 + 20 * i;
+                    int end = start + 18;
+                    for (int j = start; j < end; j++)
                     {
                         int num = 0;
-                        var check = int.TryParse(txt, out num);
+                        var check = int.TryParse(array[j], out num);
                         if (check)
                         {
                             var numLo = num % 100;
-                            sumListTemp[countList].Add(numLo);
-                            if (count > max)
+                            sumListTemp[i].Add(numLo);
+                            if (j > start)
                             {
                                 var numBa = num % 1000;
-                                baCangListTemp[countList].Add(numBa);
+                                baCangListTemp[i].Add(numBa);
                             }
-                            if (count > (max * 2))
+                            if (j > (start + 1))
                             {
                                 var numBa = num % 10000;
-                                bonSoListTemp[countList].Add(numBa);
+                                bonSoListTemp[i].Add(numBa);
                             }
                         }
                     }
-                    countList++;
-                    if (count == maxLine)
-                        break;
-                    if (countList == max)
-                        countList = 0;
                 }
                 if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
                     && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
@@ -541,7 +757,7 @@ namespace KQ.Common.Helpers
             }
         }
 
-        private static bool UpdateKQMN(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList,List<int>[] sumBonList)
+        private static bool UpdateKQMN(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
         {
             try
             {
@@ -571,12 +787,12 @@ namespace KQ.Common.Helpers
                         {
                             var numLo = num % 100;
                             sumListTemp[countList].Add(numLo);
-                            if(count > max)
+                            if (count > max)
                             {
                                 var numBa = num % 1000;
                                 baCangListTemp[countList].Add(numBa);
                             }
-                            if(count > (max * 2))
+                            if (count > (max * 2))
                             {
                                 var numBa = num % 10000;
                                 bonSoListTemp[countList].Add(numBa);
