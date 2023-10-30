@@ -183,15 +183,20 @@ namespace KQ.Services.HandlMessageService
                 if (tile.IsChu)
                     tong = 0 - tong;
                 result.IsThu = tong >= 0;
+                var total = (tong * tileDto.PhanTramTong) / 100;
+                total = Math.Round(total,1);
+                tong = Math.Round(tong, 1);
                 result.Message = $"{tong.ToString("N0",System.Globalization.CultureInfo.GetCultureInfo("de"))}*{tileDto.PhanTramTong}" +
-                $"%={((tong * tileDto.PhanTramTong)/100).ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("de"))}";
+                $"%={total.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("de"))}";
                 if (listUpdate.Any())
                 {
                     _commonUoW.BeginTransaction();
                     _detailsRepository.UpdateMultiple(listUpdate.AsQueryable());
                     _commonUoW.Commit();
                 }
-
+                result.Total.QuaCo.HaiCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
+                result.Total.QuaCo.BaCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
+                result.Total.QuaCo.BonCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
                 return new ResponseBase { Data = result };
             }
             catch (Exception ex)
