@@ -236,6 +236,7 @@ namespace KQ.Services.Calcualation
                                     }
                                     i = iTemp;
                                     var sl2 = GetSl(array, ref i);
+                                    var cursorTemp2 = cursor;
                                     TangCurso(ref cursor, ref cursorTemp, array, i);
                                     if (sl2 > 0)
                                     {
@@ -243,8 +244,8 @@ namespace KQ.Services.Calcualation
                                         if (!check2)
                                         {
                                             //lỗi
-                                            var (startI, endI) = GetIndexForError(cursor, i, array);
-                                            error = new Error { Message = messError, Count = endI, StartIndex = startI };
+                                            var (startI, endI) = GetIndexForError(cursorTemp2, i, array);
+                                            error = new Error { Message = mess2, Count = endI, StartIndex = startI };
                                             goto Foo;
                                         }
                                         else
@@ -437,23 +438,6 @@ namespace KQ.Services.Calcualation
                     isHave = true;
                 }
             }
-            //for (int j = cursor; j < array.Length; j++)
-            //{
-            //    if (array[j] != " ")
-            //        break;
-            //    cursor++;
-            //}
-            //int countEmpty = cursor;
-            //if (cursor < i)
-            //{
-            //    for (int j = cursor + 1; j < array.Length; j++)
-            //    {
-            //        if (array[j] != " ")
-            //            break;
-            //        countEmpty++;
-            //    }
-            //    cursor = countEmpty == cursor ? cursor : countEmpty + 1;
-            //}
             for (int j = i; j >= 0; j--)
             {
                 if (array[j] != " ")
@@ -1408,6 +1392,15 @@ namespace KQ.Services.Calcualation
             else if (str == "xcdao" || str == "xdao" || str == "xiuchudao")
             {
                 cachChoi = CachChoi.XcDao;
+            }
+            else if (str == "dv" || str == "dav" || str == "davong")
+            {
+                cachChoi = CachChoi.Da;
+                if(numberStrs.Count < 2)
+                {
+                    messError = "một con không thể đá vòng";
+                    result = true;
+                }
             }
             else if (str == "d")
             {
