@@ -195,8 +195,8 @@ namespace KQ.Services.HandlMessageService
                     _commonUoW.Commit();
                 }
                 result.Total.QuaCo.HaiCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
-                result.Total.QuaCo.BaCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
-                result.Total.QuaCo.BonCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
+                result.Total.QuaCo.BaCon = Math.Round(result.Total.QuaCo.BaCon, 1);
+                result.Total.QuaCo.BonCon = Math.Round(result.Total.QuaCo.BonCon, 1);
                 return new ResponseBase { Data = result };
             }
             catch (Exception ex)
