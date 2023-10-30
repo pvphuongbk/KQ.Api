@@ -74,12 +74,12 @@ namespace KQ.Services.Calcualation
                         }
                         else
                         {
-                            if(mess == _chanelNotFound)
+                            if (mess == _chanelNotFound)
                             {
                                 var dais = InnitRepository._chanelCodeAll[dto.HandlByDate.DayOfWeek][dto.Mien].Select(x => x.Value[3]);
                                 mess += $". Tên đài đúng: {string.Join(",", dais)}";
                                 int count = 0;
-                                for(int k = 0;k< dto.SynTax.Length;k++)
+                                for (int k = 0; k < dto.SynTax.Length; k++)
                                 {
                                     if (dto.SynTax[k] != ' ' && !int.TryParse(dto.SynTax[k].ToString(), out _))
                                         count = k;
@@ -106,11 +106,11 @@ namespace KQ.Services.Calcualation
                         if (array[i].Length == 1)
                         {
                             List<int> chanelsTemp = new List<int>();
-                            int ibe = i-1;
+                            int ibe = i - 1;
                             var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                             if (check)
                             {
-                                if(!isCompleted)
+                                if (!isCompleted)
                                 {
                                     error = CreateErrorForNotComplated(ref ibe, array, numbers, cursorTemp);
                                     break;
@@ -144,7 +144,7 @@ namespace KQ.Services.Calcualation
                             {
                                 i = iTemp;
                                 var (check, mess) = HandlerKeo(str, stri, numTemp, array, ref i, ref numbers, ref numberStrs);
-                                if(!check)
+                                if (!check)
                                 {
                                     // lỗi
                                     var (startI, endI) = GetIndexForError(cursor, i, array);
@@ -193,8 +193,8 @@ namespace KQ.Services.Calcualation
                                 //lỗi
                                 if (mess1 == _dax2dai)
                                     cursor = cursorTemp;
-                                var (startI, endI) = GetIndexForError(cursor,i, array);
-                                error = new Error {StartIndex = startI, Count = endI, Message = mess1 };
+                                var (startI, endI) = GetIndexForError(cursor, i, array);
+                                error = new Error { StartIndex = startI, Count = endI, Message = mess1 };
                                 break;
                             }
                             else
@@ -287,7 +287,7 @@ namespace KQ.Services.Calcualation
                         var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                         if (check)
                         {
-                            if(!isCompleted)
+                            if (!isCompleted)
                             {
                                 // lỗi
                                 error = CreateErrorForNotComplated(ref i, array, numbers, cursorTemp);
@@ -358,7 +358,7 @@ namespace KQ.Services.Calcualation
                         else
                         {
                             var mess = _detailsRepository.GetById(dto.IDMessage);
-                            if(mess != null)
+                            if (mess != null)
                             {
                                 mess.Detail = json;
                                 mess.IsTinh = detail.IsTinh;
@@ -446,7 +446,7 @@ namespace KQ.Services.Calcualation
                     break;
                 }
             }
-            for (int j =0;j<array.Length;j++)
+            for (int j = 0; j < array.Length; j++)
             {
                 if (cursor != 0 && j == cursor)
                     start = current;
@@ -469,7 +469,7 @@ namespace KQ.Services.Calcualation
             detail.Trung.BonCon = detail.Details.Where(x => (x.CachChoi == CachChoi.BaoBonCon || x.CachChoi == CachChoi.BonConDao) && x.SlTrung > 0)
                     .Sum(x => x.SoTien * x.SlTrung);
         }
-        public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien,MienEnum mien, ref Cal3DetailDto detail)
+        public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail)
         {
             Dictionary<string, int> meT2c = new Dictionary<string, int>();
             Dictionary<string, int> meDD = new Dictionary<string, int>();
@@ -481,10 +481,10 @@ namespace KQ.Services.Calcualation
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
             var kq4So = new List<int>[8];
-            if (handlByDate < DateTime.Now.Date)
+            if (handlByDate.Date < DateTime.Now.Date)
             {
                 var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == handlByDate.Date).FirstOrDefault();
-                if (kq != null && !string.IsNullOrEmpty(kq.HaiCon) 
+                if (kq != null && !string.IsNullOrEmpty(kq.HaiCon)
                     && !string.IsNullOrEmpty(kq.BaCon) && !string.IsNullOrEmpty(kq.BonCon))
                 {
                     kq2So = JsonConvert.DeserializeObject<List<int>[]>(kq.HaiCon);
@@ -492,11 +492,11 @@ namespace KQ.Services.Calcualation
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
             }
-            else if(handlByDate.Date < DateTime.Now.Date)
+            else
             {
                 kq2So = InnitRepository._totalDic["Now"];
-                kq3So = InnitRepository._totalDic["Now"];
-                kq4So = InnitRepository._totalDic["Now"];
+                kq3So = InnitRepository._totalBaCangDic["Now"];
+                kq4So = InnitRepository._totalBonSoDic["Now"];
             }
             if (kq2So == null || kq2So.All(x => x == null) || kq3So == null || kq3So.All(x => x == null)
                 || kq4So == null || kq4So.All(x => x == null))
@@ -519,7 +519,7 @@ namespace KQ.Services.Calcualation
                     case CachChoi.Da:
                         var count1 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[0]);
                         var count2 = kq2So[pre.DaiIn[0] - 1].Count(x => x == pre.SoIn[1]);
-                        if(dathang == CachTrungDa.NhieuCap)
+                        if (dathang == CachTrungDa.NhieuCap)
                         {
                             var count = count1 < count2 ? count1 : count2;
                             pre.SlTrung = count;
@@ -532,7 +532,7 @@ namespace KQ.Services.Calcualation
                                     meDaT.Add(key, pre.SlTrung * pre.SoTien);
                             }
                         }
-                        else if(dathang == CachTrungDa.KyRuoi)
+                        else if (dathang == CachTrungDa.KyRuoi)
                         {
                             pre.SlTrung = (count1 + count2) / 2;
                             if (pre.SlTrung > 0)
@@ -546,7 +546,7 @@ namespace KQ.Services.Calcualation
                         }
                         else
                         {
-                            pre.SlTrung = (count1 > 0 &&  count2 > 0) ? 1 : 0;
+                            pre.SlTrung = (count1 > 0 && count2 > 0) ? 1 : 0;
                             if (pre.SlTrung > 0)
                             {
                                 string key = $"{pre.SoIn[0].ToString("00")} {pre.SoIn[1].ToString("00")}";
@@ -1257,7 +1257,7 @@ namespace KQ.Services.Calcualation
                 cachChoi = CachChoi.DaX;
             }
 
-            if(cachChoi == CachChoi.B && numberStrs.All(x => x.Length != 2))
+            if (cachChoi == CachChoi.B && numberStrs.All(x => x.Length != 2))
             {
                 mess = "Cách chơi này chỉ chơi được 2 hoặc 3 con";
             }
@@ -1326,7 +1326,7 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.B;
             }
-            else if (str == "da" || str == "dt" || str == "dat" 
+            else if (str == "da" || str == "dt" || str == "dat"
                 || str == "dathang")
             {
                 cachChoi = CachChoi.Da;
@@ -1396,7 +1396,7 @@ namespace KQ.Services.Calcualation
             else if (str == "dv" || str == "dav" || str == "davong")
             {
                 cachChoi = CachChoi.Da;
-                if(numberStrs.Count < 2)
+                if (numberStrs.Count < 2)
                 {
                     messError = "một con không thể đá vòng";
                     result = true;
@@ -1448,13 +1448,13 @@ namespace KQ.Services.Calcualation
             for (int i = 0; i < arr.Length; i++)
             {
                 var cstr = arr[i].ToString();
-                if(isNumber && cstr == "n")
+                if (isNumber && cstr == "n")
                 {
                     lst.Add(str);
                     lst.Add("n");
                     str = "";
                 }
-                else if(int.TryParse(cstr, out _))
+                else if (int.TryParse(cstr, out _))
                 {
                     if (!isNumber && !string.IsNullOrEmpty(str))
                     {
@@ -1547,7 +1547,7 @@ namespace KQ.Services.Calcualation
                     var slDai = InnitRepository._chanelCodeAll[date.DayOfWeek][mien].Count;
                     if (slDai < num)
                     {
-                        if(mien == MienEnum.MB)
+                        if (mien == MienEnum.MB)
                             mess = $"Miền bắc chỉ có 1 đài";
                         else
                             mess = $"{date.ToString("dd-MM-yyyy")} chỉ có {slDai} đài";
@@ -1560,7 +1560,7 @@ namespace KQ.Services.Calcualation
                 }
                 else
                 {
-                    for(int k = i + 1; k < array.Length;k++)
+                    for (int k = i + 1; k < array.Length; k++)
                     {
                         if (int.TryParse(array[k], out _))
                             break;
@@ -1612,7 +1612,7 @@ namespace KQ.Services.Calcualation
                     }
                 }
             }
-            for(int k = i;k>=0;k--)
+            for (int k = i; k >= 0; k--)
             {
                 if (array[k] == " ")
                     i--;
