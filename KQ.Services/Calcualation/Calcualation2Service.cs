@@ -1342,7 +1342,8 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.B;
             }
-            else if (str == "da" || str == "dt")
+            else if (str == "da" || str == "dt" || str == "dat" 
+                || str == "dathang")
             {
                 cachChoi = CachChoi.Da;
             }
@@ -1641,6 +1642,7 @@ namespace KQ.Services.Calcualation
             sys = sys.ToLower();
             sys = sys.RemoveUnicode();
             sys = sys.Replace(".", " ");
+            sys = sys.Replace("-", " ");
             sys = sys.Replace(",", " ");
             sys = sys.Replace("\r", " ");
             sys = sys.Replace("\n", " ");
