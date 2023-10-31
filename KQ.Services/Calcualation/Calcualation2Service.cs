@@ -481,7 +481,13 @@ namespace KQ.Services.Calcualation
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
             var kq4So = new List<int>[8];
-            if (handlByDate.Date < DateTime.Now.Date)
+            if (handlByDate.Date == DateTime.Now.Date)
+            {
+                kq2So = InnitRepository._totalDic["Now"];
+                kq3So = InnitRepository._totalBaCangDic["Now"];
+                kq4So = InnitRepository._totalBonSoDic["Now"];
+            }
+            else if(handlByDate.Date < DateTime.Now.Date)
             {
                 var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == handlByDate.Date).FirstOrDefault();
                 if (kq != null && !string.IsNullOrEmpty(kq.HaiCon)
@@ -491,12 +497,6 @@ namespace KQ.Services.Calcualation
                     kq3So = JsonConvert.DeserializeObject<List<int>[]>(kq.BaCon);
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
-            }
-            else
-            {
-                kq2So = InnitRepository._totalDic["Now"];
-                kq3So = InnitRepository._totalBaCangDic["Now"];
-                kq4So = InnitRepository._totalBonSoDic["Now"];
             }
             if (kq2So == null || kq2So.All(x => x == null) || kq3So == null || kq3So.All(x => x == null)
                 || kq4So == null || kq4So.All(x => x == null))
