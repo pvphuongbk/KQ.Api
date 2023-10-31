@@ -36,6 +36,13 @@ namespace KQ.Api.Controllers
             var items = _handlMessageService.CountByDayRequest(request);
             return items;
         }
+        [HttpPost("count-many-day")]
+        public ResponseBase CountManyDay(CountByManyDayRequest request)
+        {
+            var items = _handlMessageService.CountByManyDayRequest(request);
+            return items;
+        }
+        
         [HttpDelete("{id}")]
         public ResponseBase Delete(int id)
         {
