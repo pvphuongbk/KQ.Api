@@ -500,7 +500,7 @@ namespace KQ.Services.Calcualation
                     break;
             }
 
-            return false;
+            return true;
         }
         public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail)
         {
