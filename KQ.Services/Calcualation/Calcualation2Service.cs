@@ -469,6 +469,39 @@ namespace KQ.Services.Calcualation
             detail.Trung.BonCon = detail.Details.Where(x => (x.CachChoi == CachChoi.BaoBonCon || x.CachChoi == CachChoi.BonConDao) && x.SlTrung > 0)
                     .Sum(x => x.SoTien * x.SlTrung);
         }
+
+        public bool CheckResource(List<int>[] kq2So, List<int>[] kq3So, List<int>[] kq4So, MienEnum mien, DayOfWeek day)
+        {
+            if (kq2So == null || kq3So == null || kq4So == null)
+                return false;
+            switch (mien)
+            {
+                case MienEnum.MN:
+                    if (kq2So[0] == null || kq2So[1] == null || kq2So[2] == null
+                        || (day == DayOfWeek.Saturday && kq2So[6] == null)
+                        || kq3So[0] == null || kq3So[1] == null || kq3So[2] == null
+                        || (day == DayOfWeek.Saturday && kq3So[6] == null)
+                        || kq4So[0] == null || kq4So[1] == null || kq4So[2] == null
+                        || (day == DayOfWeek.Saturday && kq4So[6] == null))
+                        return false;
+                    break;
+                case MienEnum.MT:
+                    if (kq2So[4] == null || kq2So[5] == null
+                        || ((day == DayOfWeek.Saturday || day == DayOfWeek.Thursday || day == DayOfWeek.Sunday) && kq2So[6] == null)
+                        || kq3So[4] == null || kq3So[5] == null
+                        || ((day == DayOfWeek.Saturday || day == DayOfWeek.Thursday || day == DayOfWeek.Sunday) && kq3So[6] == null)
+                        || kq4So[4] == null || kq4So[5] == null
+                        || ((day == DayOfWeek.Saturday || day == DayOfWeek.Thursday || day == DayOfWeek.Sunday) && kq4So[6] == null))
+                        return false;
+                    break;
+                default:
+                    if (kq2So[7] == null  || kq3So[7] == null || kq4So[7] == null)
+                        return false;
+                    break;
+            }
+
+            return false;
+        }
         public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail)
         {
             Dictionary<string, int> meT2c = new Dictionary<string, int>();
@@ -498,8 +531,7 @@ namespace KQ.Services.Calcualation
                     kq4So = JsonConvert.DeserializeObject<List<int>[]>(kq.BonCon);
                 }
             }
-            if (kq2So == null || kq2So.All(x => x == null) || kq3So == null || kq3So.All(x => x == null)
-                || kq4So == null || kq4So.All(x => x == null))
+            if (!CheckResource(kq2So, kq3So, kq4So, mien, handlByDate.Date.DayOfWeek))
                 return false;
             foreach (var pre in detail.Details)
             {
