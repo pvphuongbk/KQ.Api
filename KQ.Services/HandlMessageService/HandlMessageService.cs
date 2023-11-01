@@ -243,7 +243,7 @@ namespace KQ.Services.HandlMessageService
                             listUpdate.Add(item);
                         }
                     }
-                    result.DetailMessage.Add(new DetailMessage { CalDetail = detail, Message = item.Message, 
+                    result.DetailMessage.Add(new DetailMessage { Xac = detail.Xac,Trung = detail.Trung, Message = item.Message, 
                         CreatedDate = item.CreatedDate, HandlByDate = item.HandlByDate, ID = item.ID, No = no});
                     result.Total.Xac.HaiCB += detail.Xac.HaiCB;
                     result.Total.Xac.HaiCD += detail.Xac.HaiCD;
