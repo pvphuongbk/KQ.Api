@@ -773,42 +773,42 @@ namespace KQ.Services.Calcualation
                 var mes = new List<string>();
                 foreach (var m in meT2c)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"T2C: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*T2C: {string.Join(",", mes)}");
             }
             if (meDD.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDD)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"2CĐ: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*2CĐ: {string.Join(",", mes)}");
             }
             if (meDaT.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDaT)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"ĐáT: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*ĐáT: {string.Join(",", mes)}");
             }
             if (meDaX.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDaX)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"ĐáX: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*ĐáX: {string.Join(",", mes)}");
             }
             if (me3Con.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in me3Con)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"3C: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*3C: {string.Join(",", mes)}");
             }
             if (me4Con.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in me4Con)
                     mes.Add($"{m.Key}({m.Value}n)");
-                detail.TrungDetail.Add($"4C: {string.Join(",", mes)}");
+                detail.TrungDetail.Add($"*4C: {string.Join(",", mes)}");
             }
             detail.IsTinh = true;
             return true;
