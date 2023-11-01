@@ -213,6 +213,93 @@ namespace KQ.Services.HandlMessageService
                 return new ResponseBase { Code = 500, Message = ex.Message };
             }
         }
+        public ResponseBase MessageByID(int messageID)
+        {
+            try
+            {
+                MessageByIdDto result = new MessageByIdDto
+                {
+                    Xac = new Summary(),
+                    Trung = new Summary(),
+                    TrungDetail = new List<string>()
+                };
+                var item = _detailsRepository.FindAll(x => x.ID == messageID).FirstOrDefault();
+                if (item == null)
+                    return new ResponseBase { Data = result }; ;
+                var tile = _tileUserRepository.GetById(item.IDKhach);
+                Details updateItem = null;
+                var tileDto = GetAllTiLeByMien(tile, item.Mien);
+                int no = 0;
+                no++;
+                var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                if (!detail.IsTinh)
+                {
+                    var isUpdate = _calcualation2Service.UpdateTrungThuong(item.HandlByDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, item.Mien, ref detail);
+                    if (isUpdate)
+                    {
+                        _calcualation2Service.UpdateSumTrungThuong(ref detail);
+                        item.IsTinh = true;
+                        item.Detail = JsonConvert.SerializeObject(detail);
+                        updateItem = item;
+                    }
+                }
+                result.TrungDetail = detail.TrungDetail;
+                result.HanldDate = item.HandlByDate;
+                result.CreatedDate = item.CreatedDate;
+                result.Details = detail.Details;
+                result.Message = item.Message;
+                result.Xac.HaiCB = detail.Xac.HaiCB;
+                result.Xac.HaiCD = detail.Xac.HaiCD;
+                result.Xac.DaT = detail.Xac.DaT;
+                result.Xac.DaX = detail.Xac.DaX;
+                result.Xac.BaCon = detail.Xac.BaCon;
+                result.Xac.BonCon = detail.Xac.BonCon;
+
+                result.Trung.HaiCB = detail.Trung.HaiCB;
+                result.Trung.HaiCD = detail.Trung.HaiCD;
+                result.Trung.DaT = detail.Trung.DaT;
+                result.Trung.DaX = detail.Trung.DaX;
+                result.Trung.BaCon = detail.Trung.BaCon;
+                result.Trung.BonCon = detail.Trung.BonCon;
+
+                if (updateItem != null)
+                {
+                    _commonUoW.BeginTransaction();
+                    _detailsRepository.Update(updateItem);
+                    _commonUoW.Commit();
+                }
+
+                return new ResponseBase { Data = result };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseBase { Code = 500, Message = ex.Message };
+            }
+        }
+        public ResponseBase HandleMessage(MessgeByDayRequest request)
+        {
+            try
+            {
+                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date
+                                                && x.IDKhach == request.IDKhach && x.Mien == request.Mien).ToList();
+                var result = new List<HandlMessageDto>();
+                foreach(var item in details)
+                {
+                    result.Add(new HandlMessageDto
+                    {
+                        Id = item.ID,
+                        Message = item.Message,
+                        CreatedDate = item.CreatedDate,
+                        HandlDate = item.HandlByDate
+                    });
+                }
+                return new ResponseBase { Data = result };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseBase { Code = 500, Message = ex.Message };
+            }
+        }
         public ResponseBase MessageByDay(MessgeByDayRequest request)
         {
             try

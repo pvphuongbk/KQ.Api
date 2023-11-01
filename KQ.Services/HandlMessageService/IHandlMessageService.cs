@@ -13,5 +13,7 @@ namespace KQ.Services.HandlMessageService
         public ResponseBase Delete(int id);
         ResponseBase CountByDayRequest(CountByDayRequest request);
         ResponseBase CountByManyDayRequest(CountByManyDayRequest request);
+        ResponseBase MessageByID(int messageID);
+        ResponseBase HandleMessage(MessgeByDayRequest request);
     }
 }
