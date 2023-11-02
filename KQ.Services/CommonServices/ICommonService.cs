@@ -10,5 +10,6 @@ namespace KQ.Services.CommonServices
         public ResponseBase CheckChanelCode();
         public ResponseBase UnitTest();
         public ResponseBase UnitTestCal3();
+        ResponseBase ReadLogs(DateTime? date);
     }
 }

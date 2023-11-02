@@ -13,6 +13,8 @@ using KQ.Services.Calcualation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
+using System.IO;
+using System.Reflection;
 
 namespace KQ.Services.CommonServices
 {
@@ -358,6 +360,18 @@ namespace KQ.Services.CommonServices
             ResponseBase response = new ResponseBase();
             var con = CommonFunction.GetChanels(date);
             response.Data = con;
+            return response;
+        }
+
+        public ResponseBase ReadLogs(DateTime? date)
+        {
+            ResponseBase response = new ResponseBase();
+            DateTime da = date == null ? DateTime.Now : (DateTime)date;
+            var fullPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + $"\\Logs\\{da.ToString("ddMMyyyy")}.txt";
+            if (File.Exists(fullPath))
+            {
+                response.Data = File.ReadAllLines(fullPath);
+            }
             return response;
         }
     }

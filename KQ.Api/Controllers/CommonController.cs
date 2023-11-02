@@ -46,5 +46,11 @@ namespace KQ.Api.Controllers
             var items = _commonService.UnitTestCal3();
             return items;
         }
+        [HttpPost("read-logs")]
+        public ResponseBase ReadLogs(DateTime? date)
+        {
+            var items = _commonService.ReadLogs(date);
+            return items;
+        }
     }
 }
