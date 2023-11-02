@@ -45,8 +45,9 @@ namespace KQ.Services.Users
         public ResponseBase Login(LoginRequest request)
         {
             ResponseBase response = new ResponseBase();
+            var pass = request.Password.Encrypt();
             var user = _userRepository.FindAll(x => !x.IsDeleted && (x.Account == request.LoginName || x.PhoneNumber == request.LoginName)
-                                && x.Password == request.Password)
+                                && x.Password == pass)
                             .Include(x => x.TileUser)
                             .FirstOrDefault();
             LoginResponse result = new LoginResponse();
@@ -166,7 +167,6 @@ namespace KQ.Services.Users
                 }
                 user.UserName = request.UserName;
                 user.PhoneNumber = request.PhoneNumber;
-                request.ConvertConfigTo(user);
                 _commonUoW.Commit();
                 return new ResponseBase();
             }

@@ -347,10 +347,10 @@ namespace KQ.Services.Calcualation
                                 CreatedDate = DateTime.Now,
                                 IDKhach = dto.IDKhach,
                                 UserID = dto.UserID,
-                                Detail = json,
+                                Detail = json.Encrypt(),
                                 HandlByDate = dto.HandlByDate,
                                 IsTinh = detail.IsTinh,
-                                Message = dto.SynTax,
+                                Message = dto.SynTax.Encrypt(),
                                 Mien = dto.Mien,
                             };
                             _detailsRepository.Insert(de);
@@ -360,10 +360,10 @@ namespace KQ.Services.Calcualation
                             var mess = _detailsRepository.GetById(dto.IDMessage);
                             if (mess != null)
                             {
-                                mess.Detail = json;
+                                mess.Detail = json.Encrypt();
                                 mess.IsTinh = detail.IsTinh;
                                 mess.CreatedDate = DateTime.Now;
-                                mess.Message = dto.SynTax;
+                                mess.Message = dto.SynTax.Encrypt();
                                 _detailsRepository.Update(mess);
                             }
                         }

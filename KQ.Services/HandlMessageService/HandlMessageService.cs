@@ -1,4 +1,5 @@
-﻿using KQ.Data.Base;
+﻿using KQ.Common.Extention;
+using KQ.Data.Base;
 using KQ.DataAccess.Entities;
 using KQ.DataAccess.Enum;
 using KQ.DataAccess.Interface;
@@ -9,6 +10,7 @@ using KQ.DataDto.HandlMessage;
 using KQ.Services.Calcualation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 namespace KQ.Services.HandlMessageService
@@ -71,7 +73,7 @@ namespace KQ.Services.HandlMessageService
                     {
                         var tile = tiles.FirstOrDefault(x => x.ID == item.IDKhach);
                         var tileDto = GetAllTiLeByMien(tile, item.Mien);
-                        var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                        var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail.Decrypt());
                         if (!detail.IsTinh)
                         {
                             var isUpdate = _calcualation2Service.UpdateTrungThuong(handlDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, item.Mien, ref detail);
@@ -79,7 +81,7 @@ namespace KQ.Services.HandlMessageService
                             {
                                 _calcualation2Service.UpdateSumTrungThuong(ref detail);
                                 item.IsTinh = true;
-                                item.Detail = JsonConvert.SerializeObject(detail);
+                                item.Detail = JsonConvert.SerializeObject(detail).Encrypt();
                                 listUpdate.Add(item);
                             }
                         }
@@ -150,7 +152,7 @@ namespace KQ.Services.HandlMessageService
                 {
                     var tile = tiles.FirstOrDefault(x => x.ID == item.IDKhach);
                     var tileDto = GetAllTiLeByMien(tile, item.Mien);
-                    var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                    var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail.Decrypt());
                     if (!detail.IsTinh)
                     {
                         var isUpdate = _calcualation2Service.UpdateTrungThuong(request.HandlDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, item.Mien, ref detail);
@@ -158,7 +160,7 @@ namespace KQ.Services.HandlMessageService
                         {
                             _calcualation2Service.UpdateSumTrungThuong(ref detail);
                             item.IsTinh = true;
-                            item.Detail = JsonConvert.SerializeObject(detail);
+                            item.Detail = JsonConvert.SerializeObject(detail).Encrypt();
                             listUpdate.Add(item);
                         }
                     }
@@ -231,7 +233,7 @@ namespace KQ.Services.HandlMessageService
                 var tileDto = GetAllTiLeByMien(tile, item.Mien);
                 int no = 0;
                 no++;
-                var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail.Decrypt());
                 if (!detail.IsTinh)
                 {
                     var isUpdate = _calcualation2Service.UpdateTrungThuong(item.HandlByDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, item.Mien, ref detail);
@@ -239,7 +241,7 @@ namespace KQ.Services.HandlMessageService
                     {
                         _calcualation2Service.UpdateSumTrungThuong(ref detail);
                         item.IsTinh = true;
-                        item.Detail = JsonConvert.SerializeObject(detail);
+                        item.Detail = JsonConvert.SerializeObject(detail).Encrypt();
                         updateItem = item;
                     }
                 }
@@ -247,7 +249,7 @@ namespace KQ.Services.HandlMessageService
                 result.HanldDate = item.HandlByDate;
                 result.CreatedDate = item.CreatedDate;
                 result.Details = detail.Details;
-                result.Message = item.Message;
+                result.Message = item.Message.Decrypt();
                 result.Xac.HaiCB = detail.Xac.HaiCB;
                 result.Xac.HaiCD = detail.Xac.HaiCD;
                 result.Xac.DaT = detail.Xac.DaT;
@@ -288,7 +290,7 @@ namespace KQ.Services.HandlMessageService
                     result.Add(new HandlMessageDto
                     {
                         Id = item.ID,
-                        Message = item.Message,
+                        Message = item.Message.Decrypt(),
                         CreatedDate = item.CreatedDate,
                         HandlDate = item.HandlByDate
                     });
@@ -318,7 +320,7 @@ namespace KQ.Services.HandlMessageService
                 foreach (var item in details)
                 {
                     no++;
-                    var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail);
+                    var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail.Decrypt());
                     if (!detail.IsTinh)
                     {
                         var isUpdate = _calcualation2Service.UpdateTrungThuong(request.HandlDate, tileDto.CachTrungDaThang, tileDto.CachTrungDaXien, request.Mien, ref detail);
@@ -326,11 +328,11 @@ namespace KQ.Services.HandlMessageService
                         {
                             _calcualation2Service.UpdateSumTrungThuong(ref detail);
                             item.IsTinh = true;
-                            item.Detail = JsonConvert.SerializeObject(detail);
+                            item.Detail = JsonConvert.SerializeObject(detail).Encrypt();
                             listUpdate.Add(item);
                         }
                     }
-                    result.DetailMessage.Add(new DetailMessage { Xac = detail.Xac,Trung = detail.Trung, Message = item.Message, 
+                    result.DetailMessage.Add(new DetailMessage { Xac = detail.Xac,Trung = detail.Trung, Message = item.Message.Decrypt(), 
                         CreatedDate = item.CreatedDate, HandlByDate = item.HandlByDate, ID = item.ID, No = no});
                     result.Total.Xac.HaiCB += detail.Xac.HaiCB;
                     result.Total.Xac.HaiCD += detail.Xac.HaiCD;

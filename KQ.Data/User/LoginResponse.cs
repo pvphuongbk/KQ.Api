@@ -33,7 +33,7 @@ namespace KQ.DataDto.User
         public bool IsChu { get; set; }
     }
 
-    public class UserUpdateDto : TiLeBase
+    public class UserUpdateDto
     {
         public int UserID { get; set; }
         public string UserName { get; set; }
