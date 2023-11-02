@@ -86,7 +86,7 @@ namespace KQ.Common.Helpers
 			if (string.IsNullOrEmpty(folderName))
 				folderName = SystemFolder;
 			DateTime time = DateTime.Now;
-			var fullPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\Logs.text";
+			var fullPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + $"Logs\\{time.ToString("ddMMyyyy")}.txt";
 			content = $"[{fileStype.GetEnumDescription()}-{folderName}][{time.ToString("dd-MM HH:mm:ss")}] " + content;
 			WriteFile(fullPath, content);
 		}

@@ -8,6 +8,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Reflection;
 using System.Timers;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -275,7 +276,7 @@ namespace KQ.Common.Helpers
             }
             catch (Exception ex)
             {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "Init");
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "Init");
                 return false;
             }
             finally
@@ -842,22 +843,36 @@ namespace KQ.Common.Helpers
         }
         private static void InitDriver()
         {
-            //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            //service.HideCommandPromptWindow = true;
-            var options = new ChromeOptions();
-            options.AddArguments("--window-position=-32000,-32000");
-            drivers = new ChromeDriver("C:\\tesst\\driver", options);
-            //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
-            //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
+            try
+            {
+                //ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+                //service.HideCommandPromptWindow = true;
+                var options = new ChromeOptions();
+                options.AddArguments("--window-position=-32000,-32000");
+                drivers = new ChromeDriver("C:\\tesst\\driver", options);
+                //drivers = new ChromeDriver(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), options);
+                //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
 
-            //FirefoxOptions options = new FirefoxOptions();
-            //options.AddArguments("--headless");
-            ////options.AddArguments("--window-position=-32000,-32000");
-            //drivers = new FirefoxDriver("C:\\tesst\\driver", options);
+                //FirefoxOptions options = new FirefoxOptions();
+                //options.AddArguments("--headless");
+                ////options.AddArguments("--window-position=-32000,-32000");
+                //drivers = new FirefoxDriver("C:\\tesst\\driver", options);
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "InitDriver");
+            }
         }
         private static void DisposeDriver()
         {
-            drivers.Dispose();
+            try
+            {
+                drivers.Dispose();
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "DisposeDriver");
+            }
         }
         private static string GetLinkMienNamByDate(DayOfWeek? day)
         {
