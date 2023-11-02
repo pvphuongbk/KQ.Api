@@ -1,6 +1,7 @@
 ﻿using KQ.Common.Configuration;
 using KQ.Common.Enums;
 using KQ.Common.Extention;
+using System.Reflection;
 using System.Text;
 
 namespace KQ.Common.Helpers
@@ -85,8 +86,8 @@ namespace KQ.Common.Helpers
 			if (string.IsNullOrEmpty(folderName))
 				folderName = SystemFolder;
 			DateTime time = DateTime.Now;
-			var fullPath = AppConfigs.LogPath + string.Format(@"\{0}\{1}\{2}\{3}\{4}", fileStype.GetEnumDescription(), folderName, time.Year, time.Month, time.Day + ".txt");
-			content = $"[{time.ToString("HH:mm:ss")}] " + content;
+			var fullPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\Logs.text";
+			content = $"[{fileStype.GetEnumDescription()}-{folderName}][{time.ToString("dd-MM HH:mm:ss")}] " + content;
 			WriteFile(fullPath, content);
 		}
 	}
