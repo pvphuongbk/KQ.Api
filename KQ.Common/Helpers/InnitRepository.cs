@@ -55,6 +55,7 @@ namespace KQ.Common.Helpers
                     checkN = false;
                     checkT = false;
                     checkB = false;
+                    StoreKQRepository.DeleteDetails();
                 }
                 else if (!checkS && now < new TimeSpan(6, 30, 0))
                 {
