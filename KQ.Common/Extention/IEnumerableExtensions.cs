@@ -258,8 +258,8 @@ namespace KQ.Common.Extention
                 str[1].ToString()+ str[0].ToString() + str[2].ToString() + str[3].ToString(),
                 str[1].ToString()+ str[2].ToString() + str[0].ToString() + str[3].ToString(),
                 str[1].ToString()+ str[2].ToString() + str[3].ToString() + str[0].ToString(),
-                str[1].ToString()+ str[3].ToString() + str[0].ToString() + str[1].ToString(),
-                str[1].ToString()+ str[3].ToString() + str[1].ToString() + str[0].ToString(),
+                str[1].ToString()+ str[3].ToString() + str[0].ToString() + str[2].ToString(),
+                str[1].ToString()+ str[3].ToString() + str[2].ToString() + str[0].ToString(),
 
                 str[2].ToString()+ str[0].ToString() + str[3].ToString() + str[1].ToString(),
                 str[2].ToString()+ str[0].ToString() + str[1].ToString() + str[3].ToString(),

@@ -268,8 +268,8 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic = new ConcurrentDictionary<string, List<int>[]>();
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
-                InitDriver();
-                var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
+                //InitDriver();
+                //var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
 
                 return true;
@@ -282,7 +282,7 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-                DisposeDriver();
+                //DisposeDriver();
             }
 
         }
