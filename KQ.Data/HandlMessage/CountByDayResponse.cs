@@ -8,5 +8,6 @@
         public double MienTrung { get; set; }
         public double MienBac { get; set; }
         public double Total { get; set; }
+        public bool IsChu { get; set; }
     }
 }

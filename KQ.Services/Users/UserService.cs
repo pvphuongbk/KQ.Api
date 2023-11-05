@@ -5,6 +5,8 @@ using KQ.DataAccess.Interface;
 using KQ.DataDto.User;
 using Microsoft.EntityFrameworkCore;
 using KQ.Common.Extention;
+using Microsoft.IdentityModel.Tokens;
+
 namespace KQ.Services.Users
 {
     public class UserService : IUserService
@@ -45,30 +47,53 @@ namespace KQ.Services.Users
         public ResponseBase Login(LoginRequest request)
         {
             ResponseBase response = new ResponseBase();
-            var pass = request.Password.Encrypt();
-            var user = _userRepository.FindAll(x => !x.IsDeleted && (x.Account == request.LoginName || x.PhoneNumber == request.LoginName)
-                                && x.Password == pass)
-                            .Include(x => x.TileUser)
-                            .FirstOrDefault();
-            LoginResponse result = new LoginResponse();
-            if(user != null)
+            try
             {
-                result = _mapper.Map<LoginResponse>(user);
-                result.Phonebooks = new List<Phonebook>();
-                foreach (var u in user.TileUser)
+                var pass = request.Password.Encrypt();
+                var user = _userRepository.FindAll(x => !x.IsDeleted && (x.Account == request.LoginName || x.PhoneNumber == request.LoginName)
+                                    && x.Password == pass)
+                                .Include(x => x.TileUser)
+                                .FirstOrDefault();
+                LoginResponse result = new LoginResponse();
+                if (user != null)
                 {
-                    var dto = new Phonebook
+                    if (string.IsNullOrEmpty(user.Imei))
                     {
-                        ID = u.ID,
-                        Name = u.Name,
-                        PhoneNumber = u.PhoneNumber
-                    };
-                    u.ConvertConfigTo(dto);
-                    result.Phonebooks.Add(dto);
+                        //try
+                        //{
+                        //    _commonUoW.BeginTransaction();
+                        //    user.Imei = request.Imei.Encrypt();
+                        //    _userRepository.Update(user);
+                        //    _commonUoW.Commit();
+                        //}
+                        //catch
+                        //{
+                        //    _commonUoW.RollBack();
+                        //}
+                    }
+
+                    result = _mapper.Map<LoginResponse>(user);
+                    result.Phonebooks = new List<Phonebook>();
+                    foreach (var u in user.TileUser)
+                    {
+                        var dto = new Phonebook
+                        {
+                            ID = u.ID,
+                            Name = u.Name,
+                            PhoneNumber = u.PhoneNumber
+                        };
+                        u.ConvertConfigTo(dto);
+                        result.Phonebooks.Add(dto);
+                    }
+                    result.IsLoginSuccess = true;
                 }
-                result.IsLoginSuccess = true;
+                response.Data = result;
             }
-            response.Data = result;
+            catch (Exception ex)
+            {
+                response = new ResponseBase();
+            }
+
             return response;
         }
         public ResponseBase UserInfo(int userId)

@@ -59,7 +59,7 @@ namespace KQ.Services.HandlMessageService
         {
             try
             {
-                Dictionary<DateTime, List<CountByDayResponse>> dic = new Dictionary<DateTime, List<CountByDayResponse>>();
+                List<CountByDayResponse> lst = new List<CountByDayResponse>();
                 var allDetails = _detailsRepository.FindAll(x => x.HandlByDate.Date >= request.FromDate.Date 
                         && x.HandlByDate.Date <= request.ToDate.Date
                         && x.UserID == request.UserID).ToList();
@@ -67,7 +67,6 @@ namespace KQ.Services.HandlMessageService
                 var tiles = _tileUserRepository.FindAll(x => allDetails.Select(x => x.IDKhach).Distinct().Contains(x.ID)).ToList();
                 for(DateTime handlDate = request.FromDate.Date; handlDate.Date <= request.ToDate.Date; handlDate = handlDate.AddDays(1))
                 {
-                    List<CountByDayResponse> lst = new List<CountByDayResponse>();
                     var details = allDetails.Where(x => x.HandlByDate.Date == handlDate.Date).ToList();
                     foreach (var item in details)
                     {
@@ -88,7 +87,7 @@ namespace KQ.Services.HandlMessageService
                         var counting = lst.FirstOrDefault(x => x.IDKhach == item.IDKhach);
                         if (counting == null)
                         {
-                            counting = new CountByDayResponse { IDKhach = item.IDKhach, Name = tile.Name };
+                            counting = new CountByDayResponse { IDKhach = item.IDKhach, Name = tile.Name, IsChu = tile.IsChu };
                             lst.Add(counting);
                         }
 
@@ -116,15 +115,16 @@ namespace KQ.Services.HandlMessageService
                                 counting.MienBac += tong;
                                 break;
                         }
-
-                        counting.Total = Math.Round(counting.Total, 1);
-                        counting.MienNam = Math.Round(counting.MienNam, 1);
-                        counting.MienTrung = Math.Round(counting.MienTrung, 1);
-                        counting.MienBac = Math.Round(counting.MienBac, 1);
                     }
-                    dic.Add(handlDate, lst);
                 }
 
+                foreach(var item in lst)
+                {
+                    item.Total = Math.Round(item.Total, 1);
+                    item.MienNam = Math.Round(item.MienNam, 1);
+                    item.MienTrung = Math.Round(item.MienTrung, 1);
+                    item.MienBac = Math.Round(item.MienBac, 1);
+                }
                 if (listUpdate.Any())
                 {
                     _commonUoW.BeginTransaction();
@@ -132,7 +132,7 @@ namespace KQ.Services.HandlMessageService
                     _commonUoW.Commit();
                 }
 
-                return new ResponseBase { Data = dic };
+                return new ResponseBase { Data = lst };
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace KQ.Services.HandlMessageService
                     var counting = lst.FirstOrDefault(x => x.IDKhach == item.IDKhach);
                     if (counting == null)
                     {
-                        counting = new CountByDayResponse { IDKhach = item.IDKhach, Name = tile.Name};
+                        counting = new CountByDayResponse { IDKhach = item.IDKhach, Name = tile.Name, IsChu = tile.IsChu };
                         lst.Add(counting);
                     }
 

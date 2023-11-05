@@ -13,6 +13,7 @@ namespace KQ.DataAccess.Entities
         public bool IsDeleted { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
+        public string? Imei { get; set; }
         public virtual List<TileUser> TileUser { get; set; }
     }
 }
