@@ -55,21 +55,25 @@ namespace KQ.Services.Users
                                 .Include(x => x.TileUser)
                                 .FirstOrDefault();
                 LoginResponse result = new LoginResponse();
-                if (user != null)
+                if (user != null && !string.IsNullOrEmpty(request.Imei))
                 {
                     if (string.IsNullOrEmpty(user.Imei))
                     {
-                        //try
-                        //{
-                        //    _commonUoW.BeginTransaction();
-                        //    user.Imei = request.Imei.Encrypt();
-                        //    _userRepository.Update(user);
-                        //    _commonUoW.Commit();
-                        //}
-                        //catch
-                        //{
-                        //    _commonUoW.RollBack();
-                        //}
+                        try
+                        {
+                            _commonUoW.BeginTransaction();
+                            user.Imei = request.Imei;
+                            _userRepository.Update(user);
+                            _commonUoW.Commit();
+                        }
+                        catch
+                        {
+                            _commonUoW.RollBack();
+                        }
+                    }
+                    else if(request.Imei != user.Imei)
+                    {
+                        return response;
                     }
 
                     result = _mapper.Map<LoginResponse>(user);
