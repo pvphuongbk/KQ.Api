@@ -54,7 +54,7 @@ namespace KQ.Common.Helpers
                         dic[(DayOfWeek)i][MienEnum.MT].TryAdd(chanel.Key, new List<string>
                         {
                             "Huế",
-                            "ttHue",
+                            "tthue",
                             "tth",
                             "hue",
                         });
@@ -237,11 +237,11 @@ namespace KQ.Common.Helpers
                             new ChanelDto { Key = 6, Value = "Khánh Hòa" },
                 };
             if (day == DayOfWeek.Thursday)
-                return new ChanelDto[]
+                return new ChanelDto[] 
                 {
-                            new ChanelDto { Key = 5, Value = "Quảng Bình" },
-                            new ChanelDto { Key = 6, Value = "Bình Định" },
-                            new ChanelDto { Key = 7, Value = "Quảng Trị" }
+                            new ChanelDto { Key = 5, Value = "Bình Định" },
+                            new ChanelDto { Key = 6, Value = "Quảng Trị" },
+                            new ChanelDto { Key = 7, Value = "Quảng Bình" }
                 };
             if (day == DayOfWeek.Friday)
                 return new ChanelDto[]
@@ -250,7 +250,7 @@ namespace KQ.Common.Helpers
                             new ChanelDto { Key = 6, Value = "Ninh Thuận" }
                 };
             if (day == DayOfWeek.Saturday)
-                return new ChanelDto[]
+                return new ChanelDto[]  
                 {
                             new ChanelDto { Key = 5, Value = "Đà Nẵng" },
                             new ChanelDto { Key = 6, Value = "Quãng Ngãi" },
@@ -258,8 +258,8 @@ namespace KQ.Common.Helpers
                 };
             return new ChanelDto[]
                 {
-                            new ChanelDto { Key = 5, Value = "Khánh Hòa" },
-                            new ChanelDto { Key = 6, Value = "Kon Tum" },
+                            new ChanelDto { Key = 5, Value = "Kon Tum" },
+                            new ChanelDto { Key = 6, Value = "Khánh Hòa" },
                             new ChanelDto { Key = 7, Value = "Huế" }
                 };
         }

@@ -52,5 +52,12 @@ namespace KQ.Api.Controllers
             var items = _commonService.ReadLogs(date);
             return items;
         }
+
+        [HttpGet("update-store")]
+        public bool UpdateStore(DateTime start, DateTime end)
+        {
+            var items = InnitRepository.InsertUpdateManyDate(start, end);
+            return items;
+        }
     }
 }

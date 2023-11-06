@@ -10,7 +10,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 using System.Timers;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace KQ.Common.Helpers
 {
@@ -101,7 +100,7 @@ namespace KQ.Common.Helpers
                         {
                             while (!checkN && countCheck < 2)
                             {
-                                checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkN && countCheck < 3)
                                     Thread.Sleep(5000);
@@ -115,7 +114,7 @@ namespace KQ.Common.Helpers
                             {
                                 while (!checkN && countCheck < 2)
                                 {
-                                    checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkN && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -317,7 +316,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkN && countCheck < 3)
                 {
-                    checkN = UpdateKQMN(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkN = UpdateKQMNMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkN && countCheck < 3)
                         Thread.Sleep(5000);
@@ -337,7 +336,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkT && countCheck < 3)
                 {
-                    checkT = UpdateKQMT(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkT = UpdateKQMTMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkT && countCheck < 3)
                         Thread.Sleep(5000);
@@ -357,7 +356,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkB && countCheck < 3)
                 {
-                    checkB = UpdateKQMB(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkB = UpdateKQMBMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkB && countCheck < 3)
                         Thread.Sleep(5000);
@@ -543,13 +542,17 @@ namespace KQ.Common.Helpers
             {
             }
         }
-        public static bool UpdateKQMBMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        public static bool UpdateKQMBMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
             {
                 var now = DateTime.Now.TimeOfDay;
 
                 string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-bac.html";
+                if (date != null)
+                {
+                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-trung/{date.Value.ToString("dd-MM-yyyy")}.html";
+                }
                 drivers.Navigate().GoToUrl(link);
                 List<int> sumListTemp = new List<int>();
                 List<int> baCangListTemp = new List<int>();
@@ -604,13 +607,41 @@ namespace KQ.Common.Helpers
             {
             }
         }
-        public static bool UpdateKQMTMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        public static bool InsertUpdateManyDate(DateTime startDate, DateTime endDate)
+        {
+            InitDriver();
+            for (DateTime date = startDate; date<= endDate; date = date.AddDays(1))
+            {
+                List<int>[] sumList = new List<int>[8];
+                List<int>[] sumBaList = new List<int>[8];
+                List<int>[] sumBonList = new List<int>[8];
+
+                UpdateKQMNMinhNgoc(date.DayOfWeek, sumList,  sumBaList, sumBonList, date);
+                UpdateKQMTMinhNgoc(date.DayOfWeek, sumList, sumBaList, sumBonList, date);
+                UpdateKQMBMinhNgoc(date.DayOfWeek, sumList, sumBaList, sumBonList, date);
+                if (sumList.Any(x => x != null) && sumList.Any(x => x != null) && sumList.Any(x => x != null))
+                {
+                    var haicon = JsonConvert.SerializeObject(sumList);
+                    var bacon = JsonConvert.SerializeObject(sumBaList);
+                    var boncon = JsonConvert.SerializeObject(sumBonList);
+
+                    StoreKQRepository.AddOrUpdateStoreKq(date, haicon, bacon, boncon);
+                }
+            }
+            DisposeDriver();
+            return true;
+        }
+        public static bool UpdateKQMTMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
             {
                 var now = DateTime.Now.TimeOfDay;
 
                 string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
+                if (date != null)
+                {
+                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-trung/{date.Value.ToString("dd-MM-yyyy")}.html";
+                }
                 drivers.Navigate().GoToUrl(link);
                 List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
@@ -680,13 +711,18 @@ namespace KQ.Common.Helpers
             }
         }
 
-        public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList)
+        public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
             {
                 var now = DateTime.Now.TimeOfDay;
-
+                //01-11-2023
                 string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-nam.html";
+                if(date != null)
+                {
+                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/{date.Value.ToString("dd-MM-yyyy")}.html";
+                }
+                
                 drivers.Navigate().GoToUrl(link);
                 List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };

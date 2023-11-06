@@ -35,5 +35,26 @@
             var kq2 = DapperExtensions.ExecuteByQuery(insertQuery2, parram2);
             return kq > 0;
         }
+
+        public static bool AddOrUpdateStoreKq(DateTime CreatedDate, string HaiCon, string BaCon, string BonCon)
+        {
+            string insertQuery = @"if (select COUNT(id) from StoreKQ where CAST(CreatedDate as date) = CAST(@CreatedDate as date)) > 0
+	                begin
+		                update StoreKQ set HaiCon = @HaiCon, BaCon = @BaCon, BonCon = @BonCon
+	                end
+                    else
+  	                begin
+		                insert into StoreKQ (CreatedDate,HaiCon, BaCon, BonCon) values (@CreatedDate,@HaiCon,@BaCon,@BonCon)
+	                end";
+            var parram = new
+            {
+                CreatedDate,
+                HaiCon,
+                BaCon,
+                BonCon
+            };
+            var kq = DapperExtensions.ExecuteByQuery(insertQuery, parram);
+            return kq > 0;
+        }
     }
 }
