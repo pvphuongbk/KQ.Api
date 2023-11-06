@@ -2,6 +2,7 @@
 using KQ.Data.Base;
 using KQ.Services.CommonServices;
 using KQ.Common.Helpers;
+using KQ.Common.Extention;
 
 namespace KQ.Api.Controllers
 {
@@ -58,6 +59,11 @@ namespace KQ.Api.Controllers
         {
             var items = InnitRepository.InsertUpdateManyDate(start, end);
             return items;
+        }
+        [HttpGet("en")]
+        public string EnCode(string en)
+        {
+            return en.Encrypt();
         }
     }
 }
