@@ -73,7 +73,7 @@ namespace KQ.Services.Users
                     }
                     else if(request.Imei != user.Imei)
                     {
-                        return response;
+                        return new ResponseBase { Code = 400, Message = "Đăng nhập sai thiết bị" }; ;
                     }
 
                     result = _mapper.Map<LoginResponse>(user);
