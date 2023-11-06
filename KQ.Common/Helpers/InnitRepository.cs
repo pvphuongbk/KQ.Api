@@ -85,7 +85,7 @@ namespace KQ.Common.Helpers
                         _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                     }
                 }
-                else if (!checkN && now > new TimeSpan(16, 31, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkN && now > new TimeSpan(16, 40, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -95,7 +95,7 @@ namespace KQ.Common.Helpers
                     // Cập nhật đài miền nam
                     try
                     {
-                        dai = "Minh Ngọc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkN && countCheck < 2)
@@ -106,7 +106,7 @@ namespace KQ.Common.Helpers
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkN && now > new TimeSpan(16, 45, 0))
+                        if (!checkN && now > new TimeSpan(17, 0, 0))
                         {
                             countCheck = 0;
                             dai = "Đại phát";
@@ -137,7 +137,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkT && now > new TimeSpan(17, 31, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkT && now > new TimeSpan(17, 40, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -147,7 +147,7 @@ namespace KQ.Common.Helpers
                     try
                     {
                         // Cập nhật đài miền trung
-                        dai = "Minh Ngọc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkT && countCheck < 2)
@@ -158,7 +158,7 @@ namespace KQ.Common.Helpers
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkT && now > new TimeSpan(17, 45, 0))
+                        if (!checkT && now > new TimeSpan(18, 0, 0))
                         {
                             countCheck = 0;
                             dai = "Đại phát";
@@ -189,7 +189,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkB && now > new TimeSpan(18, 31, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkB && now > new TimeSpan(18, 40, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -199,7 +199,7 @@ namespace KQ.Common.Helpers
                     // Cập nhật đài miền bắc
                     try
                     {
-                        dai = "Minh Ngọc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkB && countCheck < 3)
@@ -210,7 +210,7 @@ namespace KQ.Common.Helpers
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkB && now > new TimeSpan(18, 45, 0))
+                        if (!checkB && now > new TimeSpan(19, 0, 0))
                         {
                             countCheck = 0;
                             dai = "Đại phát";
