@@ -61,6 +61,7 @@ namespace KQ.Common.Helpers
                     }
                     else
                     {
+                        var code = GetCode(chanel.Value);
                         var ch = chanel.Value.RemoveUnicode();
                         var notLower = ch;
                         ch = ch.ToLower();
@@ -74,6 +75,12 @@ namespace KQ.Common.Helpers
                             ch.GetFirstCharOnlyForFisrt(),
                             ch.Replace(" ",string.Empty),
                         });
+                        if (chanel.Value == "Đắk Nông")
+                        {
+                            dic[(DayOfWeek)i][MienEnum.MT][chanel.Key][3] = "dno";
+                        }
+                        else if (!string.IsNullOrEmpty(code))
+                            dic[(DayOfWeek)i][MienEnum.MT][chanel.Key].Add(code);
                     }
                 }
                 dic[(DayOfWeek)i].TryAdd(MienEnum.MB, new Dictionary<int, List<string>>());
@@ -276,6 +283,23 @@ namespace KQ.Common.Helpers
             }
 
             return result;
+        }
+
+        public static string GetCode(string chanel)
+        {
+            if (chanel == "Đắk Lắk")
+                return "dlk";
+            else if (chanel == "Quảng Nam")
+                return "qnm";
+            else if (chanel == "Đà Nẵng")
+                return "dng";
+            else if (chanel == "Bình Định")
+                return "bdi";
+            else if (chanel == "Quãng Ngãi")
+                return "qng";
+            else if (chanel == "Đắk Nông")
+                return "dno";
+            return null;
         }
     }
 }
