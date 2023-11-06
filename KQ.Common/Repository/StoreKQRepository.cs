@@ -40,7 +40,7 @@
         {
             string insertQuery = @"if (select COUNT(id) from StoreKQ where CAST(CreatedDate as date) = CAST(@CreatedDate as date)) > 0
 	                begin
-		                update StoreKQ set HaiCon = @HaiCon, BaCon = @BaCon, BonCon = @BonCon
+		                update StoreKQ set HaiCon = @HaiCon, BaCon = @BaCon, BonCon = @BonCon where CAST(CreatedDate as date) = CAST(@CreatedDate as date)
 	                end
                     else
   	                begin
