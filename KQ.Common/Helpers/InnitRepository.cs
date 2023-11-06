@@ -15,7 +15,7 @@ namespace KQ.Common.Helpers
 {
     public class InnitRepository
     {
-        static double _time = 120000;
+        static double _time = 60000;
         static bool checkS = false;
         static bool checkN = false;
         static bool checkT = false;
@@ -48,7 +48,7 @@ namespace KQ.Common.Helpers
             {
                 var now = DateTime.Now.TimeOfDay;
                 var nowT = DateTime.Now;
-                if (now < new TimeSpan(0, 3, 0))
+                if (now < new TimeSpan(0, 2, 0))
                 {
                     checkS = false;
                     checkN = false;
@@ -85,7 +85,7 @@ namespace KQ.Common.Helpers
                         _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                     }
                 }
-                else if (!checkN && now > new TimeSpan(16, 40, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkN && now > new TimeSpan(16, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -137,7 +137,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkT && now > new TimeSpan(17, 40, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkT && now > new TimeSpan(17, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -189,7 +189,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkB && now > new TimeSpan(18, 40, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!checkB && now > new TimeSpan(18, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
@@ -269,7 +269,7 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
                 var now = DateTime.Now.TimeOfDay;
-                if (now < new TimeSpan(18, 58, 0))
+                if (now < new TimeSpan(18, 59, 0))
                     return true;
                 InitDriver();
                 isCheck = true;

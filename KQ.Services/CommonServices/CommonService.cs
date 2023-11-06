@@ -154,10 +154,11 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "dc 10b10xc10", MessageLoi = "10xc10", Mien = MienEnum.MN},                                               //73
                 new CalTest2RequestDto{SynTaxe = "dc 122b10dd10n", MessageLoi = "10dd10n", Mien = MienEnum.MN},                                            //74
                 new CalTest2RequestDto{SynTaxe = "3₫ 11 b10ndd10n.00k05 b10.123 xc10n.56789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
+                new CalTest2RequestDto{SynTaxe = " 3d 11 b10ndd10n.00k05 b10n.123 xc10n.6789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 75)
+                if(i == 76)
                 {
 
                 }
