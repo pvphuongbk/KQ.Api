@@ -532,12 +532,12 @@ namespace KQ.Common.Helpers
                         // Cập nhật 3 số
                         sumBaList[4] = baCangListTemp[1];
                         sumBaList[5] = baCangListTemp[2];
-                        sumBaList[6] = baCangListTemp[3];
+                        sumBaList[6] = baCangListTemp[0];
 
                         // Cập nhật 4 số
                         sumBonList[4] = bonSoListTemp[1];
                         sumBonList[5] = bonSoListTemp[2];
-                        sumBonList[6] = bonSoListTemp[3];
+                        sumBonList[6] = bonSoListTemp[0];
                     }
                     else if(day == DayOfWeek.Sunday)
                     {
@@ -547,13 +547,13 @@ namespace KQ.Common.Helpers
                         sumList[6] = sumListTemp[2];
 
                         // Cập nhật 3 số
-                        sumBaList[4] = baCangListTemp[0];
-                        sumBaList[5] = baCangListTemp[1];
+                        sumBaList[4] = baCangListTemp[1];
+                        sumBaList[5] = baCangListTemp[0];
                         sumBaList[6] = baCangListTemp[2];
 
                         // Cập nhật 4 số
-                        sumBonList[4] = bonSoListTemp[0];
-                        sumBonList[5] = bonSoListTemp[1];
+                        sumBonList[4] = bonSoListTemp[1];
+                        sumBonList[5] = bonSoListTemp[0];
                         sumBonList[6] = bonSoListTemp[2];
                     }
                     else
