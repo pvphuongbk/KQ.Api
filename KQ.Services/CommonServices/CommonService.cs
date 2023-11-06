@@ -102,7 +102,7 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "2d dd100n  72 27 dd100n bao50n 690 xc30n 2k 23 36 bao10", MessageLoi = "dd100n"},                        //24
                 new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n VL,la 23 36 bao10", MessageLoi = "VL,la"},                             //25
                 new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10", MessageLoi = "2t"},                                   //26
-                new CalTest2RequestDto{SynTaxe = "2d  45678 bao10", MessageLoi = "45678 bao10"},                                                           //27
+                new CalTest2RequestDto{SynTaxe = "2d  45678 bao10", MessageLoi = "45678"},                                                                 //27
                 new CalTest2RequestDto{SynTaxe = "2d  4567 xc10", MessageLoi = "4567 xc10"},                                                               //28
                 new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10", MessageLoi = "112khc563"},                                          //29
                 new CalTest2RequestDto{SynTaxe = "2d  456 dd10", MessageLoi = "456 dd10"},                                                                 //30
@@ -153,10 +153,11 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "2d 22 34 14 dav 13n bl 10n", Xac = 3888, Trung = 10, Mien = MienEnum.MN},                                //72
                 new CalTest2RequestDto{SynTaxe = "dc 10b10xc10", MessageLoi = "10xc10", Mien = MienEnum.MN},                                               //73
                 new CalTest2RequestDto{SynTaxe = "dc 122b10dd10n", MessageLoi = "10dd10n", Mien = MienEnum.MN},                                            //74
+                new CalTest2RequestDto{SynTaxe = "3₫ 11 b10ndd10n.00k05 b10.123 xc10n.56789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 74)
+                if(i == 75)
                 {
 
                 }

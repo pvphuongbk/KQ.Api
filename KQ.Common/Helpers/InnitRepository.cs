@@ -250,6 +250,7 @@ namespace KQ.Common.Helpers
         }
         public static bool InitAllChanel()
         {
+            bool isCheck = false;
             try
             {
                 if (_totalDic == null)
@@ -267,10 +268,13 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic = new ConcurrentDictionary<string, List<int>[]>();
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
+                var now = DateTime.Now.TimeOfDay;
+                if (now < new TimeSpan(18, 58, 0))
+                    return true;
                 InitDriver();
+                isCheck = true;
                 var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
-
                 return true;
 
             }
@@ -281,7 +285,8 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-                DisposeDriver();
+                if(isCheck)
+                    DisposeDriver();
             }
 
         }
@@ -306,9 +311,6 @@ namespace KQ.Common.Helpers
         {
             try
             {
-                var now = DateTime.Now.TimeOfDay;
-                if (now < new TimeSpan(18, 58, 0))
-                    return true;
                 Stopwatch s1 = new Stopwatch();
                 s1.Start();
                 string key = day != null ? day.ToString() : "Now";

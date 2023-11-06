@@ -131,6 +131,13 @@ namespace KQ.Services.Calcualation
                                 break;
                             }
                         }
+                        else if (array[i].Length > 4)
+                        {
+                            // lỗi
+                            var (startI, endI) = GetIndexForError(i, i+1, array, false);
+                            error = new Error { Message = "Số chơi không đúng", Count = endI, StartIndex = startI };
+                            break;
+                        }
                         else
                         {
                             isCompleted = false;
@@ -453,6 +460,10 @@ namespace KQ.Services.Calcualation
                 current += array[j].Length;
                 if (j == i)
                     end = current;
+            }
+            if (end <= start)
+            {
+                return (start, array[i].Length);
             }
             return (start, end - start);
         }
