@@ -405,7 +405,7 @@ namespace KQ.Common.Helpers
                     checkMaDB = false;
                     continue;
                 }
-                if (cellText.Contains("G"))
+                if (cellText.Contains("G") && cellText.Contains("."))
                     continue;
                 if (cellText.Contains("Mã"))
                 {
