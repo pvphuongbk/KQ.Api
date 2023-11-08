@@ -1019,58 +1019,58 @@ namespace KQ.Common.Helpers
         private static string GetLinkMienNamByDate(DayOfWeek? day)
         {
             string baseLink = "https://xosodaiphat.com/";
-            if (day == DayOfWeek.Monday)
-                return baseLink + "xsmn-thu-2.html";
-            if (day == DayOfWeek.Tuesday)
-                return baseLink + "xsmn-thu-3.html";
-            if (day == DayOfWeek.Wednesday)
-                return baseLink + "xsmn-thu-4.html";
-            if (day == DayOfWeek.Thursday)
-                return baseLink + "xsmn-thu-5.html";
-            if (day == DayOfWeek.Friday)
-                return baseLink + "xsmn-thu-6.html";
-            if (day == DayOfWeek.Saturday)
-                return baseLink + "xsmn-thu-7.html";
-            if (day == DayOfWeek.Sunday)
-                return baseLink + "xsmn-chu-nhat-cn.html";
+            //if (day == DayOfWeek.Monday)
+            //    return baseLink + "xsmn-thu-2.html";
+            //if (day == DayOfWeek.Tuesday)
+            //    return baseLink + "xsmn-thu-3.html";
+            //if (day == DayOfWeek.Wednesday)
+            //    return baseLink + "xsmn-thu-4.html";
+            //if (day == DayOfWeek.Thursday)
+            //    return baseLink + "xsmn-thu-5.html";
+            //if (day == DayOfWeek.Friday)
+            //    return baseLink + "xsmn-thu-6.html";
+            //if (day == DayOfWeek.Saturday)
+            //    return baseLink + "xsmn-thu-7.html";
+            //if (day == DayOfWeek.Sunday)
+            //    return baseLink + "xsmn-chu-nhat-cn.html";
             return baseLink + "xsmn-xo-so-mien-nam.html";
         }
         private static string GetLinkMienTrungByDate(DayOfWeek? day)
         {
             string baseLink = "https://xosodaiphat.com/";
-            if (day == DayOfWeek.Monday)
-                return baseLink + "xsmt-thu-2.html";
-            if (day == DayOfWeek.Tuesday)
-                return baseLink + "xsmt-thu-3.html";
-            if (day == DayOfWeek.Wednesday)
-                return baseLink + "xsmt-thu-4.html";
-            if (day == DayOfWeek.Thursday)
-                return baseLink + "xsmt-thu-5.html";
-            if (day == DayOfWeek.Friday)
-                return baseLink + "xsmt-thu-6.html";
-            if (day == DayOfWeek.Saturday)
-                return baseLink + "xsmt-thu-7.html";
-            if (day == DayOfWeek.Sunday)
-                return baseLink + "xsmt-chu-nhat-cn.html";
+            //if (day == DayOfWeek.Monday)
+            //    return baseLink + "xsmt-thu-2.html";
+            //if (day == DayOfWeek.Tuesday)
+            //    return baseLink + "xsmt-thu-3.html";
+            //if (day == DayOfWeek.Wednesday)
+            //    return baseLink + "xsmt-thu-4.html";
+            //if (day == DayOfWeek.Thursday)
+            //    return baseLink + "xsmt-thu-5.html";
+            //if (day == DayOfWeek.Friday)
+            //    return baseLink + "xsmt-thu-6.html";
+            //if (day == DayOfWeek.Saturday)
+            //    return baseLink + "xsmt-thu-7.html";
+            //if (day == DayOfWeek.Sunday)
+            //    return baseLink + "xsmt-chu-nhat-cn.html";
             return baseLink + "xsmt-xo-so-mien-trung.html";
         }
         private static string GetLinkMienBacByDate(DayOfWeek? day)
         {
             string baseLink = "https://xosodaiphat.com/";
-            if (day == DayOfWeek.Monday)
-                return baseLink + "xsmb-thu-2.html";
-            if (day == DayOfWeek.Tuesday)
-                return baseLink + "xsmb-thu-3.html";
-            if (day == DayOfWeek.Wednesday)
-                return baseLink + "xsmb-thu-4.html";
-            if (day == DayOfWeek.Thursday)
-                return baseLink + "xsmb-thu-5.html";
-            if (day == DayOfWeek.Friday)
-                return baseLink + "xsmb-thu-6.html";
-            if (day == DayOfWeek.Saturday)
-                return baseLink + "xsmb-thu-7.html";
-            if (day == DayOfWeek.Sunday)
-                return baseLink + "xsmb-chu-nhat-cn.html";
+            //if (day == DayOfWeek.Monday)
+            //    return baseLink + "xsmb-thu-2.html";
+            //if (day == DayOfWeek.Tuesday)
+            //    return baseLink + "xsmb-thu-3.html";
+            //if (day == DayOfWeek.Wednesday)
+            //    return baseLink + "xsmb-thu-4.html";
+            //if (day == DayOfWeek.Thursday)
+            //    return baseLink + "xsmb-thu-5.html";
+            //if (day == DayOfWeek.Friday)
+            //    return baseLink + "xsmb-thu-6.html";
+            //if (day == DayOfWeek.Saturday)
+            //    return baseLink + "xsmb-thu-7.html";
+            //if (day == DayOfWeek.Sunday)
+            //    return baseLink + "xsmb-chu-nhat-cn.html";
             return baseLink + "xsmb-xo-so-mien-bac.html";
         }
         private static DayOfWeek GetDayCheck(DayOfWeek? day, RegionEnum region)
