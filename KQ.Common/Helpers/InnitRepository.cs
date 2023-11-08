@@ -7,8 +7,10 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Concurrent;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 using System.Timers;
 
 namespace KQ.Common.Helpers
@@ -389,6 +391,55 @@ namespace KQ.Common.Helpers
             }
 
         }
+        private static bool CheckKqMB(string link, List<int> sumListTemp, List<int> baCangListTemp, List<int> bonSoListTemp)
+        {
+            int count = 0;
+            bool? checkMaDB = null;
+            drivers.Navigate().GoToUrl(link);
+            IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
+            foreach (IWebElement element in allElement)
+            {
+                string cellText = element.Text;
+                if (cellText.Contains("G"))
+                    continue;
+                if (cellText.Contains("Mã"))
+                {
+                    checkMaDB = true;
+                    continue;
+                }
+                if (checkMaDB == true)
+                {
+                    checkMaDB = false;
+                    continue;
+                }
+                count++;
+                foreach (var txt in cellText.Split("\r\n"))
+                {
+                    int num = 0;
+                    var check = int.TryParse(txt, out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp.Add(numLo);
+                        if (count < 8)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp.Add(numBa);
+                        }
+                        if (count < 7)
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp.Add(numBa);
+                        }
+                    }
+                }
+                if (count == 8)
+                    break;
+            }
+            if (sumListTemp != null && sumListTemp.Count == 27)
+                return true;
+            return false;
+        }
         private static bool UpdateKQMB(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
@@ -399,63 +450,30 @@ namespace KQ.Common.Helpers
                 {
                     link = @$"https://www.xosodaiphat.com/xsmb-{date.Value.ToString("dd-MM-yyyy")}.html";
                 }
-                drivers.Navigate().GoToUrl(link);
+                List<int> sumListTemp1 = new List<int>();
+                List<int> baCangListTemp1 = new List<int>();
+                List<int> bonSoListTemp1 = new List<int>();
+
                 List<int> sumListTemp = new List<int>();
                 List<int> baCangListTemp = new List<int>();
                 List<int> bonSoListTemp = new List<int>();
-                int count = 0;
-                bool? checkMaDB = null;
-                IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
-                foreach (IWebElement element in allElement)
+                if (CheckKqMB(link, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
-                    string cellText = element.Text;
-                    if (cellText.Contains("G"))
-                        continue;
-                    if (cellText.Contains("Mã"))
+                    if(CheckKqMB(link, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
-                        checkMaDB = true;
-                        continue;
-                    }
-                    if (checkMaDB == true)
-                    {
-                        checkMaDB = false;
-                        continue;
-                    }
-                    count++;
-                    foreach (var txt in cellText.Split("\r\n"))
-                    {
-                        int num = 0;
-                        var check = int.TryParse(txt, out num);
-                        if (check)
+                        if(bonSoListTemp1.First() == bonSoListTemp.First())
                         {
-                            var numLo = num % 100;
-                            sumListTemp.Add(numLo);
-                            if (count < 8)
-                            {
-                                var numBa = num % 1000;
-                                baCangListTemp.Add(numBa);
-                            }
-                            if (count < 7)
-                            {
-                                var numBa = num % 10000;
-                                bonSoListTemp.Add(numBa);
-                            }
+                            // Update 2 số
+                            sumList[7] = sumListTemp;
+
+                            // Update 3 số
+                            sumBaList[7] = baCangListTemp;
+
+                            // Update 4 số
+                            sumBonList[7] = bonSoListTemp;
+                            return true;
                         }
                     }
-                    if (count == 8)
-                        break;
-                }
-                if (sumListTemp != null && sumListTemp.Count == 27)
-                {
-                    // Update 2 số
-                    sumList[7] = sumListTemp;
-
-                    // Update 3 số
-                    sumBaList[7] = baCangListTemp;
-
-                    // Update 4 số
-                    sumBonList[7] = bonSoListTemp;
-                    return true;
                 }
 
                 return false;
@@ -469,6 +487,49 @@ namespace KQ.Common.Helpers
             {
             }
         }
+        private static bool CheckKqMT(DayOfWeek? day, string link, int max, int maxLine, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp)
+        {
+            drivers.Navigate().GoToUrl(link);
+            int count = 0;
+            int countList = 0;
+            IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
+            foreach (IWebElement element in allElement)
+            {
+                string cellText = element.Text;
+                if (cellText.Contains("G") || cellText.Contains("Đ"))
+                    continue;
+                count++;
+                foreach (var txt in cellText.Split("\r\n"))
+                {
+                    int num = 0;
+                    var check = int.TryParse(txt, out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp[countList].Add(numLo);
+                        if (count > max)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp[countList].Add(numBa);
+                        }
+                        if (count > (max * 2))
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp[countList].Add(numBa);
+                        }
+                    }
+                }
+                countList++;
+                if (count == maxLine)
+                    break;
+                if (countList == max)
+                    countList = 0;
+            }
+            if (sumListTemp.Length == 3 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && day != DayOfWeek.Sunday) || sumListTemp[2].Count == 18))
+                return true;
+            return false;
+        }
         private static bool UpdateKQMT(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
@@ -479,103 +540,77 @@ namespace KQ.Common.Helpers
                 {
                     link = @$"https://www.xosodaiphat.com/xsmt-{date.Value.ToString("dd-MM-yyyy")}.html";
                 }
-                drivers.Navigate().GoToUrl(link);
+                List<int>[] sumListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+
                 List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                int count = 0;
-                int countList = 0;
                 DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MT);
                 int max = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 3 : 2;
                 int maxLine = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 27 : 18;
-                IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
-                foreach (IWebElement element in allElement)
+                if(CheckKqMT(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
-                    string cellText = element.Text;
-                    if (cellText.Contains("G") || cellText.Contains("Đ"))
-                        continue;
-                    count++;
-                    foreach (var txt in cellText.Split("\r\n"))
+                    if (CheckKqMT(day, link, max, maxLine, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
-                        int num = 0;
-                        var check = int.TryParse(txt, out num);
-                        if (check)
+                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last()
+                            && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && dayCheck != DayOfWeek.Sunday) || bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()))
                         {
-                            var numLo = num % 100;
-                            sumListTemp[countList].Add(numLo);
-                            if (count > max)
+                            if (day == DayOfWeek.Thursday)
                             {
-                                var numBa = num % 1000;
-                                baCangListTemp[countList].Add(numBa);
+                                // Cập nhật 2 số
+                                sumList[4] = sumListTemp[1];
+                                sumList[5] = sumListTemp[2];
+                                sumList[6] = sumListTemp[0];
+
+                                // Cập nhật 3 số
+                                sumBaList[4] = baCangListTemp[1];
+                                sumBaList[5] = baCangListTemp[2];
+                                sumBaList[6] = baCangListTemp[0];
+
+                                // Cập nhật 4 số
+                                sumBonList[4] = bonSoListTemp[1];
+                                sumBonList[5] = bonSoListTemp[2];
+                                sumBonList[6] = bonSoListTemp[0];
                             }
-                            if (count > (max * 2))
+                            else if (day == DayOfWeek.Sunday)
                             {
-                                var numBa = num % 10000;
-                                bonSoListTemp[countList].Add(numBa);
+                                // Cập nhật 2 số
+                                sumList[4] = sumListTemp[1];
+                                sumList[5] = sumListTemp[0];
+                                sumList[6] = sumListTemp[2];
+
+                                // Cập nhật 3 số
+                                sumBaList[4] = baCangListTemp[1];
+                                sumBaList[5] = baCangListTemp[0];
+                                sumBaList[6] = baCangListTemp[2];
+
+                                // Cập nhật 4 số
+                                sumBonList[4] = bonSoListTemp[1];
+                                sumBonList[5] = bonSoListTemp[0];
+                                sumBonList[6] = bonSoListTemp[2];
                             }
+                            else
+                            {
+                                // Cập nhật 2 số
+                                sumList[4] = sumListTemp[0];
+                                sumList[5] = sumListTemp[1];
+                                sumList[6] = sumListTemp[2];
+
+                                // Cập nhật 3 số
+                                sumBaList[4] = baCangListTemp[0];
+                                sumBaList[5] = baCangListTemp[1];
+                                sumBaList[6] = baCangListTemp[2];
+
+                                // Cập nhật 4 số
+                                sumBonList[4] = bonSoListTemp[0];
+                                sumBonList[5] = bonSoListTemp[1];
+                                sumBonList[6] = bonSoListTemp[2];
+                            }
+                            return true;
                         }
                     }
-                    countList++;
-                    if (count == maxLine)
-                        break;
-                    if (countList == max)
-                        countList = 0;
-                }
-                if (sumListTemp.Length == 3 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
-                         && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && dayCheck != DayOfWeek.Sunday) || sumListTemp[2].Count == 18))
-                {
-                    if(day == DayOfWeek.Thursday)
-                    {
-                        // Cập nhật 2 số
-                        sumList[4] = sumListTemp[1];
-                        sumList[5] = sumListTemp[2];
-                        sumList[6] = sumListTemp[0];
-
-                        // Cập nhật 3 số
-                        sumBaList[4] = baCangListTemp[1];
-                        sumBaList[5] = baCangListTemp[2];
-                        sumBaList[6] = baCangListTemp[0];
-
-                        // Cập nhật 4 số
-                        sumBonList[4] = bonSoListTemp[1];
-                        sumBonList[5] = bonSoListTemp[2];
-                        sumBonList[6] = bonSoListTemp[0];
-                    }
-                    else if(day == DayOfWeek.Sunday)
-                    {
-                        // Cập nhật 2 số
-                        sumList[4] = sumListTemp[1];
-                        sumList[5] = sumListTemp[0];
-                        sumList[6] = sumListTemp[2];
-
-                        // Cập nhật 3 số
-                        sumBaList[4] = baCangListTemp[1];
-                        sumBaList[5] = baCangListTemp[0];
-                        sumBaList[6] = baCangListTemp[2];
-
-                        // Cập nhật 4 số
-                        sumBonList[4] = bonSoListTemp[1];
-                        sumBonList[5] = bonSoListTemp[0];
-                        sumBonList[6] = bonSoListTemp[2];
-                    }
-                    else
-                    {
-                        // Cập nhật 2 số
-                        sumList[4] = sumListTemp[0];
-                        sumList[5] = sumListTemp[1];
-                        sumList[6] = sumListTemp[2];
-
-                        // Cập nhật 3 số
-                        sumBaList[4] = baCangListTemp[0];
-                        sumBaList[5] = baCangListTemp[1];
-                        sumBaList[6] = baCangListTemp[2];
-
-                        // Cập nhật 4 số
-                        sumBonList[4] = bonSoListTemp[0];
-                        sumBonList[5] = bonSoListTemp[1];
-                        sumBonList[6] = bonSoListTemp[2];
-                    }
-                    return true;
                 }
 
                 return false;
@@ -842,6 +877,51 @@ namespace KQ.Common.Helpers
             }
         }
 
+        private static bool GetKqMienNam(DayOfWeek? day,string link, int max, int maxLine, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp)
+        {
+            drivers.Navigate().GoToUrl(link);
+            int count = 0;
+            int countList = 0;
+            IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
+            foreach (IWebElement element in allElement)
+            {
+                string cellText = element.Text;
+                if (cellText.Contains("G") || cellText.Contains("Đ"))
+                    continue;
+                count++;
+                foreach (var txt in cellText.Split("\r\n"))
+                {
+                    int num = 0;
+                    var check = int.TryParse(txt, out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp[countList].Add(numLo);
+                        if (count > max)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp[countList].Add(numBa);
+                        }
+                        if (count > (max * 2))
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp[countList].Add(numBa);
+                        }
+                    }
+                }
+                countList++;
+                if (count == maxLine)
+                    break;
+                if (countList == max)
+                    countList = 0;
+            }
+
+            if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
+                return true;
+            return false;
+        }
+
         private static bool UpdateKQMN(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
@@ -852,71 +932,44 @@ namespace KQ.Common.Helpers
                 {
                     link = @$"https://www.xosodaiphat.com/xsmn-{date.Value.ToString("dd-MM-yyyy")}.html";
                 }
-
-                drivers.Navigate().GoToUrl(link);
-                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                int count = 0;
-                int countList = 0;
                 DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
                 int max = dayCheck == DayOfWeek.Saturday ? 4 : 3;
                 int maxLine = dayCheck == DayOfWeek.Saturday ? 36 : 27;
-                IList<IWebElement> allElement = drivers.FindElements(By.TagName("td"));
-                foreach (IWebElement element in allElement)
+                List<int>[] sumListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+
+                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                if(GetKqMienNam(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
-                    string cellText = element.Text;
-                    if (cellText.Contains("G") || cellText.Contains("Đ"))
-                        continue;
-                    count++;
-                    foreach (var txt in cellText.Split("\r\n"))
+                    if(GetKqMienNam(day, link, max, maxLine, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
-                        int num = 0;
-                        var check = int.TryParse(txt, out num);
-                        if (check)
+                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last() && bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()
+                            && (day != DayOfWeek.Saturday || bonSoListTemp1[3].Last() == bonSoListTemp[3].Last()))
                         {
-                            var numLo = num % 100;
-                            sumListTemp[countList].Add(numLo);
-                            if (count > max)
-                            {
-                                var numBa = num % 1000;
-                                baCangListTemp[countList].Add(numBa);
-                            }
-                            if (count > (max * 2))
-                            {
-                                var numBa = num % 10000;
-                                bonSoListTemp[countList].Add(numBa);
-                            }
+                            // Cập nhật 2 số
+                            sumList[0] = sumListTemp[0];
+                            sumList[1] = sumListTemp[1];
+                            sumList[2] = sumListTemp[2];
+                            sumList[3] = sumListTemp[3];
+
+                            // Cập nhật 3 số
+                            sumBaList[0] = baCangListTemp[0];
+                            sumBaList[1] = baCangListTemp[1];
+                            sumBaList[2] = baCangListTemp[2];
+                            sumBaList[3] = baCangListTemp[3];
+
+                            // Cập nhật 4 số
+                            sumBonList[0] = bonSoListTemp[0];
+                            sumBonList[1] = bonSoListTemp[1];
+                            sumBonList[2] = bonSoListTemp[2];
+                            sumBonList[3] = bonSoListTemp[3];
+
+                            return true;
                         }
                     }
-                    countList++;
-                    if (count == maxLine)
-                        break;
-                    if (countList == max)
-                        countList = 0;
-                }
-                if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
-                    && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
-                {
-                    // Cập nhật 2 số
-                    sumList[0] = sumListTemp[0];
-                    sumList[1] = sumListTemp[1];
-                    sumList[2] = sumListTemp[2];
-                    sumList[3] = sumListTemp[3];
-
-                    // Cập nhật 3 số
-                    sumBaList[0] = baCangListTemp[0];
-                    sumBaList[1] = baCangListTemp[1];
-                    sumBaList[2] = baCangListTemp[2];
-                    sumBaList[3] = baCangListTemp[3];
-
-                    // Cập nhật 4 số
-                    sumBonList[0] = bonSoListTemp[0];
-                    sumBonList[1] = bonSoListTemp[1];
-                    sumBonList[2] = bonSoListTemp[2];
-                    sumBonList[3] = bonSoListTemp[3];
-
-                    return true;
                 }
 
                 return false;

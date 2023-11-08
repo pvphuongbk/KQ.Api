@@ -65,5 +65,10 @@ namespace KQ.Api.Controllers
         {
             return en.Encrypt();
         }
+        [HttpGet("de-en")]
+        public string DeCode(string en)
+        {
+            return en.Decrypt();
+        }
     }
 }
