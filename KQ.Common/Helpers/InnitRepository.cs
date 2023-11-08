@@ -400,16 +400,16 @@ namespace KQ.Common.Helpers
             foreach (IWebElement element in allElement)
             {
                 string cellText = element.Text;
+                if (checkMaDB == true)
+                {
+                    checkMaDB = false;
+                    continue;
+                }
                 if (cellText.Contains("G"))
                     continue;
                 if (cellText.Contains("Mã"))
                 {
                     checkMaDB = true;
-                    continue;
-                }
-                if (checkMaDB == true)
-                {
-                    checkMaDB = false;
                     continue;
                 }
                 count++;
