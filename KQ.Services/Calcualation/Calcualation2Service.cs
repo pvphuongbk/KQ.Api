@@ -1375,7 +1375,7 @@ namespace KQ.Services.Calcualation
         {
             bool result = true;
             var (strNext, iTemp) = FindNextStr(array, i);
-            if (str == "b" || str == "bao" || str == "bl" || str == "blo" || str == "baolo" || str == "lo")
+            if (str == "b" || str == "bao" || str == "blo" || str == "baolo" || str == "lo")
             {
                 if (strNext == "dao")
                 {

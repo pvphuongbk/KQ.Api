@@ -147,10 +147,10 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "3d 1234 baodao", MessageLoi = "baodao", Mien = MienEnum.MN},                                             //66
                 new CalTest2RequestDto{SynTaxe = "3d 123 baodao 13n dd", MessageLoi = "dd", Mien = MienEnum.MN},                                           //67
                 new CalTest2RequestDto{SynTaxe = "2d 12 13 dv 13n", Mien = MienEnum.MN, Xac = 936, Trung = 0},                                             //68
-                new CalTest2RequestDto{SynTaxe = "2d 12 13 14 dv 13n bl 10n", Xac = 3888, Trung = 10, Mien = MienEnum.MN},                                 //69
-                new CalTest2RequestDto{SynTaxe = "2d 12 dv 13n bl 10n", MessageLoi = "12 dv", Mien = MienEnum.MN},                                         //70
-                new CalTest2RequestDto{SynTaxe = "2d 122 334 dav 13n bl 10n", MessageLoi = "122 334 dav 13n", Mien = MienEnum.MN},                         //71
-                new CalTest2RequestDto{SynTaxe = "2d 22 34 14 dav 13n bl 10n", Xac = 3888, Trung = 10, Mien = MienEnum.MN},                                //72
+                new CalTest2RequestDto{SynTaxe = "2d 12 13 14 dv 13n blo 10n", Xac = 3888, Trung = 10, Mien = MienEnum.MN},                                 //69
+                new CalTest2RequestDto{SynTaxe = "2d 12 dv 13n blo 10n", MessageLoi = "12 dv", Mien = MienEnum.MN},                                         //70
+                new CalTest2RequestDto{SynTaxe = "2d 122 334 dav 13n blo 10n", MessageLoi = "122 334 dav 13n", Mien = MienEnum.MN},                         //71
+                new CalTest2RequestDto{SynTaxe = "2d 22 34 14 dav 13n blo 10n", Xac = 3888, Trung = 10, Mien = MienEnum.MN},                                //72
                 new CalTest2RequestDto{SynTaxe = "dc 10b10xc10", MessageLoi = "10xc10", Mien = MienEnum.MN},                                               //73
                 new CalTest2RequestDto{SynTaxe = "dc 122b10dd10n", MessageLoi = "10dd10n", Mien = MienEnum.MN},                                            //74
                 new CalTest2RequestDto{SynTaxe = "3₫ 11 b10ndd10n.00k05 b10.123 xc10n.56789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
