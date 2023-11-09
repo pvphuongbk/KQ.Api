@@ -54,18 +54,18 @@ namespace KQ.Services.HandlMessageService
 
             return response;
         }
-        
+
         public ResponseBase CountByManyDayRequest(CountByManyDayRequest request)
         {
             try
             {
                 List<CountByDayResponse> lst = new List<CountByDayResponse>();
-                var allDetails = _detailsRepository.FindAll(x => x.HandlByDate.Date >= request.FromDate.Date 
+                var allDetails = _detailsRepository.FindAll(x => x.HandlByDate.Date >= request.FromDate.Date
                         && x.HandlByDate.Date <= request.ToDate.Date
                         && x.UserID == request.UserID).ToList();
                 List<Details> listUpdate = new List<Details>();
                 var tiles = _tileUserRepository.FindAll(x => allDetails.Select(x => x.IDKhach).Distinct().Contains(x.ID)).ToList();
-                for(DateTime handlDate = request.FromDate.Date; handlDate.Date <= request.ToDate.Date; handlDate = handlDate.AddDays(1))
+                for (DateTime handlDate = request.FromDate.Date; handlDate.Date <= request.ToDate.Date; handlDate = handlDate.AddDays(1))
                 {
                     var details = allDetails.Where(x => x.HandlByDate.Date == handlDate.Date).ToList();
                     foreach (var item in details)
@@ -118,7 +118,7 @@ namespace KQ.Services.HandlMessageService
                     }
                 }
 
-                foreach(var item in lst)
+                foreach (var item in lst)
                 {
                     item.Total = Math.Round(item.Total, 1);
                     item.MienNam = Math.Round(item.MienNam, 1);
@@ -179,7 +179,7 @@ namespace KQ.Services.HandlMessageService
                                 + (detail.Trung.DaT * tileDto.TrungDaThang) + (detail.Trung.DaX * tileDto.TrungDaXien)
                                 + (detail.Trung.BaCon * tileDto.TrungBaCon) + (detail.Trung.BonCon * tileDto.TrungBonCon);
 
-                    var tong = ((tongCo - tongTrung)* tileDto.PhanTramTong)/100;
+                    var tong = ((tongCo - tongTrung) * tileDto.PhanTramTong) / 100;
                     if (tile.IsChu)
                         tong = 0 - tong;
                     counting.Total += tong;
@@ -250,7 +250,7 @@ namespace KQ.Services.HandlMessageService
                 result.CreatedDate = item.CreatedDate;
                 result.Details = detail.Details;
                 result.Message = item.Message.Decrypt();
-                result.Xac.HaiCB = Math.Round(detail.Xac.HaiCB,2);
+                result.Xac.HaiCB = Math.Round(detail.Xac.HaiCB, 2);
                 result.Xac.HaiCD = Math.Round(detail.Xac.HaiCD, 2);
                 result.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
                 result.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
@@ -259,10 +259,10 @@ namespace KQ.Services.HandlMessageService
 
                 result.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
                 result.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
-                result.Trung.DaT = Math.Round(detail.Trung.DaT,2);
-                result.Trung.DaX = Math.Round(detail.Trung.DaX,2);
+                result.Trung.DaT = Math.Round(detail.Trung.DaT, 2);
+                result.Trung.DaX = Math.Round(detail.Trung.DaX, 2);
                 result.Trung.BaCon = Math.Round(detail.Trung.BaCon, 2);
-                result.Trung.BonCon = Math.Round(detail.Trung.BonCon,2);
+                result.Trung.BonCon = Math.Round(detail.Trung.BonCon, 2);
 
                 if (updateItem != null)
                 {
@@ -285,7 +285,7 @@ namespace KQ.Services.HandlMessageService
                 var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date
                                                 && x.IDKhach == request.IDKhach && x.Mien == request.Mien).ToList();
                 var result = new List<HandlMessageDto>();
-                foreach(var item in details)
+                foreach (var item in details)
                 {
                     result.Add(new HandlMessageDto
                     {
@@ -306,7 +306,7 @@ namespace KQ.Services.HandlMessageService
         {
             try
             {
-                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date 
+                var details = _detailsRepository.FindAll(x => x.HandlByDate.Date == request.HandlDate.Date
                                                 && x.IDKhach == request.IDKhach && x.Mien == request.Mien).ToList();
                 var tile = _tileUserRepository.GetById(request.IDKhach);
                 MessgeByDayResponse result = new MessgeByDayResponse
@@ -332,8 +332,16 @@ namespace KQ.Services.HandlMessageService
                             listUpdate.Add(item);
                         }
                     }
-                    result.DetailMessage.Add(new DetailMessage { Xac = detail.Xac,Trung = detail.Trung, Message = item.Message.Decrypt(), 
-                        CreatedDate = item.CreatedDate, HandlByDate = item.HandlByDate, ID = item.ID, No = no});
+                    result.DetailMessage.Add(new DetailMessage
+                    {
+                        Xac = detail.Xac,
+                        Trung = detail.Trung,
+                        Message = item.Message.Decrypt(),
+                        CreatedDate = item.CreatedDate,
+                        HandlByDate = item.HandlByDate,
+                        ID = item.ID,
+                        No = no
+                    });
                     result.Total.Xac.HaiCB += detail.Xac.HaiCB;
                     result.Total.Xac.HaiCD += detail.Xac.HaiCD;
                     result.Total.Xac.DaT += detail.Xac.DaT;
@@ -362,7 +370,7 @@ namespace KQ.Services.HandlMessageService
                     tong = 0 - tong;
                 result.IsThu = tong >= 0;
                 var total = (tong * tileDto.PhanTramTong) / 100;
-                total = Math.Round(total,2);
+                total = Math.Round(total, 2);
                 tong = Math.Round(tong, 2);
                 result.Message = $"{tong.ToString()}*{tileDto.PhanTramTong}" +
                 $"%={tong.ToString()}";
@@ -372,9 +380,23 @@ namespace KQ.Services.HandlMessageService
                     _detailsRepository.UpdateMultiple(listUpdate.AsQueryable());
                     _commonUoW.Commit();
                 }
-                result.Total.QuaCo.HaiCon = Math.Round(result.Total.QuaCo.HaiCon, 1);
-                result.Total.QuaCo.BaCon = Math.Round(result.Total.QuaCo.BaCon, 1);
-                result.Total.QuaCo.BonCon = Math.Round(result.Total.QuaCo.BonCon, 1);
+                result.Total.Xac.HaiCB = Math.Round(result.Total.Xac.HaiCB, 2);
+                result.Total.Xac.HaiCD = Math.Round(result.Total.Xac.HaiCD, 2);
+                result.Total.Xac.DaT = Math.Round(result.Total.Xac.DaT, 2);
+                result.Total.Xac.DaX = Math.Round(result.Total.Xac.DaX, 2);
+                result.Total.Xac.BaCon = Math.Round(result.Total.Xac.BaCon, 2);
+                result.Total.Xac.BonCon = Math.Round(result.Total.Xac.BonCon, 2);
+
+                result.Total.QuaCo.HaiCon = Math.Round(result.Total.QuaCo.HaiCon, 2);
+                result.Total.QuaCo.BaCon = Math.Round(result.Total.QuaCo.BaCon, 2);
+                result.Total.QuaCo.BonCon = Math.Round(result.Total.QuaCo.BonCon, 2);
+
+                result.Total.Trung.HaiCB = Math.Round(result.Total.Trung.HaiCB, 2);
+                result.Total.Trung.HaiCD = Math.Round(result.Total.Trung.HaiCD, 2);
+                result.Total.Trung.DaT = Math.Round(result.Total.Trung.DaT, 2);
+                result.Total.Trung.DaX = Math.Round(result.Total.Trung.DaX, 2);
+                result.Total.Trung.BaCon = Math.Round(result.Total.Trung.BaCon, 2);
+                result.Total.Trung.BonCon = Math.Round(result.Total.Trung.BonCon, 2);
                 return new ResponseBase { Data = result };
             }
             catch (Exception ex)

@@ -134,7 +134,7 @@ namespace KQ.Services.Calcualation
                         else if (array[i].Length > 4)
                         {
                             // lỗi
-                            var (startI, endI) = GetIndexForError(i, i+1, array, false);
+                            var (startI, endI) = GetIndexForError(i, i + 1, array, false);
                             error = new Error { Message = "Số chơi không đúng", Count = endI, StartIndex = startI };
                             break;
                         }
@@ -384,6 +384,19 @@ namespace KQ.Services.Calcualation
                         _commonUoW.Commit();
                     }
                     s1.Stop();
+                    detail.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
+                    detail.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
+                    detail.Trung.DaT = Math.Round(detail.Trung.DaT, 2);
+                    detail.Trung.DaX = Math.Round(detail.Trung.DaX, 2);
+                    detail.Trung.BaCon = Math.Round(detail.Trung.BaCon, 2);
+                    detail.Trung.BonCon = Math.Round(detail.Trung.BonCon, 2);
+
+                    detail.Xac.HaiCB = Math.Round(detail.Xac.HaiCB, 2);
+                    detail.Xac.HaiCD = Math.Round(detail.Xac.HaiCD, 2);
+                    detail.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
+                    detail.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
+                    detail.Xac.BaCon = Math.Round(detail.Xac.BaCon, 2);
+                    detail.Xac.BonCon = Math.Round(detail.Xac.BonCon, 2);
                     return new ResponseBase { Data = detail };
                 }
                 else
@@ -485,6 +498,13 @@ namespace KQ.Services.Calcualation
                         .Sum(x => x.SoTien * x.SlTrung);
             detail.Trung.BonCon = detail.Details.Where(x => (x.CachChoi == CachChoi.BaoBonCon || x.CachChoi == CachChoi.BonConDao) && x.SlTrung > 0)
                     .Sum(x => x.SoTien * x.SlTrung);
+
+            detail.Trung.HaiCB = detail.Trung.HaiCB;
+            detail.Trung.HaiCD = detail.Trung.HaiCD;
+            detail.Trung.DaT = detail.Trung.DaT;
+            detail.Trung.DaX = detail.Trung.DaX;
+            detail.Trung.BaCon = detail.Trung.BaCon;
+            detail.Trung.BonCon = detail.Trung.BonCon;
         }
 
         public bool CheckResource(List<int>[] kq2So, List<int>[] kq3So, List<int>[] kq4So, MienEnum mien, DayOfWeek day)
@@ -512,7 +532,7 @@ namespace KQ.Services.Calcualation
                         return false;
                     break;
                 default:
-                    if (kq2So[7] == null  || kq3So[7] == null || kq4So[7] == null)
+                    if (kq2So[7] == null || kq3So[7] == null || kq4So[7] == null)
                         return false;
                     break;
             }
@@ -537,7 +557,7 @@ namespace KQ.Services.Calcualation
                 kq3So = InnitRepository._totalBaCangDic["Now"];
                 kq4So = InnitRepository._totalBonSoDic["Now"];
             }
-            else if(handlByDate.Date < DateTime.Now.Date)
+            else if (handlByDate.Date < DateTime.Now.Date)
             {
                 var kq = _storeKQRepository.FindAll(x => x.CreatedDate.Date == handlByDate.Date).FirstOrDefault();
                 if (kq != null && !string.IsNullOrEmpty(kq.HaiCon)
@@ -821,42 +841,42 @@ namespace KQ.Services.Calcualation
             {
                 var mes = new List<string>();
                 foreach (var m in meT2c)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*T2C: {string.Join(",", mes)}");
             }
             if (meDD.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDD)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*2CĐ: {string.Join(",", mes)}");
             }
             if (meDaT.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDaT)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*ĐáT: {string.Join(",", mes)}");
             }
             if (meDaX.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in meDaX)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*ĐáX: {string.Join(",", mes)}");
             }
             if (me3Con.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in me3Con)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*3C: {string.Join(",", mes)}");
             }
             if (me4Con.Any())
             {
                 var mes = new List<string>();
                 foreach (var m in me4Con)
-                    mes.Add($"{m.Key}({m.Value}n)");
+                    mes.Add($"{m.Key}({Math.Round(m.Value, 2)}n)");
                 detail.TrungDetail.Add($"*4C: {string.Join(",", mes)}");
             }
             detail.IsTinh = true;
@@ -1205,19 +1225,6 @@ namespace KQ.Services.Calcualation
                         break;
                 }
             }
-            detail.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
-            detail.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
-            detail.Trung.DaT = Math.Round(detail.Trung.DaT, 2);
-            detail.Trung.DaX = Math.Round(detail.Trung.DaX, 2);
-            detail.Trung.BaCon = Math.Round(detail.Trung.BaCon, 2);
-            detail.Trung.BonCon = Math.Round(detail.Trung.BonCon, 2);
-
-            detail.Xac.HaiCB = Math.Round(detail.Xac.HaiCB, 2);
-            detail.Xac.HaiCD = Math.Round(detail.Xac.HaiCD, 2);
-            detail.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
-            detail.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
-            detail.Xac.BaCon = Math.Round(detail.Xac.BaCon, 2);
-            detail.Xac.BonCon = Math.Round(detail.Xac.BonCon, 2);
             return detail;
         }
         public (bool, string) HandlerKeo(string keo, string numberStr, int number, string[] array, ref int i, ref List<int> numbers, ref List<string> numberStrs)
@@ -1373,7 +1380,7 @@ namespace KQ.Services.Calcualation
                     var (strNext2, iTemp2) = FindNextStr(array, i);
                     if (strNext2 == "n")
                         i = iTemp2;
-                    else if(coN)
+                    else if (coN)
                     {
                         result = 0;
                         mess = "Phải có n sau số tiền chơi. ví dụ 12 baolo 10n";
@@ -1452,7 +1459,7 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.Xc;
             }
-            else if (str == "xcdaudao" || str == "xdaudao" || str == "xcdaodau" || str == "xdaodau" )
+            else if (str == "xcdaudao" || str == "xdaudao" || str == "xcdaodau" || str == "xdaodau")
             {
                 cachChoi = CachChoi.XcDauDao;
             }
@@ -1540,9 +1547,9 @@ namespace KQ.Services.Calcualation
                     str = str + cstr;
                     isNumber = true;
                 }
-                else if((cstr == "." || cstr == ",") && isNumber && arr.Length > (i+1)
-                    && int.TryParse(arr[i+1].ToString(), out _) 
-                    && (arr.Length <= (i + 2) ||(!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr,i+2))))
+                else if ((cstr == "." || cstr == ",") && isNumber && arr.Length > (i + 1)
+                    && int.TryParse(arr[i + 1].ToString(), out _)
+                    && (arr.Length <= (i + 2) || (!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr, i + 2))))
                 {
                     lst.Add($"{str}.{arr[i + 1].ToString()}");
                     str = "";
@@ -1550,7 +1557,7 @@ namespace KQ.Services.Calcualation
                 }
                 else if (cstr == "." || cstr == ",")
                 {
-                    if(!string.IsNullOrEmpty(str))
+                    if (!string.IsNullOrEmpty(str))
                         lst.Add(str);
                     lst.Add(" ");
                     str = "";
@@ -1582,9 +1589,9 @@ namespace KQ.Services.Calcualation
 
             return lst;
         }
-        private bool FindNextd(char[] array,int i)
-         {
-            for (int j = i;  j < array.Length; j++)
+        private bool FindNextd(char[] array, int i)
+        {
+            for (int j = i; j < array.Length; j++)
             {
                 var t = array[j].ToString();
                 if (array[j].ToString() != " " && array[j].ToString() != string.Empty)
@@ -1599,13 +1606,13 @@ namespace KQ.Services.Calcualation
                         }
 
                         int count = 0;
-                        for(int k = j+1; k < array.Length;k++)
+                        for (int k = j + 1; k < array.Length; k++)
                         {
-                            if(array[k].ToString() == " " || (count > 1 && array[k].ToString() == "n"))
+                            if (array[k].ToString() == " " || (count > 1 && array[k].ToString() == "n"))
                             {
                                 continue;
                             }
-                            else if(int.TryParse(array[k].ToString(), out _))
+                            else if (int.TryParse(array[k].ToString(), out _))
                                 count++;
                             else if (array[k].ToString() == "d" && count > 1)
                                 return false;
@@ -1662,7 +1669,7 @@ namespace KQ.Services.Calcualation
                     chanels.Add(1);
                 else if (mien == MienEnum.MT)
                     chanels.Add(5);
-                else 
+                else
                     chanels.Add(8);
 
                 return (result, mess);
@@ -1712,7 +1719,7 @@ namespace KQ.Services.Calcualation
                 }
                 return (result, mess);
             }
-            bool check = true; 
+            bool check = true;
             List<int> chanelsTemp = new List<int>();
             var dais = InnitRepository._chanelCodeAll[date.DayOfWeek][mien];
             bool isTangi = false;
