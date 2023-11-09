@@ -1693,7 +1693,7 @@ namespace KQ.Services.Calcualation
                 }
                 return (result, mess);
             }
-            bool check = true;
+            bool check = true; 
             List<int> chanelsTemp = new List<int>();
             var dais = InnitRepository._chanelCodeAll[date.DayOfWeek][mien];
             bool isTangi = false;
@@ -1711,6 +1711,7 @@ namespace KQ.Services.Calcualation
                 {
                     chanelsTemp.Add(ch.Key);
                     i++;
+                    isTangi = true;
                     check = true;
                 }
                 else
