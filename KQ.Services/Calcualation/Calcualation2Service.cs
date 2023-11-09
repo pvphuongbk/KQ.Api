@@ -1205,7 +1205,19 @@ namespace KQ.Services.Calcualation
                         break;
                 }
             }
+            detail.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
+            detail.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
+            detail.Trung.DaT = Math.Round(detail.Trung.DaT, 2);
+            detail.Trung.DaX = Math.Round(detail.Trung.DaX, 2);
+            detail.Trung.BaCon = Math.Round(detail.Trung.BaCon, 2);
+            detail.Trung.BonCon = Math.Round(detail.Trung.BonCon, 2);
 
+            detail.Xac.HaiCB = Math.Round(detail.Xac.HaiCB, 2);
+            detail.Xac.HaiCD = Math.Round(detail.Xac.HaiCD, 2);
+            detail.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
+            detail.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
+            detail.Xac.BaCon = Math.Round(detail.Xac.BaCon, 2);
+            detail.Xac.BonCon = Math.Round(detail.Xac.BonCon, 2);
             return detail;
         }
         public (bool, string) HandlerKeo(string keo, string numberStr, int number, string[] array, ref int i, ref List<int> numbers, ref List<string> numberStrs)
@@ -1650,6 +1662,8 @@ namespace KQ.Services.Calcualation
                     chanels.Add(1);
                 else if (mien == MienEnum.MT)
                     chanels.Add(5);
+                else 
+                    chanels.Add(8);
 
                 return (result, mess);
             }
@@ -1659,6 +1673,11 @@ namespace KQ.Services.Calcualation
                     chanels.Add(2);
                 else if (mien == MienEnum.MT)
                     chanels.Add(6);
+                else
+                {
+                    mess = $"Miền bắc chỉ có 1 đài";
+                    result = false;
+                }
 
                 return (result, mess);
             }

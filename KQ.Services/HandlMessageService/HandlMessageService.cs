@@ -250,19 +250,19 @@ namespace KQ.Services.HandlMessageService
                 result.CreatedDate = item.CreatedDate;
                 result.Details = detail.Details;
                 result.Message = item.Message.Decrypt();
-                result.Xac.HaiCB = detail.Xac.HaiCB;
-                result.Xac.HaiCD = detail.Xac.HaiCD;
-                result.Xac.DaT = detail.Xac.DaT;
-                result.Xac.DaX = detail.Xac.DaX;
-                result.Xac.BaCon = detail.Xac.BaCon;
+                result.Xac.HaiCB = Math.Round(detail.Xac.HaiCB,2);
+                result.Xac.HaiCD = Math.Round(detail.Xac.HaiCD, 2);
+                result.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
+                result.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
+                result.Xac.BaCon = Math.Round(detail.Xac.BaCon, 2);
                 result.Xac.BonCon = detail.Xac.BonCon;
 
-                result.Trung.HaiCB = detail.Trung.HaiCB;
-                result.Trung.HaiCD = detail.Trung.HaiCD;
-                result.Trung.DaT = detail.Trung.DaT;
-                result.Trung.DaX = detail.Trung.DaX;
-                result.Trung.BaCon = detail.Trung.BaCon;
-                result.Trung.BonCon = detail.Trung.BonCon;
+                result.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
+                result.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
+                result.Trung.DaT = Math.Round(detail.Trung.DaT,2);
+                result.Trung.DaX = Math.Round(detail.Trung.DaX,2);
+                result.Trung.BaCon = Math.Round(detail.Trung.BaCon, 2);
+                result.Trung.BonCon = Math.Round(detail.Trung.BonCon,2);
 
                 if (updateItem != null)
                 {
