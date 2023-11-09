@@ -315,7 +315,7 @@ namespace KQ.Common.Helpers
             {
                 Stopwatch s1 = new Stopwatch();
                 s1.Start();
-                string key = day != null ? day.ToString() : "Now";
+                string key = "Now";
                 int countCheck = 0;
                 // Cập nhật đài miền nam
                 while (!checkN && countCheck < 3)
