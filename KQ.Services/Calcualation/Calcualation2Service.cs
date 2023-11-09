@@ -191,7 +191,8 @@ namespace KQ.Services.Calcualation
                             break;
                         }
                         cachChoiTemp.Add(cachChoi);
-                        var sl = GetSl(array, ref i);
+                        string mess11 = "";
+                        var sl = GetSl(array, ref i, dto.CoN, ref mess11);
                         if (sl > 0)
                         {
                             var (check1, mess1) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl);
@@ -242,7 +243,8 @@ namespace KQ.Services.Calcualation
                                         goto Foo;
                                     }
                                     i = iTemp;
-                                    var sl2 = GetSl(array, ref i);
+                                    string mess22 = "";
+                                    var sl2 = GetSl(array, ref i, dto.CoN, ref mess22);
                                     var cursorTemp2 = cursor;
                                     TangCurso(ref cursor, ref cursorTemp, array, i);
                                     if (sl2 > 0)
@@ -268,8 +270,10 @@ namespace KQ.Services.Calcualation
                                         if (strr.StartsWith("n"))
                                             i = iTempp;
                                         //lỗi
+                                        if (mess22 == "")
+                                            mess22 = "Số tiền chơi phải lớn hơn 0";
                                         var (startI, endI) = GetIndexForError(iTemp, i, array, false);
-                                        error = new Error { StartIndex = startI, Count = endI, Message = "Số tiền chơi phải lớn hơn 0" };
+                                        error = new Error { StartIndex = startI, Count = endI, Message = mess22 };
                                         goto Foo;
                                     }
                                 }
@@ -282,8 +286,10 @@ namespace KQ.Services.Calcualation
                         else
                         {
                             //lỗi
+                            if (mess11 == "")
+                                mess11 = "Số tiền chơi phải lớn hơn 0";
                             var (startI, endI) = GetIndexForError(cursorDup, i, array, false);
-                            error = new Error { StartIndex = startI, Count = endI, Message = "Số tiền chơi phải lớn hơn 0" };
+                            error = new Error { StartIndex = startI, Count = endI, Message = mess11 };
                             break;
                         }
                         cachChoiTemp.Clear();
@@ -515,12 +521,12 @@ namespace KQ.Services.Calcualation
         }
         public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail)
         {
-            Dictionary<string, int> meT2c = new Dictionary<string, int>();
-            Dictionary<string, int> meDD = new Dictionary<string, int>();
-            Dictionary<string, int> meDaT = new Dictionary<string, int>();
-            Dictionary<string, int> meDaX = new Dictionary<string, int>();
-            Dictionary<string, int> me3Con = new Dictionary<string, int>();
-            Dictionary<string, int> me4Con = new Dictionary<string, int>();
+            Dictionary<string, double> meT2c = new Dictionary<string, double>();
+            Dictionary<string, double> meDD = new Dictionary<string, double>();
+            Dictionary<string, double> meDaT = new Dictionary<string, double>();
+            Dictionary<string, double> meDaX = new Dictionary<string, double>();
+            Dictionary<string, double> me3Con = new Dictionary<string, double>();
+            Dictionary<string, double> me4Con = new Dictionary<string, double>();
 
             var kq2So = new List<int>[8];
             var kq3So = new List<int>[8];
@@ -1268,7 +1274,7 @@ namespace KQ.Services.Calcualation
 
             return (result, mess);
         }
-        public (bool, string) CheckAndCreateItem(ref List<Cal3PrepareDto> cal3PrepareDtos, CachChoi? cachChoi, List<int> chanels, List<int> numbers, List<string> numberStrs, int sl)
+        public (bool, string) CheckAndCreateItem(ref List<Cal3PrepareDto> cal3PrepareDtos, CachChoi? cachChoi, List<int> chanels, List<int> numbers, List<string> numberStrs, double sl)
         {
             bool result = false;
             string mess = string.Empty;
@@ -1338,18 +1344,28 @@ namespace KQ.Services.Calcualation
 
             return (result, mess);
         }
-        public int GetSl(string[] array, ref int i)
+        public double GetSl(string[] array, ref int i, bool coN, ref string mess)
         {
-            int result = 0;
+            double result = 0;
             var (strNext, iTemp) = FindNextStr(array, i);
-            if (int.TryParse(strNext, out result))
+            if (double.TryParse(strNext, out result))
             {
+                //if (result == 0 && array[iTemp + 1] == " " && array[iTemp + 2].Length == 1 && double.TryParse(array[iTemp + 2], out result))
+                //{
+                //    iTemp = iTemp + 2;
+                //    result = result / 10;
+                //}
                 i = iTemp;
                 if (result > 0)
                 {
                     var (strNext2, iTemp2) = FindNextStr(array, i);
                     if (strNext2 == "n")
                         i = iTemp2;
+                    else if(coN)
+                    {
+                        result = 0;
+                        mess = "Phải có n sau số tiền chơi. ví dụ 12 baolo 10n";
+                    }
                 }
             }
             return result;
@@ -1359,7 +1375,7 @@ namespace KQ.Services.Calcualation
         {
             bool result = true;
             var (strNext, iTemp) = FindNextStr(array, i);
-            if (str == "b" || str == "bao" || str == "bl" || str == "blo" || str == "baolo")
+            if (str == "b" || str == "bao" || str == "bl" || str == "blo" || str == "baolo" || str == "lo")
             {
                 if (strNext == "dao")
                 {
@@ -1404,7 +1420,7 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.XcDau;
             }
-            else if (str == "xcduoi" || str == "xduoi" || str == "xcdui" || str == "xcdui")
+            else if (str == "xcduoi" || str == "xduoi" || str == "xcdui" || str == "xcdui" || str == "xdui")
             {
                 if (strNext == "dao")
                 {
@@ -1414,7 +1430,7 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.XcDui;
             }
-            else if (str == "xc" || str == "xchu" || str == "xiuchu")
+            else if (str == "xc" || str == "xchu" || str == "xiuchu" || str == "x")
             {
                 if (strNext == "dao")
                 {
@@ -1424,15 +1440,15 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.Xc;
             }
-            else if (str == "xcdaudao" || str == "xdaudao" || str == "xcdaodau" || str == "xdaodau")
+            else if (str == "xcdaudao" || str == "xdaudao" || str == "xcdaodau" || str == "xdaodau" )
             {
                 cachChoi = CachChoi.XcDauDao;
             }
-            else if (str == "xcduoidao" || str == "xduoidao" || str == "xcduidao" || str == "xcduidao")
+            else if (str == "xcduoidao" || str == "xduoidao" || str == "xcduidao" || str == "xcduidao" || str == "xduidao")
             {
                 cachChoi = CachChoi.XcDuoiDao;
             }
-            else if (str == "xcdao" || str == "xdao" || str == "xiuchudao")
+            else if (str == "xcdao" || str == "xdao" || str == "xiuchudao" || str == "xd")
             {
                 cachChoi = CachChoi.XcDao;
             }
@@ -1493,7 +1509,8 @@ namespace KQ.Services.Calcualation
                 var cstr = arr[i].ToString();
                 if (isNumber && cstr == "n")
                 {
-                    lst.Add(str);
+                    if (!string.IsNullOrEmpty(str))
+                        lst.Add(str);
                     lst.Add("n");
                     str = "";
                 }
@@ -1511,11 +1528,34 @@ namespace KQ.Services.Calcualation
                     str = str + cstr;
                     isNumber = true;
                 }
+                else if((cstr == "." || cstr == ",") && isNumber && arr.Length > (i+1)
+                    && int.TryParse(arr[i+1].ToString(), out _) 
+                    && (arr.Length <= (i + 2) ||(!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr,i+2))))
+                {
+                    lst.Add($"{str}.{arr[i + 1].ToString()}");
+                    str = "";
+                    i++;
+                }
+                else if (cstr == "." || cstr == ",")
+                {
+                    if(!string.IsNullOrEmpty(str))
+                        lst.Add(str);
+                    lst.Add(" ");
+                    str = "";
+                }
+                else if (cstr == " ")
+                {
+                    if (!string.IsNullOrEmpty(str))
+                        lst.Add(str);
+                    lst.Add(" ");
+                    str = "";
+                }
                 else
                 {
                     if (isNumber && !string.IsNullOrEmpty(str))
                     {
-                        lst.Add(str);
+                        if (!string.IsNullOrEmpty(str))
+                            lst.Add(str);
                         str = "";
                     }
                     str = str + cstr;
@@ -1529,6 +1569,45 @@ namespace KQ.Services.Calcualation
 
 
             return lst;
+        }
+        private bool FindNextd(char[] array,int i)
+         {
+            for (int j = i;  j < array.Length; j++)
+            {
+                var t = array[j].ToString();
+                if (array[j].ToString() != " " && array[j].ToString() != string.Empty)
+                {
+                    if (array[j].ToString() == "d")
+                    {
+                        if (array.Length > (j + 1))
+                        {
+                            var txt = array[j + 1].ToString();
+                            if (txt == "d" || txt == "x" || txt == "a" || txt == "t" || txt == "u")
+                                return false;
+                        }
+
+                        int count = 0;
+                        for(int k = j+1; k < array.Length;k++)
+                        {
+                            if(array[k].ToString() == " " || (count > 1 && array[k].ToString() == "n"))
+                            {
+                                continue;
+                            }
+                            else if(int.TryParse(array[k].ToString(), out _))
+                                count++;
+                            else if (array[k].ToString() == "d" && count > 1)
+                                return false;
+                            else
+                                break;
+                        }
+
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
+            return false;
         }
         private bool FindNext(string[] array, ref int i, params string[] str)
         {
@@ -1551,7 +1630,7 @@ namespace KQ.Services.Calcualation
         {
             for (int j = i + 1; j < array.Length; j++)
             {
-                if (array[j] != " ")
+                if (array[j] != " " && array[j] != string.Empty)
                 {
                     i = j;
                     return (array[j], j);
@@ -1677,25 +1756,26 @@ namespace KQ.Services.Calcualation
             var arr = new List<string>();
             sys = sys.ToLower();
             sys = sys.RemoveUnicode();
-            sys = sys.Replace(".", " ");
+            //sys = sys.Replace(".", " ");
             sys = sys.Replace("-", " ");
-            sys = sys.Replace(",", " ");
+            //sys = sys.Replace(",", " ");
             sys = sys.Replace("\r", " ");
             sys = sys.Replace("\n", " ");
             sys = sys.Replace("\\", " ");
             sys = sys.Replace(":", " ");
             sys = sys.Replace("@", " ");
-            var array = sys.Split(" ").ToArray();
-            foreach (var s in array)
-            {
-                if (string.IsNullOrEmpty(s))
-                    arr.Add(" ");
-                else
-                {
-                    arr.AddRange(HandlerStringNoSpace(s));
-                    arr.Add(" ");
-                }
-            }
+            //var array = sys.Split(" ").ToArray();
+            arr.AddRange(HandlerStringNoSpace(sys));
+            //foreach (var s in array)
+            //{
+            //    if (string.IsNullOrEmpty(s))
+            //        arr.Add(" ");
+            //    else
+            //    {
+            //        arr.AddRange(HandlerStringNoSpace(s));
+            //        arr.Add(" ");
+            //    }
+            //}
             return arr.ToArray();
         }
     }

@@ -362,10 +362,10 @@ namespace KQ.Services.HandlMessageService
                     tong = 0 - tong;
                 result.IsThu = tong >= 0;
                 var total = (tong * tileDto.PhanTramTong) / 100;
-                total = Math.Round(total,1);
-                tong = Math.Round(tong, 1);
-                result.Message = $"{tong.ToString("N0",System.Globalization.CultureInfo.GetCultureInfo("de"))}*{tileDto.PhanTramTong}" +
-                $"%={total.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("de"))}";
+                total = Math.Round(total,2);
+                tong = Math.Round(tong, 2);
+                result.Message = $"{tong.ToString()}*{tileDto.PhanTramTong}" +
+                $"%={tong.ToString()}";
                 if (listUpdate.Any())
                 {
                     _commonUoW.BeginTransaction();

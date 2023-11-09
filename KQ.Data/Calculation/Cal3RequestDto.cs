@@ -15,5 +15,6 @@ namespace KQ.DataDto.Calculation
         public int? IDMessage { get; set; }
         public CachTrungDa CachTrungDaThang { get; set; }
         public CachTrungDa CachTrungDaXien { get; set; }
+        public bool CoN { get; set; }
     }
 }

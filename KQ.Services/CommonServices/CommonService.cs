@@ -154,11 +154,43 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "dc 10b10xc10", MessageLoi = "10xc10", Mien = MienEnum.MN},                                               //73
                 new CalTest2RequestDto{SynTaxe = "dc 122b10dd10n", MessageLoi = "10dd10n", Mien = MienEnum.MN},                                            //74
                 new CalTest2RequestDto{SynTaxe = "3₫ 11 b10ndd10n.00k05 b10.123 xc10n.56789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
-                new CalTest2RequestDto{SynTaxe = " 3d 11 b10ndd10n.00k05 b10n.123 xc10n.6789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},           //75
+                new CalTest2RequestDto{SynTaxe = " 3d 11 b10ndd10n.00k05 b10n.123 xc10n.56789 bdao10n", MessageLoi = "56789", Mien = MienEnum.MN},          //76
+                new CalTest2RequestDto{SynTaxe = " 2d 739 xc150n.933 xc150n.79 dd 500 bt vt 37 61 28 68 51 52 53 b 50 2d 58 59 66 36 b 100 vt 915 xdui200" +
+                " 951 xdau200 vt bl34 44 54 64 74 84 lo 100 bt 32 72 52 dd200n vt blieu 72 52 32 dd150n blieu 19 24 dau500n 247 xc150n 2dai 76 35 53 23 83" +
+                " 63 38 68 26 32 b 250 vt bl339 379xc 150n 2dai 79 d 500 d 50 vt 879 379 579 xc 200 bt 68 dd 150n 2d 52b 60n dd 350n 875 x 10n 873 867 x " +
+                "40n vt 776xdau 70n bt 000x 150n 3d 036b 50n 35 67da 15n bt 663x 200n 187x 15n blieu 19dau 200n 68dau 100n bt 98 86 dd250n vt 98 86 dd60n" +
+                " bt 07 55 03 01 02 63 dd125n vt bl99 04 14 24 34 44 54 64 b100 2dai 76 35 53 23 83 b 50 vt bl739 xc200n 2d03 06 14 da 15n 73 33 77 11 " +
+                "da 10n btr 933x150 2dai 519 b1n xc10n 19 dd5n blieu 79 08 56 42dd50n 2d 315xc25n 11 15 52 dd5n 247 xc5n b1.3d 761 716x7n 771x17n 751 " +
+                "939 524 239x5n 876x10n 2d 68 dd15n 368 xc15n 3d 50 dd 50n vt 24b10n blieu 239x35n 939 255 559x25n 119 524x15n 439xdau25n blieu 117" +
+                " 557xc15n 2d 373 xcduoi20n vt bl32 38 68 66 b100n vt bl 68 86 66 32b100n vt bl32 38 68 66 dx10 vt bl 68 86 66 32dx 10"
+                , MessageLoi = "56789", Mien = MienEnum.MN, DateTime = new DateTime(2023,11,07),Xac = 249829, Trung = 2650},                               //77
+                 new CalTest2RequestDto{SynTaxe = "2d 739 xc150n.933 xc150n.79 dd 500 bt vt 37 61 28 68 51 52 53 b 50 2d 58 59 66 36 b 100 vt 915 xdui200" +
+                 " 951 xdau200 vt bl34 44 54 64 74 84 lo 100 bt 32 72 52 dd200n vt blieu 72 52 32 dd150n blieu 19 24 dau500n 247 xc150n 2dai 76 35 53 23 83" +
+                 " 63 38 68 26 32 b 250 vt bl339 379xc 150n 2dai 79 d 500 d 50 vt 879 379 579 xc 200 bt 68 dd 150n 2d 52b 60n dd 350n 875 x 10n 873 867 x 40n" +
+                 " vt 776xdau 70n bt 000x 150n 3d 036b 50n 35 67da 15n bt 663x 200n 187x 15n blieu 19dau 200n 68dau 100n bt 98 86 dd250n vt 98 86 dd60n bt 07 55" +
+                 " 03 01 02 63 dd125n vt bl99 04 14 24 34 44 54 64 b100 2dai 76 35 53 23 83 b 50 vt bl739 xc200n 2d03 06 14 da 15n 73 33 77 11 da 10n btr " +
+                 "933x150 2dai 519 b1n xc10n 19 dd5n blieu 79 08 56 42dd50n 2d 315xc25n 11 15 52 dd5n 247 xc5n b1.3 d 761 716x7n 771x17n 751 939 524 239x5n " +
+                 "876x10n 2d 68 dd15n 368 xc15n 3d 50 dd 50n vt 24b10n blieu 239x35n 939 255 559x25n 119 524x15n 439xdau25n blieu 117 557xc15n 2d 373 xcduoi20n" +
+                 " vt bl32 38 68 66 b100n vt bl 68 86 66 32b100n vt bl32 38 68 66 dx10 vt bl 68 86 66 32dx 10 "+
+                 "2dai 718 xc 5n 572 xc 35n 11 b 30n 1111 b 30n blieu 572 918 xc 5n 59 18 dat 1n 2dai 718 xc 5n 572 xc 35n 11 b 30n 1111 b 30n" +
+                 " blieu 572 918 xc 5n 59 18 dat 1n 2dai 83 b 50n 7783 b 6n 783 b 1n xc 50n 319 372 xc 15n 38 83 dx 5n 2dai 19 59 99 b 25n dx 5n 83 b " +
+                 "10n 38 83 dx 1n 311 xc 120n blieu 19 dau 300n dui 60n 11 dau 660n dui 360n 30 dd 20n 211 b 5n xc 35n 11 b 10n blieu 24 dau 200n dui 80n " +
+                 "79 dau 150n dui 30n 01 10 53 dd 30n 23 dd 80n blieu 11 24 dau 180n dui 20n 311 xc 80n 232 xc 10n 52 dau 50n 724 330 b 2n 11 b 5n 2dai 27 " +
+                 "72 22 77 38 83 49 94 44 99 dui 10n vtau 60 67 17 07 dui 40n blieu 11 dau 200n 01 10 39 dau 50n blieu 32 dau 250n 10 dau 100n 39 dau 180n" +
+                 " blieu 766 xc 15n 339 xc 5n 3dai 1688 b 0.5n 688 868 b 1n xc 20n vt 32 b 10n blieu 228 xc 70n 11 24 30 31 dau 20n 39 19 dau 70n 10" +
+                 " dau 60n 3dai 34 b 100n 734 b 5n xc 120n 11 b 10n blieu 18 81 dd 50n 2dai 94 52 dx 1n 36 76 dx 1n 37 73 dx 1n 00 11 10 dx " +
+                 "1n 34 b 10n 34 43 25 dx 2n 3dai 38 b 20n", Mien = MienEnum.MN, DateTime = new DateTime(2023,11,07), Xac = 276747, Trung = 2750},        //78
+                 new CalTest2RequestDto{SynTaxe = " bt 663x 200n 187x 15n blieu 19dau 200n 68dau 100n", MessageLoi = "56789", Mien = MienEnum.MN
+                 ,DateTime = new DateTime(2023,11,07),Xac = 730},                                                                                         //79
+                  new CalTest2RequestDto{SynTaxe = "blieu 766 xc 15n 339 xc 5n 3dai 1688 b 0.5n 688 868 b 1n", MessageLoi = "56789", Mien = MienEnum.MN
+                 ,DateTime = new DateTime(2023,11,07), Xac = 166},                                                                                        //80
+                  new CalTest2RequestDto{SynTaxe = "1d 766 x 2.5n 339 b 1.3n ", Xac = 27.1, Mien = MienEnum.MN, CoN = true},                              //81
+                  new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 dd20.6n ", MessageLoi = "b 1.3", Mien = MienEnum.MN, CoN = true},             //82
+                  new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 d20.6n d3.5n", MessageLoi = "b 1", Mien = MienEnum.MN, CoN = true},         //83
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 76)
+                if(i == 82)
                 {
 
                 }
@@ -170,6 +202,7 @@ namespace KQ.Services.CommonServices
                 dto.Mien = teststos[i].Mien == null ? MienEnum.MN : (MienEnum)teststos[i].Mien;
                 dto.CachTrungDaXien = CachTrungDa.NhieuCap;
                 dto.CachTrungDaThang = CachTrungDa.NhieuCap;
+                dto.CoN = teststos[i].CoN;
 
                 var re = (Cal3DetailDto)_calcualation2Service.Cal3Request(dto).Data;
                 if(re.Error == null)

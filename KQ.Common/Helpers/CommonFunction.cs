@@ -43,6 +43,9 @@ namespace KQ.Common.Helpers
                             ch.GetFirstCharOnlyForFisrt(),
                             ch.Replace(" ",string.Empty),
                         });
+
+                        if(ch == "ben tre")
+                            dic[(DayOfWeek)i][MienEnum.MN][chanel.Key].Add("btr");
                     }
                 }
                 var allChanelT = GetCenterChanels((DayOfWeek)i);
