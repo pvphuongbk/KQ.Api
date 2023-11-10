@@ -373,7 +373,7 @@ namespace KQ.Services.HandlMessageService
                 total = Math.Round(total, 2);
                 tong = Math.Round(tong, 2);
                 result.Message = $"{tong.ToString()}*{tileDto.PhanTramTong}" +
-                $"%={tong.ToString()}";
+                $"%={total.ToString()}";
                 if (listUpdate.Any())
                 {
                     _commonUoW.BeginTransaction();
@@ -397,6 +397,23 @@ namespace KQ.Services.HandlMessageService
                 result.Total.Trung.DaX = Math.Round(result.Total.Trung.DaX, 2);
                 result.Total.Trung.BaCon = Math.Round(result.Total.Trung.BaCon, 2);
                 result.Total.Trung.BonCon = Math.Round(result.Total.Trung.BonCon, 2);
+
+                foreach(var trung in result.DetailMessage)
+                {
+                    trung.Xac.HaiCB = Math.Round(trung.Xac.HaiCB, 2);
+                    trung.Xac.HaiCD = Math.Round(trung.Xac.HaiCD, 2);
+                    trung.Xac.DaT = Math.Round(trung.Xac.DaT, 2);
+                    trung.Xac.DaX = Math.Round(trung.Xac.DaX, 2);
+                    trung.Xac.BaCon = Math.Round(trung.Xac.BaCon, 2);
+                    trung.Xac.BonCon = Math.Round(trung.Xac.BonCon, 2);
+
+                    trung.Trung.HaiCB = Math.Round(trung.Trung.HaiCB, 2);
+                    trung.Trung.HaiCD = Math.Round(trung.Trung.HaiCD, 2);
+                    trung.Trung.DaT = Math.Round(trung.Trung.DaT, 2);
+                    trung.Trung.DaX = Math.Round(trung.Trung.DaX, 2);
+                    trung.Trung.BaCon = Math.Round(trung.Trung.BaCon, 2);
+                    trung.Trung.BonCon = Math.Round(trung.Trung.BonCon, 2);
+                }
                 return new ResponseBase { Data = result };
             }
             catch (Exception ex)
