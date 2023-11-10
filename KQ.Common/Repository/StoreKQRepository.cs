@@ -19,7 +19,7 @@
         }
         public static bool DeleteDetails()
         {
-            DateTime now = DateTime.Now.AddDays(-30);
+            DateTime now = DateTime.Now.AddDays(-32);
             string insertQuery = @"Delete [dbo].[Details] where HandlByDate <= @now ";
             var parram = new
             {
