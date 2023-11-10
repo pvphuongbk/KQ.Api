@@ -255,7 +255,7 @@ namespace KQ.Services.HandlMessageService
                 result.Xac.DaT = Math.Round(detail.Xac.DaT, 2);
                 result.Xac.DaX = Math.Round(detail.Xac.DaX, 2);
                 result.Xac.BaCon = Math.Round(detail.Xac.BaCon, 2);
-                result.Xac.BonCon = detail.Xac.BonCon;
+                result.Xac.BonCon = Math.Round(detail.Xac.BonCon,2);
 
                 result.Trung.HaiCB = Math.Round(detail.Trung.HaiCB, 2);
                 result.Trung.HaiCD = Math.Round(detail.Trung.HaiCD, 2);
