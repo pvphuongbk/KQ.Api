@@ -1532,6 +1532,7 @@ namespace KQ.Services.Calcualation
                         lst.Add(str);
                     lst.Add("n");
                     str = "";
+                    isNumber = false;
                 }
                 else if (int.TryParse(cstr, out _))
                 {
