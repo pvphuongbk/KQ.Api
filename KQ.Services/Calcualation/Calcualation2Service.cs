@@ -515,11 +515,11 @@ namespace KQ.Services.Calcualation
             {
                 case MienEnum.MN:
                     if (kq2So[0] == null || kq2So[1] == null || kq2So[2] == null
-                        || (day == DayOfWeek.Saturday && kq2So[6] == null)
+                        || (day == DayOfWeek.Saturday && kq2So[3] == null)
                         || kq3So[0] == null || kq3So[1] == null || kq3So[2] == null
-                        || (day == DayOfWeek.Saturday && kq3So[6] == null)
+                        || (day == DayOfWeek.Saturday && kq3So[3] == null)
                         || kq4So[0] == null || kq4So[1] == null || kq4So[2] == null
-                        || (day == DayOfWeek.Saturday && kq4So[6] == null))
+                        || (day == DayOfWeek.Saturday && kq4So[3] == null))
                         return false;
                     break;
                 case MienEnum.MT:
