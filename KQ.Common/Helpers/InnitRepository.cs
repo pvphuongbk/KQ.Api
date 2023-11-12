@@ -287,7 +287,7 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-                if(isCheck)
+                if (isCheck)
                     DisposeDriver();
             }
 
@@ -459,9 +459,9 @@ namespace KQ.Common.Helpers
                 List<int> bonSoListTemp = new List<int>();
                 if (CheckKqMB(link, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
-                    if(CheckKqMB(link, sumListTemp, baCangListTemp, bonSoListTemp))
+                    if (CheckKqMB(link, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
-                        if(bonSoListTemp1.First() == bonSoListTemp.First())
+                        if (bonSoListTemp1.First() == bonSoListTemp.First())
                         {
                             // Update 2 số
                             sumList[7] = sumListTemp;
@@ -550,7 +550,7 @@ namespace KQ.Common.Helpers
                 DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MT);
                 int max = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 3 : 2;
                 int maxLine = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 27 : 18;
-                if(CheckKqMT(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
+                if (CheckKqMT(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
                     if (CheckKqMT(day, link, max, maxLine, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
@@ -624,65 +624,302 @@ namespace KQ.Common.Helpers
             {
             }
         }
+        private static bool GetKqMienNamMinhNgoc(DayOfWeek? day, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp, DateTime? date)
+        {
+            string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-nam.html";
+            if (date != null)
+            {
+                link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/{date.Value.ToString("dd-MM-yyyy")}.html";
+            }
+
+            drivers.Navigate().GoToUrl(link);
+            DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+            int max = dayCheck == DayOfWeek.Saturday ? 4 : 3;
+            IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
+                "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
+
+            if (date != null)
+            {
+                allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[1]/div/div[2]/div[2]/div[2]/table[1]/tbody/tr"));
+            }
+            if (!allElement.Any())
+                return false;
+            var array = allElement[0].Text.Split("\r\n");
+            for (int i = 0; i < max; i++)
+            {
+                int start = 13 + 20 * i;
+                int end = start + 18;
+                for (int j = start; j < end; j++)
+                {
+                    int num = 0;
+                    var check = int.TryParse(array[j], out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp[i].Add(numLo);
+                        if (j > start)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp[i].Add(numBa);
+                        }
+                        if (j > (start + 1))
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp[i].Add(numBa);
+                        }
+                    }
+                }
+            }
+            if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private static bool GetKqMienTrungMinhNgoc(DayOfWeek? day, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp, DateTime? date)
+        {
+            string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
+            if (date != null)
+            {
+                link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-trung/{date.Value.ToString("dd-MM-yyyy")}.html";
+            }
+            drivers.Navigate().GoToUrl(link);
+            DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+            int max = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 3 : 2;
+            IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
+                "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
+
+            if (date != null)
+            {
+                allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[1]/div/div[2]/div[2]/div[2]/table[1]/tbody/tr"));
+            }
+            if (!allElement.Any())
+                return false;
+            var array = allElement[0].Text.Split("\r\n");
+            for (int i = 0; i < max; i++)
+            {
+                int start = 13 + 20 * i;
+                int end = start + 18;
+                for (int j = start; j < end; j++)
+                {
+                    int num = 0;
+                    var check = int.TryParse(array[j], out num);
+                    if (check)
+                    {
+                        var numLo = num % 100;
+                        sumListTemp[i].Add(numLo);
+                        if (j > start)
+                        {
+                            var numBa = num % 1000;
+                            baCangListTemp[i].Add(numBa);
+                        }
+                        if (j > (start + 1))
+                        {
+                            var numBa = num % 10000;
+                            bonSoListTemp[i].Add(numBa);
+                        }
+                    }
+                }
+            }
+            if (sumListTemp.Length == 3 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
+                 && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && dayCheck != DayOfWeek.Sunday) || sumListTemp[2].Count == 18))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private static bool GetKqMienBacMinhNgoc(DayOfWeek? day, List<int> sumListTemp, List<int> baCangListTemp, List<int> bonSoListTemp, DateTime? date)
+        {
+            string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-bac.html";
+            if (date != null)
+            {
+                link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-bac/{date.Value.ToString("dd-MM-yyyy")}.html";
+            }
+            drivers.Navigate().GoToUrl(link);
+            DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
+            IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[5]/div[2]/div/table/tbody/tr"));
+            int start = 4;
+            int max = 37;
+            int max3 = 32;
+            int max4 = 28;
+            if (date != null)
+            {
+                start = 5;
+                max = 38;
+                max3 = 33;
+                max4 = 29;
+
+                allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[1]/div/div[2]/div[2]/div[2]/table[1]/tbody/tr"));
+            }
+            if (!allElement.Any())
+                return false;
+            var array = allElement[0].Text.Split("\r\n");
+            for (int i = start; i <= max; i++)
+            {
+                int num = 0;
+                var check = int.TryParse(array[i], out num);
+                if (check)
+                {
+                    var numLo = num % 100;
+                    sumListTemp.Add(numLo);
+                    if (i <= max3)
+                    {
+                        var numBa = num % 1000;
+                        baCangListTemp.Add(numBa);
+                    }
+                    if (i <= max4)
+                    {
+                        var numBa = num % 10000;
+                        bonSoListTemp.Add(numBa);
+                    }
+                }
+            }
+            if (sumListTemp != null && sumListTemp.Count == 27)
+            {
+                return true;
+            }
+
+            return false;
+        }
         public static bool UpdateKQMBMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
         {
             try
             {
-                var now = DateTime.Now.TimeOfDay;
+                List<int> sumListTemp1 = new List<int>();
+                List<int> baCangListTemp1 = new List<int>();
+                List<int> bonSoListTemp1 = new List<int>(); ;
 
-                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-bac.html";
-                if (date != null)
-                {
-                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-trung/{date.Value.ToString("dd-MM-yyyy")}.html";
-                }
-                drivers.Navigate().GoToUrl(link);
                 List<int> sumListTemp = new List<int>();
                 List<int> baCangListTemp = new List<int>();
                 List<int> bonSoListTemp = new List<int>();
-                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
-                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div/div/div/table/tbody/tr/" +
-                    "td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[5]/div[2]/div/table/tbody/tr/td/table/tbody"));
-                if (!allElement.Any())
-                    return false;
-                var array = allElement[0].Text.Split("\r\n");
-                for (int i = 0; i <= 37; i++)
+                if (GetKqMienBacMinhNgoc(day, sumListTemp1, baCangListTemp1, bonSoListTemp1, date))
                 {
-                    int num = 0;
-                    var check = int.TryParse(array[i], out num);
-                    if (check)
+                    if (GetKqMienBacMinhNgoc(day, sumListTemp, baCangListTemp, bonSoListTemp, date))
                     {
-                        var numLo = num % 100;
-                        sumListTemp.Add(numLo);
-                        if (i <= 32)
+                        if (bonSoListTemp1.Last() == bonSoListTemp.Last() && bonSoListTemp1[18] == bonSoListTemp[18])
                         {
-                            var numBa = num % 1000;
-                            baCangListTemp.Add(numBa);
-                        }
-                        if (i <= 28)
-                        {
-                            var numBa = num % 10000;
-                            bonSoListTemp.Add(numBa);
+                            // Update 2 số
+                            sumList[7] = sumListTemp;
+
+                            // Update 3 số
+                            sumBaList[7] = baCangListTemp;
+
+                            // Update 4 số
+                            sumBonList[7] = bonSoListTemp;
+                            return true;
                         }
                     }
-                }
-                if (sumListTemp != null && sumListTemp.Count == 27)
-                {
-                    // Update 2 số
-                    sumList[7] = sumListTemp;
-
-                    // Update 3 số
-                    sumBaList[7] = baCangListTemp;
-
-                    // Update 4 số
-                    sumBonList[7] = bonSoListTemp;
-                    return true;
                 }
 
                 return false;
             }
             catch (Exception ex)
             {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMBMinhNgoc");
+                return false;
+            }
+            finally
+            {
+            }
+        }
+        public static bool UpdateKQMTMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
+        {
+            try
+            {
+                List<int>[] sumListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+
+                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
+                if (GetKqMienTrungMinhNgoc(day, sumListTemp1, baCangListTemp1, bonSoListTemp1, date))
+                {
+                    if (GetKqMienTrungMinhNgoc(day, sumListTemp, baCangListTemp, bonSoListTemp, date))
+                    {
+                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last() && bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()
+                            && (day != DayOfWeek.Saturday || bonSoListTemp1[3].Last() == bonSoListTemp[3].Last()))
+                        {
+                            // Cập nhật 2 số
+                            sumList[4] = sumListTemp[0];
+                            sumList[5] = sumListTemp[1];
+                            sumList[6] = sumListTemp[2];
+
+                            // Cập nhật 3 số
+                            sumBaList[4] = baCangListTemp[0];
+                            sumBaList[5] = baCangListTemp[1];
+                            sumBaList[6] = baCangListTemp[2];
+
+                            // Cập nhật 4 số
+                            sumBonList[4] = bonSoListTemp[0];
+                            sumBonList[5] = bonSoListTemp[1];
+                            sumBonList[6] = bonSoListTemp[2];
+
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMTMinhNgoc");
+                return false;
+            }
+            finally
+            {
+            }
+        }
+        public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
+        {
+            try
+            {
+                List<int>[] sumListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp1 = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+
+                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
+                if (GetKqMienNamMinhNgoc(day, sumListTemp1, baCangListTemp1, bonSoListTemp1, date))
+                {
+                    if (GetKqMienNamMinhNgoc(day, sumListTemp, baCangListTemp, bonSoListTemp, date))
+                    {
+                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last() && bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()
+                            && (day != DayOfWeek.Saturday || bonSoListTemp1[3].Last() == bonSoListTemp[3].Last()))
+                        {
+                            // Cập nhật 2 số
+                            sumList[0] = sumListTemp[0];
+                            sumList[1] = sumListTemp[1];
+                            sumList[2] = sumListTemp[2];
+                            sumList[3] = sumListTemp[3];
+
+                            // Cập nhật 3 số
+                            sumBaList[0] = baCangListTemp[0];
+                            sumBaList[1] = baCangListTemp[1];
+                            sumBaList[2] = baCangListTemp[2];
+                            sumBaList[3] = baCangListTemp[3];
+
+                            // Cập nhật 4 số
+                            sumBonList[0] = bonSoListTemp[0];
+                            sumBonList[1] = bonSoListTemp[1];
+                            sumBonList[2] = bonSoListTemp[2];
+                            sumBonList[3] = bonSoListTemp[3];
+
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMNMinhNgoc");
                 return false;
             }
             finally
@@ -692,13 +929,13 @@ namespace KQ.Common.Helpers
         public static bool InsertUpdateManyDate(DateTime startDate, DateTime endDate)
         {
             InitDriver();
-            for (DateTime date = startDate; date<= endDate; date = date.AddDays(1))
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 List<int>[] sumList = new List<int>[8];
                 List<int>[] sumBaList = new List<int>[8];
                 List<int>[] sumBonList = new List<int>[8];
 
-                UpdateKQMN(date.DayOfWeek, sumList,  sumBaList, sumBonList, date);
+                UpdateKQMN(date.DayOfWeek, sumList, sumBaList, sumBonList, date);
                 UpdateKQMT(date.DayOfWeek, sumList, sumBaList, sumBonList, date);
                 UpdateKQMB(date.DayOfWeek, sumList, sumBaList, sumBonList, date);
                 if (sumList.Any(x => x != null) && sumList.Any(x => x != null) && sumList.Any(x => x != null))
@@ -713,171 +950,7 @@ namespace KQ.Common.Helpers
             DisposeDriver();
             return true;
         }
-        public static bool UpdateKQMTMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
-        {
-            try
-            {
-                var now = DateTime.Now.TimeOfDay;
-
-                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-trung.html";
-                if (date != null)
-                {
-                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-trung/{date.Value.ToString("dd-MM-yyyy")}.html";
-                }
-                drivers.Navigate().GoToUrl(link);
-                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>() };
-                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
-                int max = (dayCheck == DayOfWeek.Thursday || dayCheck == DayOfWeek.Saturday || dayCheck == DayOfWeek.Sunday) ? 3 : 2;
-                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
-                    "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
-                if (!allElement.Any())
-                    return false;
-                var array = allElement[0].Text.Split("\r\n");
-                for (int i = 0; i < max; i++)
-                {
-                    int start = 13 + 20 * i;
-                    int end = start + 18;
-                    for (int j = start; j < end; j++)
-                    {
-                        int num = 0;
-                        var check = int.TryParse(array[j], out num);
-                        if (check)
-                        {
-                            var numLo = num % 100;
-                            sumListTemp[i].Add(numLo);
-                            if (j > start)
-                            {
-                                var numBa = num % 1000;
-                                baCangListTemp[i].Add(numBa);
-                            }
-                            if (j > (start + 1))
-                            {
-                                var numBa = num % 10000;
-                                bonSoListTemp[i].Add(numBa);
-                            }
-                        }
-                    }
-                }
-                if (sumListTemp.Length == 3 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
-                     && ((day != DayOfWeek.Saturday && day != DayOfWeek.Thursday && dayCheck != DayOfWeek.Sunday) || sumListTemp[2].Count == 18))
-                {
-                    // Cập nhật 2 số
-                    sumList[4] = sumListTemp[0];
-                    sumList[5] = sumListTemp[1];
-                    sumList[6] = sumListTemp[2];
-
-                    // Cập nhật 3 số
-                    sumBaList[4] = baCangListTemp[0];
-                    sumBaList[5] = baCangListTemp[1];
-                    sumBaList[6] = baCangListTemp[2];
-
-                    // Cập nhật 4 số
-                    sumBonList[4] = bonSoListTemp[0];
-                    sumBonList[5] = bonSoListTemp[1];
-                    sumBonList[6] = bonSoListTemp[2];
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
-                return false;
-            }
-            finally
-            {
-            }
-        }
-
-        public static bool UpdateKQMNMinhNgoc(DayOfWeek? day, List<int>[] sumList, List<int>[] sumBaList, List<int>[] sumBonList, DateTime? date = null)
-        {
-            try
-            {
-                var now = DateTime.Now.TimeOfDay;
-                //01-11-2023
-                string link = "https://www.minhngoc.net.vn/xo-so-truc-tiep/mien-nam.html";
-                if(date != null)
-                {
-                    link = @$"https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/{date.Value.ToString("dd-MM-yyyy")}.html";
-                }
-                
-                drivers.Navigate().GoToUrl(link);
-                List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                DayOfWeek dayCheck = GetDayCheck(day, RegionEnum.MN);
-                int max = dayCheck == DayOfWeek.Saturday ? 4 : 3;
-                IList<IWebElement> allElement = drivers.FindElements(By.XPath("/html/body/div[1]/div/center/div/div/div[3]/div" +
-                    "/div/div/table/tbody/tr/td[2]/div/table/tbody/tr/td[1]/div[2]/div/div[3]/div[3]/center/div/div[2]/div[2]/table[1]/tbody/tr"));
-                if (!allElement.Any())
-                    return false;
-                var array = allElement[0].Text.Split("\r\n");
-                for (int i = 0; i < max; i++)
-                {
-                    int start = 13 + 20 * i;
-                    int end = start + 18;
-                    for (int j = start; j < end; j++)
-                    {
-                        int num = 0;
-                        var check = int.TryParse(array[j], out num);
-                        if (check)
-                        {
-                            var numLo = num % 100;
-                            sumListTemp[i].Add(numLo);
-                            if (j > start)
-                            {
-                                var numBa = num % 1000;
-                                baCangListTemp[i].Add(numBa);
-                            }
-                            if (j > (start + 1))
-                            {
-                                var numBa = num % 10000;
-                                bonSoListTemp[i].Add(numBa);
-                            }
-                        }
-                    }
-                }
-                if (sumListTemp != null && sumListTemp.Length == 4 && sumListTemp[0].Count == 18 && sumListTemp[1].Count == 18
-                    && sumListTemp[2].Count == 18 && (day != DayOfWeek.Saturday || sumListTemp[3].Count == 18))
-                {
-                    // Cập nhật 2 số
-                    sumList[0] = sumListTemp[0];
-                    sumList[1] = sumListTemp[1];
-                    sumList[2] = sumListTemp[2];
-                    sumList[3] = sumListTemp[3];
-
-                    // Cập nhật 3 số
-                    sumBaList[0] = baCangListTemp[0];
-                    sumBaList[1] = baCangListTemp[1];
-                    sumBaList[2] = baCangListTemp[2];
-                    sumBaList[3] = baCangListTemp[3];
-
-                    // Cập nhật 4 số
-                    sumBonList[0] = bonSoListTemp[0];
-                    sumBonList[1] = bonSoListTemp[1];
-                    sumBonList[2] = bonSoListTemp[2];
-                    sumBonList[3] = bonSoListTemp[3];
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch (Exception ex)
-            {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "UpdateKQMT");
-                return false;
-            }
-            finally
-            {
-            }
-        }
-
-        private static bool GetKqMienNam(DayOfWeek? day,string link, int max, int maxLine, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp)
+        private static bool GetKqMienNam(DayOfWeek? day, string link, int max, int maxLine, List<int>[] sumListTemp, List<int>[] baCangListTemp, List<int>[] bonSoListTemp)
         {
             drivers.Navigate().GoToUrl(link);
             int count = 0;
@@ -942,9 +1015,9 @@ namespace KQ.Common.Helpers
                 List<int>[] sumListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] baCangListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
                 List<int>[] bonSoListTemp = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
-                if(GetKqMienNam(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
+                if (GetKqMienNam(day, link, max, maxLine, sumListTemp1, baCangListTemp1, bonSoListTemp1))
                 {
-                    if(GetKqMienNam(day, link, max, maxLine, sumListTemp, baCangListTemp, bonSoListTemp))
+                    if (GetKqMienNam(day, link, max, maxLine, sumListTemp, baCangListTemp, bonSoListTemp))
                     {
                         if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last() && bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()
                             && (day != DayOfWeek.Saturday || bonSoListTemp1[3].Last() == bonSoListTemp[3].Last()))
