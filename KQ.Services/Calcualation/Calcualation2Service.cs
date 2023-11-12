@@ -1724,7 +1724,7 @@ namespace KQ.Services.Calcualation
             List<int> chanelsTemp = new List<int>();
             var dais = InnitRepository._chanelCodeAll[date.DayOfWeek][mien];
             bool isTangi = false;
-            while (check)
+            while (check && array.Length > i)
             {
                 if (array[i] == " ")
                 {
@@ -1762,9 +1762,10 @@ namespace KQ.Services.Calcualation
                     }
                 }
             }
-            for (int k = i; k >= 0; k--)
+            int kh = array.Length <= i ? (array.Length-1) : i;
+            for (; kh >= 0; kh--)
             {
-                if (array[k] == " ")
+                if (array[kh] == " ")
                     i--;
                 else
                     break;
