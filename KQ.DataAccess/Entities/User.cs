@@ -11,9 +11,11 @@ namespace KQ.DataAccess.Entities
         public DateTime StartDate { get; set; }
         public DateTime ExpireDate { get; set; }
         public bool IsDeleted { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
         public string? Imei { get; set; }
+        public bool IsAdmin { get; set; }
+        public string? Note { get; set; }
         public virtual List<TileUser> TileUser { get; set; }
     }
 }

@@ -265,6 +265,8 @@ namespace KQ.Common.Extention
 
         public static string Encrypt(this string toEncrypt)
         {
+            if (string.IsNullOrEmpty(toEncrypt))
+                return toEncrypt;
             bool useHashing = true;
             byte[] keyArray;
             byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
@@ -289,6 +291,8 @@ namespace KQ.Common.Extention
         }
         public static string Decrypt(this string toDecrypt)
         {
+            if (string.IsNullOrEmpty(toDecrypt))
+                return toDecrypt;
             bool useHashing = true;
             byte[] keyArray;
             byte[] toEncryptArray = Convert.FromBase64String(toDecrypt);
