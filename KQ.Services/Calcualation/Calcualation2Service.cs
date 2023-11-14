@@ -1602,7 +1602,7 @@ namespace KQ.Services.Calcualation
                         if (array.Length > (j + 1))
                         {
                             var txt = array[j + 1].ToString();
-                            if (txt == "d" || txt == "x" || txt == "a" || txt == "t" || txt == "u")
+                            if (txt == "d" || txt == "x" || txt == "a" || txt == "t" || txt == "u" || txt == "c" || txt == "p")
                                 return false;
                         }
 

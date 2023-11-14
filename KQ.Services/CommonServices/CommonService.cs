@@ -186,7 +186,8 @@ namespace KQ.Services.CommonServices
                  ,DateTime = new DateTime(2023,11,07), Xac = 166},                                                                                        //80
                   new CalTest2RequestDto{SynTaxe = "1d 766 x 2.5n 339 b 1.3n ", Xac = 27.1, Mien = MienEnum.MN, CoN = true},                              //81
                   new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 dd20.6n ", MessageLoi = "b 1.3", Mien = MienEnum.MN, CoN = true},             //82
-                  new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 d20.6n d3.5n", MessageLoi = "b 1", Mien = MienEnum.MN, CoN = true},         //83
+                  new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 d20.6n d3.5n", MessageLoi = "b 1", Mien = MienEnum.MN, CoN = true},           //83
+                  new CalTest2RequestDto{SynTaxe = "3d 45 67 98 34 dx35.5b8.6 dc 234 xdao 11.3dp 12 b 3n", Xac = 48055.2, Trung = 8.6, Mien = MienEnum.MN, CoN = false}, //84
             };
             for(int i = 0; i < teststos.Count; i++)
             {
