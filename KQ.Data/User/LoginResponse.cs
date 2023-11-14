@@ -2,7 +2,7 @@
 
 namespace KQ.DataDto.User
 {
-    public class LoginResponse : TiLeBase
+    public class LoginResponse
     {
         public bool IsLoginSuccess { get; set; }
         public int ID { get; set; }
