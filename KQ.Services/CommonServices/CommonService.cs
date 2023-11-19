@@ -91,7 +91,7 @@ namespace KQ.Services.CommonServices
 
                 // Lỗi
                 new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n", MessageLoi = "29k79 xc100n"},                                                         //15
-                new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10", MessageLoi = "072keo527 dd100n"},                                //16
+                new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10", MessageLoi = "072keo527"},                                       //16
                 new CalTest2RequestDto{SynTaxe = "2d 11 b10n 29ka79 82 dd100n", MessageLoi = "29ka"},                                                      //17
                 new CalTest2RequestDto{SynTaxe = "vl la  72ka29 dd100n 27a72 bao10", MessageLoi = "vl la"},                                                //18
                 new CalTest2RequestDto{SynTaxe = "4d  72keo29 dd100n 27k72 bao10", MessageLoi = "4d"},                                                     //19
@@ -103,7 +103,7 @@ namespace KQ.Services.CommonServices
                 new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n VL,la 23 36 bao10", MessageLoi = "VL,la"},                             //25
                 new CalTest2RequestDto{SynTaxe = "2d  72 27 dd100n bao50n 690 xc30n 2t 23 36 bao10", MessageLoi = "2t"},                                   //26
                 new CalTest2RequestDto{SynTaxe = "2d  45678 bao10", MessageLoi = "45678"},                                                                 //27
-                new CalTest2RequestDto{SynTaxe = "2d  4567 xc10", MessageLoi = "4567 xc10"},                                                               //28
+                new CalTest2RequestDto{SynTaxe = "2d  4567 22 xc10", MessageLoi = "4567 22"},                                                              //28
                 new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10", MessageLoi = "112khc563"},                                          //29
                 new CalTest2RequestDto{SynTaxe = "2d  456 dd10", MessageLoi = "456 dd10"},                                                                 //30
                 new CalTest2RequestDto{SynTaxe = "Đài Chánh.10₫15.n.₫10n.72₫₫10n. 518b2n..438.731b1n.xc5n.511b2n.xc10n..11b5n. " +                         
@@ -188,10 +188,12 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 dd20.6n ", MessageLoi = "b 1.3", Mien = MienEnum.MN, CoN = true},             //82
                   new CalTest2RequestDto{SynTaxe = "1d 766 x 2,5n 339 b 1.3 d20.6n d3.5n", MessageLoi = "b 1", Mien = MienEnum.MN, CoN = true},           //83
                   new CalTest2RequestDto{SynTaxe = "3d 45 67 98 34 dx35.5b8.6 dc 234 xdao 11.3dp 12 b 3n", Xac = 48055.2, Trung = 8.6, Mien = MienEnum.MN, CoN = false}, //84
+                  new CalTest2RequestDto{SynTaxe = "1d 034k934 b5n", MessageLoi = "034k934", Mien = MienEnum.MN, CoN = true},                             //85
+                  new CalTest2RequestDto{SynTaxe = "dn54.38da20n.5438b10nx50nxdui300n.", Xac =1280, Mien = MienEnum.MN, CoN = true},                      //86
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 82)
+                if(i == 86)
                 {
 
                 }

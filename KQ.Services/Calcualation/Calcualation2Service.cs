@@ -1282,7 +1282,30 @@ namespace KQ.Services.Calcualation
                             else if (le == 4)
                                 numberStrs.Add(k.ToString("0000"));
                         }
-                        result = true;
+                        if(numberStrs.Count > 200)
+                        {
+                            string strS = "";
+                            string strE = "";
+                            if (le == 2)
+                            {
+                                strS = start.ToString("00");
+                                strE = end.ToString("00");
+                            }
+                            else if (le == 3)
+                            {
+                                strS = start.ToString("000");
+                                strE = end.ToString("000");
+                            }
+                            else if (le == 4)
+                            {
+                                strS = start.ToString("000");
+                                strE = end.ToString("000");
+                            }
+
+                            mess = $"Số kéo không hỗ trợ hơn 200 con từ [{strS}-{strE}]";
+                        }
+                        else
+                            result = true;
                     }
                 }
             }
@@ -1337,7 +1360,35 @@ namespace KQ.Services.Calcualation
             else if ((cachChoi == CachChoi.Xc || cachChoi == CachChoi.XcDau || cachChoi == CachChoi.XcDui
                || cachChoi == CachChoi.XcDao || cachChoi == CachChoi.XcDauDao || cachChoi == CachChoi.XcDuoiDao) && numberStrs.All(x => x.Length != 3))
             {
-                mess = "Cách chơi này chỉ chơi được 3 con";
+                if(numberStrs.All(x => x.Length >= 3 && x.Length <= 4))
+                {
+                    List<int> numbersTemp = new List<int>();
+                    List<string> numberStrsTemp = new List<string>();
+                    foreach (string num in numberStrs)
+                    {
+                        var numT = num;
+                        if (num.Length == 4)
+                        {
+                            numT = num.Substring(1);
+                        }
+                        numberStrsTemp.Add(numT);
+                        numbersTemp.Add(int.Parse(numT));
+                    }
+                    var pre = new Cal3PrepareDto
+                    {
+                        CachChoi = (CachChoi)cachChoi,
+                        Chanels = chanels.CloneList(),
+                        Numbers = numbersTemp,
+                        NumbersStr = numberStrsTemp,
+                        Sl = sl,
+                    };
+                    cal3PrepareDtos.Add(pre);
+                    result = true;
+                }
+                else
+                {
+                    mess = "Cách chơi này chỉ chơi được 3 con";
+                }
             }
             else if (cachChoi == CachChoi.DaX && chanels.Count < 2)
             {
