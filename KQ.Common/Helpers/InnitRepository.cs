@@ -1,4 +1,5 @@
-﻿using KQ.Common.Enums;
+﻿using KQ.Common.Configuration;
+using KQ.Common.Enums;
 using KQ.Common.Repository;
 using KQ.DataAccess.Enum;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -57,7 +58,8 @@ namespace KQ.Common.Helpers
                     checkT = false;
                     checkB = false;
                     StoreKQRepository.DeleteDetails();
-                    StoreKQRepository.BackUpDB();
+                    if (AppConfigs.Isbackup)
+                        StoreKQRepository.BackUpDB();
                 }
                 else if (!checkS && now < new TimeSpan(6, 30, 0))
                 {
