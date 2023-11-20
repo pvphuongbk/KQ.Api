@@ -51,6 +51,7 @@ namespace KQ.Services.Calcualation
                 List<CachChoi?> cachChoiTemp = new List<CachChoi?>();
                 Error error = null;
                 bool isCompleted = true;
+                int slBao = 0;
                 #endregion
                 if (dto.Mien == MienEnum.MB)
                 {
@@ -180,7 +181,7 @@ namespace KQ.Services.Calcualation
                             }
                         }
                     }
-                    else if (GetCachChoi(array[i], ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError))
+                    else if (GetCachChoi(array[i], ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError,dto.Mien, ref slBao))
                     {
                         isCompleted = true;
                         int cursorDup = i;
@@ -196,7 +197,7 @@ namespace KQ.Services.Calcualation
                         var sl = GetSl(array, ref i, dto.CoN, ref mess11);
                         if (sl > 0)
                         {
-                            var (check1, mess1) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl);
+                            var (check1, mess1) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl,dto.Mien, slBao);
                             if (!check1)
                             {
                                 //lỗi
@@ -218,7 +219,7 @@ namespace KQ.Services.Calcualation
                                 var (str, iTemp) = FindNextStr(array, i);
                                 if (str.StartsWith("n"))
                                     str = str.Substring(1, str.Length - 1);
-                                if (GetCachChoi(str, ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError))
+                                if (GetCachChoi(str, ref cachChoi, array, ref i, ref cal3PrepareDtos, ref cachChoiTemp, chanels, numbers, numberStrs, ref messError,dto.Mien, ref slBao))
                                 {
                                     if (!string.IsNullOrEmpty(messError))
                                     {
@@ -250,7 +251,7 @@ namespace KQ.Services.Calcualation
                                     TangCurso(ref cursor, ref cursorTemp, array, i);
                                     if (sl2 > 0)
                                     {
-                                        var (check2, mess2) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl2);
+                                        var (check2, mess2) = CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl2, dto.Mien, slBao);
                                         if (!check2)
                                         {
                                             //lỗi
@@ -838,6 +839,100 @@ namespace KQ.Services.Calcualation
                                 me4Con.Add(key, pre.SlTrung * pre.SoTien);
                         }
                         break;
+                    case CachChoi.BaoLoDau:
+                        if (mien == MienEnum.MB)
+                        {
+                            var startlod = kq2So[pre.DaiIn[0] - 1].Count - pre.SlBaoLo;
+                            var kqdbld = kq2So[pre.DaiIn[0] - 1].GetRange(startlod, pre.SlBaoLo);
+                            var countdbld = kqdbld.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdbld;
+                        }
+                        else
+                        {
+                            var kqdbld = kq2So[pre.DaiIn[0] - 1].GetRange(0, pre.SlBaoLo);
+                            var countdbld = kqdbld.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdbld;
+                        }
+                        if (pre.SlTrung > 0)
+                        {
+                            string key = pre.SoIn[0].ToString("00");
+                            if (meT2c.ContainsKey(key))
+                                meT2c[key] += pre.SlTrung * pre.SoTien;
+                            else
+                                meT2c.Add(key, pre.SlTrung * pre.SoTien);
+                        }
+                        break;
+                    case CachChoi.BaoLoDuoi:
+                        if (mien == MienEnum.MB)
+                        {
+                            var kqdbldd = kq2So[pre.DaiIn[0] - 1].GetRange(0, pre.SlBaoLo);
+                            var countdbldd = kqdbldd.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdbldd;
+                        }
+                        else
+                        {
+                            var startld = kq2So[pre.DaiIn[0] - 1].Count - pre.SlBaoLo;
+                            var kqdblddd = kq2So[pre.DaiIn[0] - 1].GetRange(startld, pre.SlBaoLo);
+                            var countdblddd = kqdblddd.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdblddd;
+                        }
+
+                        if (pre.SlTrung > 0)
+                        {
+                            string key = pre.SoIn[0].ToString("00");
+                            if (meT2c.ContainsKey(key))
+                                meT2c[key] += pre.SlTrung * pre.SoTien;
+                            else
+                                meT2c.Add(key, pre.SlTrung * pre.SoTien);
+                        }
+                        break;
+                    case CachChoi.BaoBaConDau:
+                        if (mien == MienEnum.MB)
+                        {
+                            var start33 = kq3So[pre.DaiIn[0] - 1].Count - pre.SlBaoLo;
+                            var kqdbldd33 = kq3So[pre.DaiIn[0] - 1].GetRange(start33, pre.SlBaoLo);
+                            var countdbldd33 = kqdbldd33.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdbldd33;
+                        }
+                        else
+                        {
+                            var kqd3bldd = kq3So[pre.DaiIn[0] - 1].GetRange(0, pre.SlBaoLo);
+                            var count3dbldd = kqd3bldd.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = count3dbldd;
+                        }
+
+                        if (pre.SlTrung > 0)
+                        {
+                            string key = pre.SoIn[0].ToString("000");
+                            if (me3Con.ContainsKey(key))
+                                me3Con[key] += pre.SlTrung * pre.SoTien;
+                            else
+                                me3Con.Add(key, pre.SlTrung * pre.SoTien);
+                        }
+                        break;
+                    case CachChoi.BaoBaConDuoi:
+                        if (mien == MienEnum.MB)
+                        {
+                            var kqd3bldd = kq3So[pre.DaiIn[0] - 1].GetRange(0, pre.SlBaoLo);
+                            var count3dbldd = kqd3bldd.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = count3dbldd;
+                        }
+                        else
+                        {
+                            var start33 = kq3So[pre.DaiIn[0] - 1].Count - pre.SlBaoLo;
+                            var kqdbldd33 = kq3So[pre.DaiIn[0] - 1].GetRange(start33, pre.SlBaoLo);
+                            var countdbldd33 = kqdbldd33.Count(x => x == pre.SoIn[0]);
+                            pre.SlTrung = countdbldd33;
+                        }
+                        if (pre.SlTrung > 0)
+                        {
+                            string key = pre.SoIn[0].ToString("000");
+                            if (me3Con.ContainsKey(key))
+                                me3Con[key] += pre.SlTrung * pre.SoTien;
+                            else
+                                me3Con.Add(key, pre.SlTrung * pre.SoTien);
+                        }
+                        break;
                 }
             }
             detail.IsTinh = true;
@@ -1227,6 +1322,48 @@ namespace KQ.Services.Calcualation
                             }
                         }
                         break;
+                    case CachChoi.BaoLoDuoi:
+                    case CachChoi.BaoLoDau:
+                        foreach (var dai in pre.Chanels)
+                        {
+                            var daiStr = slDai[dai][3];
+                            foreach (var numStr in pre.NumbersStr)
+                            {
+                                detail.Details.Add(new Detail
+                                {
+                                    CachChoi = pre.CachChoi,
+                                    DaiIn = new List<int> { dai },
+                                    Dai = daiStr,
+                                    So = new List<string> { numStr },
+                                    SoIn = new List<int> { int.Parse(numStr) },
+                                    SoTien = pre.Sl,
+                                    SlBaoLo = pre.Slbao
+                                });
+                                detail.Xac.HaiCB += pre.Slbao * pre.Sl;
+                            }
+                        }
+                        break;
+                    case CachChoi.BaoBaConDau:
+                    case CachChoi.BaoBaConDuoi:
+                        foreach (var dai in pre.Chanels)
+                        {
+                            var daiStr = slDai[dai][3];
+                            foreach (var numStr in pre.NumbersStr)
+                            {
+                                detail.Details.Add(new Detail
+                                {
+                                    CachChoi = pre.CachChoi,
+                                    DaiIn = new List<int> { dai },
+                                    Dai = daiStr,
+                                    So = new List<string> { numStr },
+                                    SoIn = new List<int> { int.Parse(numStr) },
+                                    SoTien = pre.Sl,
+                                    SlBaoLo = pre.Slbao
+                                });
+                                detail.Xac.BaCon += pre.Slbao * pre.Sl;
+                            }
+                        }
+                        break;
                 }
             }
             return detail;
@@ -1320,9 +1457,11 @@ namespace KQ.Services.Calcualation
 
             return (result, mess);
         }
-        public (bool, string) CheckAndCreateItem(ref List<Cal3PrepareDto> cal3PrepareDtos, CachChoi? cachChoi, List<int> chanels, List<int> numbers, List<string> numberStrs, double sl)
+        public (bool, string) CheckAndCreateItem(ref List<Cal3PrepareDto> cal3PrepareDtos, CachChoi? cachChoi, List<int> chanels, List<int> numbers, List<string> numberStrs, double sl,MienEnum mien, int slBao = 0)
         {
             bool result = false;
+            int max3Con = mien == MienEnum.MB ? 23 : 17;
+            int max2Con = mien == MienEnum.MB ? 27 : 18;
             string mess = string.Empty;
             if (!numberStrs.Any())
             {
@@ -1352,7 +1491,7 @@ namespace KQ.Services.Calcualation
                 cachChoi = CachChoi.DaX;
             }
 
-            if (cachChoi == CachChoi.B && numberStrs.All(x => x.Length != 2))
+            if ((cachChoi == CachChoi.B || cachChoi == CachChoi.BaoLoDau || cachChoi == CachChoi.BaoLoDuoi) && numberStrs.All(x => x.Length != 2))
             {
                 mess = "Cách chơi này chỉ chơi được 2 hoặc 3 con";
             }
@@ -1385,6 +1524,7 @@ namespace KQ.Services.Calcualation
                         Numbers = numbersTemp,
                         NumbersStr = numberStrsTemp,
                         Sl = sl,
+                        Slbao = slBao
                     };
                     cal3PrepareDtos.Add(pre);
                     result = true;
@@ -1402,6 +1542,14 @@ namespace KQ.Services.Calcualation
             {
                 mess = "Đá phải từ hai con";
             }
+            else if ((cachChoi == CachChoi.BaoLoDau || cachChoi == CachChoi.BaoLoDuoi) && slBao > max2Con)
+            {
+                mess = $"Bao lô tối đa {max2Con} con";
+            }
+            else if ((cachChoi == CachChoi.BaoBaConDau || cachChoi == CachChoi.BaoBaConDuoi) && slBao > max3Con)
+            {
+                mess = $"Bao lô tối đa {max3Con} con";
+            }
             else
             {
                 var pre = new Cal3PrepareDto
@@ -1411,6 +1559,7 @@ namespace KQ.Services.Calcualation
                     Numbers = numbers.CloneList(),
                     NumbersStr = numberStrs.CloneList(),
                     Sl = sl,
+                    Slbao = slBao
                 };
                 cal3PrepareDtos.Add(pre);
                 result = true;
@@ -1445,7 +1594,7 @@ namespace KQ.Services.Calcualation
             return result;
         }
         public bool GetCachChoi(string str, ref CachChoi? cachChoi, string[] array, ref int i, ref List<Cal3PrepareDto> cal3PrepareDtos,
-                                    ref List<CachChoi?> cachChoiTemp, List<int> chanels, List<int> numbers, List<string> numberStrs, ref string messError)
+                                    ref List<CachChoi?> cachChoiTemp, List<int> chanels, List<int> numbers, List<string> numberStrs, ref string messError, MienEnum mien, ref int slBao)
         {
             bool result = true;
             var (strNext, iTemp) = FindNextStr(array, i);
@@ -1455,6 +1604,26 @@ namespace KQ.Services.Calcualation
                 {
                     cachChoi = CachChoi.BaoDao;
                     i = iTemp;
+                }
+                else if(array.Length > (i + 2) && int.TryParse(array[i+1],out _) && (array[i + 2] == "lodau" || array[i + 2] == "lodui" || array[i + 2] == "loduoi"))
+                {
+                    if (array[i + 2] == "lodau")
+                    {
+                        if(numberStrs.All(x => x.Length == 3))
+                            cachChoi = CachChoi.BaoBaConDau;
+                        else
+                            cachChoi = CachChoi.BaoLoDau;
+                    }
+                    else
+                    {
+                        if (numberStrs.All(x => x.Length == 3))
+                            cachChoi = CachChoi.BaoBaConDuoi;
+                        else
+                            cachChoi = CachChoi.BaoLoDuoi;
+                    } 
+
+                    slBao = int.Parse(array[i + 1]);
+                    i = i + 2;
                 }
                 else
                     cachChoi = CachChoi.B;
@@ -1553,7 +1722,7 @@ namespace KQ.Services.Calcualation
                         {
                             cachChoi = CachChoi.Dau;
                             cachChoiTemp.Add(cachChoi);
-                            CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl);
+                            CheckAndCreateItem(ref cal3PrepareDtos, cachChoi, chanels, numbers, numberStrs, sl, mien);
                             cachChoi = CachChoi.Duoi;
                             result = true;
                             i = j;

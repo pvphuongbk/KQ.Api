@@ -196,10 +196,12 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "dc  367 xc 20n.dc 22 b10n", Xac = 220             , Mien = MienEnum.MN, },                            //90
                   new CalTest2RequestDto{SynTaxe = "dn  367 xc 20n.dc dc 22 b10n", MessageLoi = "dc dc", Mien = MienEnum.MN, },                           //91
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn dn 22 b10n", MessageLoi = "dn dn", Mien = MienEnum.MN, CoN = true},                  //92
+                  new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn 94 b7loduoi 5n 22 b10n", Xac = 335, Mien = MienEnum.MN, CoN = true},                 //93
+                  new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn 947 b18loduoi 5n 22 b10n", MessageLoi = "947 b18loduoi 5n", Mien = MienEnum.MN, CoN = true}, //94
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 92)
+                if(i == 93)
                 {
 
                 }

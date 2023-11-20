@@ -9,5 +9,6 @@ namespace KQ.DataDto.Calculation
         public List<string> NumbersStr { get; set; }
         public List<int> Chanels { get; set; }
         public double Sl { get; set; }
+        public int Slbao { get; set; }
     }
 }

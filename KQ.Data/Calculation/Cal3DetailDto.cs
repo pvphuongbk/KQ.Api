@@ -26,6 +26,7 @@ namespace KQ.DataDto.Calculation
         public CachChoi CachChoi { get; set; }
         public double SoTien { get; set; }
         public double SlTrung { get; set; }
+        public int SlBaoLo { get; set; }
     }
     public class Summary
     {

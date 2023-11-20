@@ -20,5 +20,9 @@ namespace KQ.DataDto.Enum
         XcDao = 13,
         BaoBonCon = 14,
         BonConDao = 15,
+        BaoLoDau = 16,
+        BaoLoDuoi = 17,
+        BaoBaConDau = 18,
+        BaoBaConDuoi = 19,
     }
 }
