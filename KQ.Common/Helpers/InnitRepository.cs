@@ -57,6 +57,7 @@ namespace KQ.Common.Helpers
                     checkT = false;
                     checkB = false;
                     StoreKQRepository.DeleteDetails();
+                    StoreKQRepository.BackUpDB();
                 }
                 else if (!checkS && now < new TimeSpan(6, 30, 0))
                 {

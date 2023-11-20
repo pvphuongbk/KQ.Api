@@ -36,6 +36,13 @@
             return kq > 0;
         }
 
+        public static bool BackUpDB()
+        {
+            string insertQuery = @"BACKUP DATABASE DBPhuong TO DISK = 'C:\tesst\backup\DBPhuong.bak'  WITH INIT";
+
+            var kq = DapperExtensions.ExecuteByQuery(insertQuery, null);
+            return kq > 0;
+        }
         public static bool AddOrUpdateStoreKq(DateTime CreatedDate, string HaiCon, string BaCon, string BonCon)
         {
             string insertQuery = @"if (select COUNT(id) from StoreKQ where CAST(CreatedDate as date) = CAST(@CreatedDate as date)) > 0
