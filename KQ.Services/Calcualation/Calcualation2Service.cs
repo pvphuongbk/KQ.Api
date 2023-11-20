@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using KQ.DataAccess.Enum;
+using System.Collections.Generic;
 
 namespace KQ.Services.Calcualation
 {
@@ -329,7 +330,7 @@ namespace KQ.Services.Calcualation
                                 }
                             }
                             var (startI, endI) = GetIndexForError(cursor, count, array, false);
-                            error = new Error { StartIndex = startI, Count = endI, Message = "Sai cú pháp" };
+                            error = new Error { StartIndex = startI, Count = endI, Message = mess };
                             break;
                         }
                     }
@@ -1726,7 +1727,11 @@ namespace KQ.Services.Calcualation
                     chanels.Add(5);
                 else 
                     chanels.Add(8);
-                chanels = chanels.Distinct().ToList();
+                if (chanels.Count != chanels.Distinct().Count())
+                {
+                    mess = $"Lỗi trùng đài";
+                    result = false;
+                }
                 return (result, mess);
             }
             else if (sys == "dp" || sys == "daiphu" || sys == "dphu" || (sys == "dai" && FindNext(array, ref i, "phu")))
@@ -1740,7 +1745,11 @@ namespace KQ.Services.Calcualation
                     mess = $"Miền bắc chỉ có 1 đài";
                     result = false;
                 }
-                chanels = chanels.Distinct().ToList();
+                if (chanels.Count != chanels.Distinct().Count())
+                {
+                    mess = $"Lỗi trùng đài";
+                    result = false;
+                }
                 return (result, mess);
             }
             else if (int.TryParse(sys, out num))
@@ -1773,7 +1782,11 @@ namespace KQ.Services.Calcualation
                     result = false;
                 }
 
-                chanels = chanels.Distinct().ToList();
+                if (chanels.Count != chanels.Distinct().Count())
+                {
+                    mess = $"Lỗi trùng đài";
+                    result = false;
+                }
                 return (result, mess);
             }
             bool check = true;
@@ -1827,10 +1840,15 @@ namespace KQ.Services.Calcualation
                     break;
             }
             if (chanelsTemp.Any())
-                chanels = chanelsTemp.Distinct().ToList().CloneList();
+                chanels = chanelsTemp.CloneList();
             else
             {
                 mess = _chanelNotFound;
+                result = false;
+            }
+            if (chanels.Count != chanels.Distinct().Count())
+            {
+                mess = $"Lỗi trùng đài";
                 result = false;
             }
             return (result, mess);

@@ -191,10 +191,15 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "1d 034k934 b5n", MessageLoi = "034k934", Mien = MienEnum.MN, CoN = true},                             //85
                   new CalTest2RequestDto{SynTaxe = "dn54.38da20n.5438b10nx50nxdui300n.", Xac =1280, Mien = MienEnum.MN, CoN = true},                      //86
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n7.3d 22 b10n", MessageLoi = "7", Mien = MienEnum.MN, CoN = true},                        //87
+                  new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n7.dn dn 22 b10n", MessageLoi = "7.dn dn", Mien = MienEnum.MN, CoN = true},               //88
+                  new CalTest2RequestDto{SynTaxe = "mb 367 xc 20n.mb mb 22 b10n", MessageLoi = "mb mb", Mien = MienEnum.MB, },                            //89
+                  new CalTest2RequestDto{SynTaxe = "dc  367 xc 20n.dc 22 b10n", Xac = 220             , Mien = MienEnum.MN, },                            //90
+                  new CalTest2RequestDto{SynTaxe = "dn  367 xc 20n.dc dc 22 b10n", MessageLoi = "dc dc", Mien = MienEnum.MN, },                           //91
+                  new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn dn 22 b10n", MessageLoi = "dn dn", Mien = MienEnum.MN, CoN = true},                  //92
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 86)
+                if(i == 92)
                 {
 
                 }
