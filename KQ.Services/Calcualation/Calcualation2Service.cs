@@ -1628,7 +1628,7 @@ namespace KQ.Services.Calcualation
                 else
                     cachChoi = CachChoi.B;
             }
-            else if (str == "da" || str == "dt" || str == "dat"
+            else if (str == "da" || str == "dat"
                 || str == "dathang")
             {
                 cachChoi = CachChoi.Da;
