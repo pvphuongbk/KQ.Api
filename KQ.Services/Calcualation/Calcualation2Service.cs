@@ -126,7 +126,7 @@ namespace KQ.Services.Calcualation
                             else
                             {
                                 // lỗi
-                                var (startI, endI) = GetIndexForError(cursor, i, array);
+                                var (startI, endI) = GetIndexForError(cursor, i, array, false);
                                 error = new Error { Message = mess, Count = endI, StartIndex = startI };
                                 break;
                             }
@@ -407,10 +407,13 @@ namespace KQ.Services.Calcualation
             }
             catch (Exception ex)
             {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "Cal3Request");
+                FileHelper.GeneratorFileByDay(FileStype.Error, $"Request = {JsonConvert.SerializeObject(dto)}. \r\n===\r\n" + ex.ToString(), "Cal3Request");
                 if (dto.IsSave)
                     _commonUoW.RollBack();
                 return new ResponseBase { Code = 501, Message = ex.Message };
+            }
+            finally
+            {
             }
         }
         public void TangCurso(ref int cursor, ref int cursorTemp, string[] array, int i)
@@ -805,7 +808,7 @@ namespace KQ.Services.Calcualation
                         if (mien == MienEnum.MB)
                         {
                             kqxc.Add(kq3So[pre.DaiIn[0] - 1].First());
-                            kqxc.AddRange(kq2So[pre.DaiIn[0] - 1].GetRange(20, 3));
+                            kqxc.AddRange(kq3So[pre.DaiIn[0] - 1].GetRange(20, 3));
                         }
                         else
                         {
@@ -1721,9 +1724,9 @@ namespace KQ.Services.Calcualation
                     chanels.Add(1);
                 else if (mien == MienEnum.MT)
                     chanels.Add(5);
-                else
+                else 
                     chanels.Add(8);
-
+                chanels = chanels.Distinct().ToList();
                 return (result, mess);
             }
             else if (sys == "dp" || sys == "daiphu" || sys == "dphu" || (sys == "dai" && FindNext(array, ref i, "phu")))
@@ -1737,7 +1740,7 @@ namespace KQ.Services.Calcualation
                     mess = $"Miền bắc chỉ có 1 đài";
                     result = false;
                 }
-
+                chanels = chanels.Distinct().ToList();
                 return (result, mess);
             }
             else if (int.TryParse(sys, out num))
@@ -1769,6 +1772,8 @@ namespace KQ.Services.Calcualation
                     mess = $"Sai cách xác định đài. Ví dụ 2d hoặc 3dai mới đúng !";
                     result = false;
                 }
+
+                chanels = chanels.Distinct().ToList();
                 return (result, mess);
             }
             bool check = true;
@@ -1822,7 +1827,7 @@ namespace KQ.Services.Calcualation
                     break;
             }
             if (chanelsTemp.Any())
-                chanels = chanelsTemp.CloneList();
+                chanels = chanelsTemp.Distinct().ToList().CloneList();
             else
             {
                 mess = _chanelNotFound;
