@@ -20,7 +20,7 @@ namespace KQ.Services.Calcualation
         private readonly ICommonRepository<StoreKQ> _storeKQRepository;
         private readonly ICommonRepository<Details> _detailsRepository;
         private readonly ICommonUoW _commonUoW;
-        private string _chanelNotFound = "Không xác định được đài";
+        private string _chanelNotFound = "Đài không chính xác";
         private string _dax2dai = "Đá xiên phải đá từ 2 đài";
         public Calcualation2Service(ICommonRepository<StoreKQ> storeKQRepository, ICommonUoW commonUoW, ICommonRepository<Details> detailsRepository, ICommonRepository<TileUser> tileUserRepository)
         {
@@ -299,6 +299,7 @@ namespace KQ.Services.Calcualation
                     else
                     {
                         List<int> chanelsTemp = new List<int>();
+                        cursor = i;
                         var (check, mess) = GetChanelsStart(dto.HandlByDate, ref chanelsTemp, dto.Mien, array[i], array, ref i);
                         if (check)
                         {

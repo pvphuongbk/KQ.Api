@@ -92,7 +92,7 @@ namespace KQ.Services.CommonServices
                 // Lỗi
                 new CalTest2RequestDto{SynTaxe = "2d  29k79 xc100n", MessageLoi = "29k79 xc100n"},                                                         //15
                 new CalTest2RequestDto{SynTaxe = "2d  072keo527 dd100n xc30 05k95 bao10", MessageLoi = "072keo527"},                                       //16
-                new CalTest2RequestDto{SynTaxe = "2d 11 b10n 29ka79 82 dd100n", MessageLoi = "29ka"},                                                      //17
+                new CalTest2RequestDto{SynTaxe = "2d 11 b10n 29ka79 82 dd100n", MessageLoi = "ka"},                                                        //17
                 new CalTest2RequestDto{SynTaxe = "vl la  72ka29 dd100n 27a72 bao10", MessageLoi = "vl la"},                                                //18
                 new CalTest2RequestDto{SynTaxe = "4d  72keo29 dd100n 27k72 bao10", MessageLoi = "4d"},                                                     //19
                 new CalTest2RequestDto{SynTaxe = "2d  112khc563 dd100n 563k113 bao10", Mien = MienEnum.MB, MessageLoi = "2d"},                             //20
@@ -198,10 +198,12 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn dn 22 b10n", MessageLoi = "dn dn", Mien = MienEnum.MN, CoN = true},                  //92
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn 94 b7loduoi 5n 22 b10n", Xac = 335, Mien = MienEnum.MN, CoN = true},                 //93
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn 947 b18loduoi 5n 22 b10n", MessageLoi = "947 b18loduoi 5n", Mien = MienEnum.MN, CoN = true}, //94
+                  new CalTest2RequestDto{SynTaxe = "2d.214xc20n. 3d 04.40.03.30.31.32.52.62.82.10 bl10n", MessageLoi = "bl", Mien = MienEnum.MN},         //95
+                  new CalTest2RequestDto{SynTaxe = "2d.214xc20n. 3d 04.40.03.30.31.32.52.62.82.10 dn10n", MessageLoi = "3d 04.40.03.30.31.32.52.62.82.10 dn", Mien = MienEnum.MN},         //96
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 93)
+                if(i == 96)
                 {
 
                 }
