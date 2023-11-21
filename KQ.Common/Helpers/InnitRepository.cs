@@ -51,7 +51,7 @@ namespace KQ.Common.Helpers
             {
                 var now = DateTime.Now.TimeOfDay;
                 var nowT = DateTime.Now;
-                if (now < new TimeSpan(0, 2, 0))
+                if (now < new TimeSpan(0, 1, 0))
                 {
                     checkS = false;
                     checkN = false;

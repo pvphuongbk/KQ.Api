@@ -38,7 +38,7 @@
 
         public static bool BackUpDB()
         {
-            string insertQuery = @"BACKUP DATABASE 24h TO DISK = 'C:\Backup\24h.bak'  WITH INIT";
+            string insertQuery = @"BACKUP DATABASE [24h] TO DISK = 'C:\Backup\24h.bak'  WITH INIT";
 
             var kq = DapperExtensions.ExecuteByQuery(insertQuery, null);
             return kq > 0;
