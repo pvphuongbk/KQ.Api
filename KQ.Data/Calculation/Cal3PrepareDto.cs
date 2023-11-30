@@ -11,4 +11,9 @@ namespace KQ.DataDto.Calculation
         public double Sl { get; set; }
         public int Slbao { get; set; }
     }
+    public class Cal3PrepareDtoTotal
+    {
+        public string Message { get; set; }
+        public List<Cal3PrepareDto> Cal3PrepareDtos { get; set; }
+    }
 }

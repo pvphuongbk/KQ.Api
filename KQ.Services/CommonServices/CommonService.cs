@@ -200,10 +200,14 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "3d 367 xc 20n.dn 947 b18loduoi 5n 22 b10n", MessageLoi = "947 b18loduoi 5n", Mien = MienEnum.MN, CoN = true}, //94
                   new CalTest2RequestDto{SynTaxe = "2d.214xc20n. 3d 04.40.03.30.31.32.52.62.82.10 bl10n", MessageLoi = "bl", Mien = MienEnum.MN},         //95
                   new CalTest2RequestDto{SynTaxe = "2d.214xc20n. 3d 04.40.03.30.31.32.52.62.82.10 dn10n", MessageLoi = "3d 04.40.03.30.31.32.52.62.82.10 dn", Mien = MienEnum.MN},         //96
+                  new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n @ @ 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},                        //97
+                  new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n @ @ dc  367 xc 20n.dc 22 b10n@ 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},//98
+                  new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n @ 2d 34 45 da10nb0ndd10 @ @ dc  367 xc 20n.dc 22 b10n", MessageLoi = "b0n", Mien = MienEnum.MN},//99
+                  new CalTest2RequestDto{SynTaxe = " @dc 11 22 bao10n@d @dc 11 22 bao10n@", MessageLoi = "d @d", Mien = MienEnum.MN},//100
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 96)
+                if(i == 100)
                 {
 
                 }
