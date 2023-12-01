@@ -333,7 +333,7 @@ namespace KQ.Services.Calcualation
                                         count = k;
                                     if (int.TryParse(array[k], out _))
                                     {
-                                        goto Foo;
+                                        break;
                                     }
                                 }
                                 var (startI, endI) = GetIndexForError(cursor, count, array, false);
@@ -1701,7 +1701,14 @@ namespace KQ.Services.Calcualation
             }
             else if (str == "dau")
             {
-                cachChoi = CachChoi.Dau;
+                var (s, j) = FindNextStr(array, i);
+                if (s == "duoi" || s == "dui")
+                {
+                    cachChoi = CachChoi.DD;
+                    i = j;
+                }
+                else
+                    cachChoi = CachChoi.Dau;
             }
             else if (str == "duoi" || str == "dui")
             {
@@ -2096,6 +2103,7 @@ namespace KQ.Services.Calcualation
             sys = sys.Replace("\r", " ");
             sys = sys.Replace("\n", " ");
             sys = sys.Replace("\\", " ");
+            sys = sys.Replace("/", " ");
             sys = sys.Replace(":", " ");
             //sys = sys.Replace("@", " ");
             //var array = sys.Split(" ").ToArray();

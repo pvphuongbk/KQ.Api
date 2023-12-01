@@ -204,10 +204,17 @@ namespace KQ.Services.CommonServices
                   new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n @ @ dc  367 xc 20n.dc 22 b10n@ 2d 34 45 da10nb0ndd10", MessageLoi = "b0n", Mien = MienEnum.MN},//98
                   new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n @ 2d 34 45 da10nb0ndd10 @ @ dc  367 xc 20n.dc 22 b10n", MessageLoi = "b0n", Mien = MienEnum.MN},//99
                   new CalTest2RequestDto{SynTaxe = " @dc 11 22 bao10n@d @dc 11 22 bao10n@", MessageLoi = "d @d", Mien = MienEnum.MN},//100
+                  new CalTest2RequestDto{SynTaxe = "2d 69,50 b50nxien5n", Xac = 3960, Mien = MienEnum.MN},//101
+                  new CalTest2RequestDto{SynTaxe = "2d 69,50 dau  duoi 10n",Xac = 80, Mien = MienEnum.MN},//102
+                  new CalTest2RequestDto{SynTaxe = "Tn 38 d250n d20n.39 d 500n d 70n.72 d 300n d 50n. 2d 59 d270n d70n ag 19 d500n d30n .39 d 140n d 70n.2d" +
+                  " 56 d220n d60n.370 xc 30n2d 578.533.511.579.. xc 5n tn.735 xc.10n2d.30/31 đa 2n,    67/72 đa 1n, 78/91 đa 5n, 56 đầu 65n đuôi 25n," +
+                  "    3113 blo 1n.  59/54đa5n,  354 blo1n2dai. 39.b50n.2d.50 đầu 100n đuôi 30n 79 đầu  đuôi 200n  56 đầu  đuôi" +
+                  " 50n 29 đđ 50n.2dai. 781xc5n  533xc4n    563xc5n   943xc4n.      1943b1n   77 . 41da1n       50dd60n.       " +
+                  "      TN.  450xc6nTn 52 đđ210n 52 b25n2₫ 539 b 2n xc 5n",Xac = 9218, Mien = MienEnum.MN, DateTime = new DateTime(2023,11,30)},//103
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 100)
+                if(i == 103)
                 {
 
                 }
