@@ -211,10 +211,13 @@ namespace KQ.Services.CommonServices
                   "    3113 blo 1n.  59/54đa5n,  354 blo1n2dai. 39.b50n.2d.50 đầu 100n đuôi 30n 79 đầu  đuôi 200n  56 đầu  đuôi" +
                   " 50n 29 đđ 50n.2dai. 781xc5n  533xc4n    563xc5n   943xc4n.      1943b1n   77 . 41da1n       50dd60n.       " +
                   "      TN.  450xc6nTn 52 đđ210n 52 b25n2₫ 539 b 2n xc 5n",Xac = 9218, Mien = MienEnum.MN, DateTime = new DateTime(2023,11,30)},//103
+                  new CalTest2RequestDto{SynTaxe = "Hn31.35.38  dui50n",Xac = 150, Mien = MienEnum.MB, DateTime = new DateTime(2023,12,01)},//104
+                  new CalTest2RequestDto{SynTaxe = "Hn31.35.38 dui50n",Xac = 150, Mien = MienEnum.MB, DateTime = new DateTime(2023,12,01)},//105
+                  new CalTest2RequestDto{SynTaxe = "dc 11 22 bao10n 31.35.38   dui50n@ 2d 34 45 da10nb0ndd10 @ @ dc  367 xc 20n.dc 22 b10n", MessageLoi = "b0n", Mien = MienEnum.MN},//106
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 103)
+                if(i == 105)
                 {
 
                 }

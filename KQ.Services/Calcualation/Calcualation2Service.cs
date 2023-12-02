@@ -12,6 +12,7 @@ using System;
 using System.Diagnostics;
 using KQ.DataAccess.Enum;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace KQ.Services.Calcualation
 {
@@ -2105,19 +2106,8 @@ namespace KQ.Services.Calcualation
             sys = sys.Replace("\\", " ");
             sys = sys.Replace("/", " ");
             sys = sys.Replace(":", " ");
-            //sys = sys.Replace("@", " ");
-            //var array = sys.Split(" ").ToArray();
+            sys = Regex.Replace(sys, @"\s", " ");
             arr.AddRange(HandlerStringNoSpace(sys));
-            //foreach (var s in array)
-            //{
-            //    if (string.IsNullOrEmpty(s))
-            //        arr.Add(" ");
-            //    else
-            //    {
-            //        arr.AddRange(HandlerStringNoSpace(s));
-            //        arr.Add(" ");
-            //    }
-            //}
             return arr.ToArray();
         }
     }
