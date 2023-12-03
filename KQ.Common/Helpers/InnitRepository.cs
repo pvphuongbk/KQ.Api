@@ -766,7 +766,7 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
-            if (array.Length < max)
+            if (array.Length <= max)
                 return false;
             for (int i = start; i <= max; i++)
             {
