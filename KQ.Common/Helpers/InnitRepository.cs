@@ -648,6 +648,9 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            int checkLengh = (max - 1) * 20 + 31;
+            if(array.Length < checkLengh)
+                return false;
             for (int i = 0; i < max; i++)
             {
                 int start = 13 + 20 * i;
@@ -701,6 +704,9 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            int checkLengh = (max - 1) * 20 + 31;
+            if (array.Length < checkLengh)
+                return false;
             for (int i = 0; i < max; i++)
             {
                 int start = 13 + 20 * i;
@@ -760,6 +766,8 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            if (array.Length < max)
+                return false;
             for (int i = start; i <= max; i++)
             {
                 int num = 0;
