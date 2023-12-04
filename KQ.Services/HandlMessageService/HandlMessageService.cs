@@ -54,6 +54,25 @@ namespace KQ.Services.HandlMessageService
 
             return response;
         }
+        public ResponseBase DeleteMulti(DeleteMultiRequest dto)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                var mess = _detailsRepository.FindAll(x => dto.Ids.Contains(x.ID));
+                _commonUoW.BeginTransaction();
+                _detailsRepository.RemoveMultiple(mess);
+                _commonUoW.Commit();
+            }
+            catch (Exception ex)
+            {
+                _commonUoW.RollBack();
+                response.Code = 500;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
 
         public ResponseBase CountByManyDayRequest(CountByManyDayRequest request)
         {

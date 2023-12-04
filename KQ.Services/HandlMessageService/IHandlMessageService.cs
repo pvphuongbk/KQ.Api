@@ -15,5 +15,6 @@ namespace KQ.Services.HandlMessageService
         ResponseBase CountByManyDayRequest(CountByManyDayRequest request);
         ResponseBase MessageByID(int messageID);
         ResponseBase HandleMessage(MessgeByDayRequest request);
+        ResponseBase DeleteMulti(DeleteMultiRequest dto);
     }
 }

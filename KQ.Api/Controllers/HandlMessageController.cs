@@ -49,6 +49,12 @@ namespace KQ.Api.Controllers
             var items = _handlMessageService.Delete(id);
             return items;
         }
+        [HttpPost("delete-multi")]
+        public ResponseBase DeleteMulti(DeleteMultiRequest dto)
+        {
+            var items = _handlMessageService.DeleteMulti(dto);
+            return items;
+        }
         [HttpGet("{id}")]
         public ResponseBase MessageByID(int id)
         {
