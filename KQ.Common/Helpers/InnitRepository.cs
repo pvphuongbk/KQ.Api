@@ -100,26 +100,26 @@ namespace KQ.Common.Helpers
                     // Cập nhật đài miền nam
                     try
                     {
-                        dai = "Minh Ngoc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkN && countCheck < 2)
                             {
-                                checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkN && countCheck < 3)
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkN && now > new TimeSpan(17, 0, 0))
+                        if (!checkN && now > new TimeSpan(16, 50, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkN && countCheck < 2)
                                 {
-                                    checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkN && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -152,26 +152,26 @@ namespace KQ.Common.Helpers
                     try
                     {
                         // Cập nhật đài miền trung
-                        dai = "Minh Ngoc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkT && countCheck < 2)
                             {
-                                checkT = UpdateKQMTMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkT = UpdateKQMT(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkT && countCheck < 3)
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkT && now > new TimeSpan(18, 0, 0))
+                        if (!checkT && now > new TimeSpan(17, 50, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkT && countCheck < 3)
                                 {
-                                    checkT = UpdateKQMT(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkT = UpdateKQMTMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkT && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -204,26 +204,26 @@ namespace KQ.Common.Helpers
                     // Cập nhật đài miền bắc
                     try
                     {
-                        dai = "Minh Ngoc";
+                        dai = "Đại phát";
                         lock (_totalDic)
                         {
                             while (!checkB && countCheck < 3)
                             {
-                                checkB = UpdateKQMBMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                checkB = UpdateKQMB(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                 countCheck++;
                                 if (!checkB && countCheck < 3)
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkB && now > new TimeSpan(19, 0, 0))
+                        if (!checkB && now > new TimeSpan(18, 50, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkB && countCheck < 3)
                                 {
-                                    checkB = UpdateKQMB(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkB = UpdateKQMBMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkB && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -323,7 +323,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkN && countCheck < 3)
                 {
-                    checkN = UpdateKQMNMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkN = UpdateKQMN(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkN && countCheck < 3)
                         Thread.Sleep(5000);
@@ -333,7 +333,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkN && countCheck < 3)
                     {
-                        checkN = UpdateKQMN(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkN = UpdateKQMNMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkN && countCheck < 3)
                             Thread.Sleep(5000);
@@ -343,7 +343,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkT && countCheck < 3)
                 {
-                    checkT = UpdateKQMTMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkT = UpdateKQMT(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkT && countCheck < 3)
                         Thread.Sleep(5000);
@@ -353,7 +353,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkT && countCheck < 3)
                     {
-                        checkT = UpdateKQMT(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkT = UpdateKQMTMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkT && countCheck < 3)
                             Thread.Sleep(5000);
@@ -363,7 +363,7 @@ namespace KQ.Common.Helpers
                 // Cập nhật đài miền nam
                 while (!checkB && countCheck < 3)
                 {
-                    checkB = UpdateKQMBMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                    checkB = UpdateKQMB(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                     countCheck++;
                     if (!checkB && countCheck < 3)
                         Thread.Sleep(5000);
@@ -373,7 +373,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkB && countCheck < 3)
                     {
-                        checkB = UpdateKQMB(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkB = UpdateKQMBMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkB && countCheck < 3)
                             Thread.Sleep(5000);
