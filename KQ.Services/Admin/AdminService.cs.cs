@@ -17,11 +17,15 @@ namespace KQ.Services.Admin
     public class AdminService : IAdminService
     {
         private readonly ICommonRepository<User> _userRepository;
+        private readonly ICommonRepository<TileUser> _tileRepository;
+        private readonly ICommonRepository<Details> _detailsRepository;
         private readonly ICommonUoW _commonUoW;
-        public AdminService(ICommonRepository<User> userRepository, ICommonUoW commonUoW)
+        public AdminService(ICommonRepository<User> userRepository, ICommonUoW commonUoW, ICommonRepository<TileUser> tileRepository, ICommonRepository<Details> detailsRepository)
         {
             _userRepository = userRepository;
             _commonUoW = commonUoW;
+            _tileRepository = tileRepository;
+            _detailsRepository = detailsRepository;
         }
 
         public ResponseBase ChangePass(UserChangePassDto dto)
@@ -57,6 +61,10 @@ namespace KQ.Services.Admin
                 {
                     return new ResponseBase { Code = 400, Message = "Người dùng không tồn tại" };
                 }
+                var tiles = _tileRepository.FindAll(x => x.UserID == userId);
+                var details = _detailsRepository.FindAll(x => x.UserID == userId);
+                _tileRepository.RemoveMultiple(tiles);
+                _detailsRepository.RemoveMultiple(details);
                 _userRepository.Remove(user);
                 _commonUoW.Commit();
 
