@@ -215,7 +215,7 @@ namespace KQ.Common.Helpers
                                     Thread.Sleep(5000);
                             }
                         }
-                        if (!checkB && now > new TimeSpan(19, 0, 0))
+                        if (!checkB && now > new TimeSpan(18, 54, 0))
                         {
                             countCheck = 0;
                             dai = "Minh Ngoc";
