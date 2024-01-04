@@ -114,12 +114,12 @@ namespace KQ.Common.Helpers
                         if (!checkN && now > new TimeSpan(17, 0, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkN && countCheck < 2)
                                 {
-                                    checkN = UpdateKQMN(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkN = UpdateKQMNMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkN && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -166,12 +166,12 @@ namespace KQ.Common.Helpers
                         if (!checkT && now > new TimeSpan(18, 0, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkT && countCheck < 3)
                                 {
-                                    checkT = UpdateKQMT(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkT = UpdateKQMTMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkT && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -218,12 +218,12 @@ namespace KQ.Common.Helpers
                         if (!checkB && now > new TimeSpan(19, 0, 0))
                         {
                             countCheck = 0;
-                            dai = "Đại phát";
+                            dai = "Minh Ngoc";
                             lock (_totalDic)
                             {
                                 while (!checkB && countCheck < 3)
                                 {
-                                    checkB = UpdateKQMB(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
+                                    checkB = UpdateKQMBMinhNgoc(nowT.DayOfWeek, _totalDic["Now"], _totalBaCangDic["Now"], _totalBonSoDic["Now"]);
                                     countCheck++;
                                     if (!checkB && countCheck < 3)
                                         Thread.Sleep(5000);
@@ -333,7 +333,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkN && countCheck < 3)
                     {
-                        checkN = UpdateKQMN(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkN = UpdateKQMNMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkN && countCheck < 3)
                             Thread.Sleep(5000);
@@ -353,7 +353,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkT && countCheck < 3)
                     {
-                        checkT = UpdateKQMT(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkT = UpdateKQMTMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkT && countCheck < 3)
                             Thread.Sleep(5000);
@@ -373,7 +373,7 @@ namespace KQ.Common.Helpers
                     countCheck = 0;
                     while (!checkB && countCheck < 3)
                     {
-                        checkB = UpdateKQMB(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
+                        checkB = UpdateKQMBMinhNgoc(day, _totalDic[key], _totalBaCangDic[key], _totalBonSoDic[key]);
                         countCheck++;
                         if (!checkB && countCheck < 3)
                             Thread.Sleep(5000);
@@ -648,6 +648,9 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            int checkLengh = (max - 1) * 20 + 31;
+            if (array.Length < checkLengh)
+                return false;
             for (int i = 0; i < max; i++)
             {
                 int start = 13 + 20 * i;
@@ -701,6 +704,9 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            int checkLengh = (max - 1) * 20 + 31;
+            if (array.Length < checkLengh)
+                return false;
             for (int i = 0; i < max; i++)
             {
                 int start = 13 + 20 * i;
@@ -760,6 +766,8 @@ namespace KQ.Common.Helpers
             if (!allElement.Any())
                 return false;
             var array = allElement[0].Text.Split("\r\n");
+            if (array.Length <= max)
+                return false;
             for (int i = start; i <= max; i++)
             {
                 int num = 0;
@@ -843,8 +851,8 @@ namespace KQ.Common.Helpers
                 {
                     if (GetKqMienTrungMinhNgoc(day, sumListTemp, baCangListTemp, bonSoListTemp, date))
                     {
-                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last() && bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()
-                            && (day != DayOfWeek.Saturday || bonSoListTemp1[3].Last() == bonSoListTemp[3].Last()))
+                        if (bonSoListTemp1[0].Last() == bonSoListTemp[0].Last() && bonSoListTemp1[1].Last() == bonSoListTemp[1].Last()
+                            && (day != DayOfWeek.Saturday || bonSoListTemp1[2].Last() == bonSoListTemp[2].Last()))
                         {
                             // Cập nhật 2 số
                             sumList[4] = sumListTemp[0];
