@@ -10,6 +10,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Timers;
@@ -23,6 +24,7 @@ namespace KQ.Common.Helpers
         static bool checkN = false;
         static bool checkT = false;
         static bool checkB = false;
+        static bool checkR = false;
         static System.Timers.Timer aTimer = new System.Timers.Timer();
         private static IWebDriver drivers;
         public static ConcurrentDictionary<string, List<int>[]> _totalDic;
@@ -57,9 +59,16 @@ namespace KQ.Common.Helpers
                     checkN = false;
                     checkT = false;
                     checkB = false;
+                    checkR = false;
                     StoreKQRepository.DeleteDetails();
                     if (AppConfigs.Isbackup)
                         StoreKQRepository.BackUpDB();
+                }
+                else if (AppConfigs.IsRestore && !checkR && now >= new TimeSpan(0, 5, 0) && now < new TimeSpan(0, 6, 0))
+                {
+                    checkR = DownloadBackupFile();
+                    if (checkR)
+                        StoreKQRepository.RestoreDb();
                 }
                 else if (!checkS && now < new TimeSpan(6, 30, 0))
                 {
@@ -252,6 +261,22 @@ namespace KQ.Common.Helpers
                 FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "OnTimedEvent");
             }
 
+        }
+        private static bool DownloadBackupFile()
+        {
+            try
+            {
+                string url = "https://drive.google.com/file/d/1-AjfJE-I6nNNmjyuonv4M2u6B5cMproB/view?usp=drive_link";
+                System.Net.WebClient client = new System.Net.WebClient();
+                client.Credentials = new NetworkCredential("mr.hantin.daituong@gmail.com", "Sieunhanmin1");
+                client.DownloadFile(url, AppConfigs.SaveRestoreBak);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "DownloadBackupFile");
+                return false;
+            }
         }
         public static bool InitAllChanel()
         {

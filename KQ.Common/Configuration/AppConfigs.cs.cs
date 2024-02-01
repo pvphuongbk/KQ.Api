@@ -13,10 +13,14 @@ namespace KQ.Common.Configuration
 			_configuration = configuration;
 			SqlConnection = GetConfigValue("ConnectionStrings:KQConn", "No connection");
             Isbackup = GetConfigValue("AppSettings:Isbackup", false);
+            SaveRestoreBak = GetConfigValue("AppSettings:SaveRestoreBak", "No connection");
+            IsRestore = GetConfigValue("AppSettings:IsRestore", false);
         }
 
         public static bool Isbackup { get; set; }
 		public static string SqlConnection { get; set; }
+        public static bool IsRestore { get; set; }
+        public static string SaveRestoreBak { get; set; }
         /// <summary>
         /// plhd
         /// </summary>

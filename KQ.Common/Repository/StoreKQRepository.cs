@@ -1,4 +1,8 @@
-﻿namespace KQ.Common.Repository
+﻿using KQ.Common.Configuration;
+using KQ.Common.Enums;
+using KQ.Common.Helpers;
+
+namespace KQ.Common.Repository
 {
     public class StoreKQRepository
     {
@@ -16,6 +20,19 @@
             var kq = DapperExtensions.ExecuteByQuery(insertQuery, parram);
 
             return kq > 0;
+        }
+        public static bool RestoreDb()
+        {
+            try
+            {
+                string insertQuery = $"USE master;   GO    RESTORE DATABASE[24h]  FROM DISK = '{AppConfigs.SaveRestoreBak}' WITH REPLACE;";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "RestoreDb");
+                return false;
+            }
         }
         public static bool DeleteDetails()
         {
