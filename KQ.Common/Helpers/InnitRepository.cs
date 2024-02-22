@@ -68,7 +68,7 @@ namespace KQ.Common.Helpers
                 {
                     try
                     {
-                        if (_totalDic["Now"][7] != null)
+                        if (_totalDic["Now"][0] != null && _totalDic["Now"][4] != null && _totalDic["Now"][7] != null)
                         {
                             var haicon = JsonConvert.SerializeObject(_totalDic["Now"]);
                             var bacon = JsonConvert.SerializeObject(_totalBaCangDic["Now"]);
