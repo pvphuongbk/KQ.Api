@@ -53,12 +53,12 @@ namespace KQ.Common.Repository
             return kq > 0;
         }
 
-        public static bool BackUpDB()
+        public static int BackUpDB()
         {
             string insertQuery = @"BACKUP DATABASE [24h] TO DISK = 'C:\Backup\24h.bak'  WITH INIT";
 
             var kq = DapperExtensions.ExecuteByQuery(insertQuery, null);
-            return kq > 0;
+            return kq;
         }
         public static bool AddOrUpdateStoreKq(DateTime CreatedDate, string HaiCon, string BaCon, string BonCon)
         {

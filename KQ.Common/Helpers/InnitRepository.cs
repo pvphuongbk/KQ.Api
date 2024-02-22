@@ -66,12 +66,15 @@ namespace KQ.Common.Helpers
                 }
                 else if (!checkS && now < new TimeSpan(2, 32, 0))
                 {
-                    var haicon = JsonConvert.SerializeObject(_totalDic["Now"]);
-                    var bacon = JsonConvert.SerializeObject(_totalBaCangDic["Now"]);
-                    var boncon = JsonConvert.SerializeObject(_totalBonSoDic["Now"]);
                     try
                     {
-                        checkS = StoreKQRepository.InsertStoreKQ(DateTime.Now.AddDays(-1), haicon, bacon, boncon);
+                        if (_totalDic["Now"].Any(x => x != null))
+                        {
+                            var haicon = JsonConvert.SerializeObject(_totalDic["Now"]);
+                            var bacon = JsonConvert.SerializeObject(_totalBaCangDic["Now"]);
+                            var boncon = JsonConvert.SerializeObject(_totalBonSoDic["Now"]);
+                            checkS = StoreKQRepository.InsertStoreKQ(DateTime.Now.AddDays(-1), haicon, bacon, boncon);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -95,16 +98,16 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Save all data {checkS.ToString()}", "OnTimedEvent");
                         if (AppConfigs.Isbackup)
                         {
-                            checkBup = StoreKQRepository.BackUpDB();
-                            FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
+                           var KqcheckBup = StoreKQRepository.BackUpDB();
+                            FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {KqcheckBup.ToString()}", "BackUpDB");
                         }
                     }
                 }
-                else if (AppConfigs.Isbackup && checkS && !checkBup && now < new TimeSpan(3, 30, 0))
-                {
-                    checkBup = StoreKQRepository.BackUpDB();
-                    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
-                }
+                //else if (AppConfigs.Isbackup && checkS && !checkBup && now < new TimeSpan(3, 30, 0))
+                //{
+                //    checkBup = StoreKQRepository.BackUpDB();
+                //    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
+                //}
                 else if (AppConfigs.IsRestore && !checkR && now >= new TimeSpan(0, 5, 0) && now < new TimeSpan(4, 30, 0))
                 {
                     checkR = DownloadBackupFile();
