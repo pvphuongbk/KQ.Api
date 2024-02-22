@@ -24,6 +24,7 @@ namespace KQ.Common.Helpers
         static bool checkN = false;
         static bool checkT = false;
         static bool checkB = false;
+        static bool checkBup = false;
         static bool checkR = false;
         static System.Timers.Timer aTimer = new System.Timers.Timer();
         private static IWebDriver drivers;
@@ -60,17 +61,10 @@ namespace KQ.Common.Helpers
                     checkT = false;
                     checkB = false;
                     checkR = false;
+                    checkBup = false;
                     StoreKQRepository.DeleteDetails();
-                    if (AppConfigs.Isbackup)
-                        StoreKQRepository.BackUpDB();
                 }
-                else if (AppConfigs.IsRestore && !checkR && now >= new TimeSpan(0, 5, 0) && now < new TimeSpan(0, 6, 0))
-                {
-                    checkR = DownloadBackupFile();
-                    if (checkR)
-                        StoreKQRepository.RestoreDb();
-                }
-                else if (!checkS && now < new TimeSpan(6, 30, 0))
+                else if (!checkS && now < new TimeSpan(2, 32, 0))
                 {
                     var haicon = JsonConvert.SerializeObject(_totalDic["Now"]);
                     var bacon = JsonConvert.SerializeObject(_totalBaCangDic["Now"]);
@@ -85,9 +79,10 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "StartDate");
                     }
 
-                    if (now > new TimeSpan(6, 30, 0) && !checkS)
+                    if (now > new TimeSpan(2, 30, 0) && !checkS)
                     {
                         //Gửi tin nhắn zalo
+                        // Gui mail
                     }
                     else if (checkS)
                     {
@@ -97,6 +92,27 @@ namespace KQ.Common.Helpers
                         _totalBaCangDic.TryAdd("Now", new List<int>[8]);
                         _totalBonSoDic.Clear();
                         _totalBonSoDic.TryAdd("Now", new List<int>[8]);
+                        FileHelper.GeneratorFileByDay(FileStype.Log, $"Save all data {checkS.ToString()}", "OnTimedEvent");
+                        if (AppConfigs.Isbackup)
+                        {
+                            checkBup = StoreKQRepository.BackUpDB();
+                            FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
+                        }
+                    }
+                }
+                else if (AppConfigs.Isbackup && checkS && !checkBup && now < new TimeSpan(3, 30, 0))
+                {
+                    checkBup = StoreKQRepository.BackUpDB();
+                    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
+                }
+                else if (AppConfigs.IsRestore && !checkR && now >= new TimeSpan(0, 5, 0) && now < new TimeSpan(4, 30, 0))
+                {
+                    checkR = DownloadBackupFile();
+                    FileHelper.GeneratorFileByDay(FileStype.Log, $"Donwload backup {checkR.ToString()}", "DownloadBackupFile");
+                    if (checkR)
+                    {
+                        var checkRe = StoreKQRepository.RestoreDb();
+                        FileHelper.GeneratorFileByDay(FileStype.Log, $"Restore backup {checkRe.ToString()}", "DownloadBackupFile");
                     }
                 }
                 else if (!checkN && now > new TimeSpan(16, 35, 0) && now <= new TimeSpan(19, 0, 0))
@@ -264,18 +280,28 @@ namespace KQ.Common.Helpers
         }
         private static bool DownloadBackupFile()
         {
-            try
+            using (var client = new WebClient())
             {
-                string url = "https://drive.google.com/file/d/1-AjfJE-I6nNNmjyuonv4M2u6B5cMproB/view?usp=drive_link";
-                System.Net.WebClient client = new System.Net.WebClient();
-                client.Credentials = new NetworkCredential("mr.hantin.daituong@gmail.com", "Sieunhanmin1");
-                client.DownloadFile(url, AppConfigs.SaveRestoreBak);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "DownloadBackupFile");
-                return false;
+                try
+                {
+                    string url = "https://drive.google.com/file/d/1-AjfJE-I6nNNmjyuonv4M2u6B5cMproB/view?usp=drive_link";
+                    client.Credentials = new NetworkCredential("mr.hantin.daituong@gmail.com", "Sieunhanmin1");
+                    client.DownloadFile(url, AppConfigs.SaveRestoreBak);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    while (ex != null)
+                    {
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "DownloadBackupFile");
+                        if(ex.InnerException != null)
+                        {
+                            ex = ex.InnerException;
+                            FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "DownloadBackupFile");
+                        }
+                    }
+                    return false;
+                }
             }
         }
         public static bool InitAllChanel()

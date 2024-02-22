@@ -25,12 +25,12 @@ namespace KQ.Common.Repository
         {
             try
             {
-                string insertQuery = $"USE master;   GO    RESTORE DATABASE[24h]  FROM DISK = '{AppConfigs.SaveRestoreBak}' WITH REPLACE;";
+                string insertQuery = $"USE master;  RESTORE DATABASE [24h]  FROM DISK = '{AppConfigs.SaveRestoreBak}' WITH REPLACE;";
                 return true;
             }
             catch (Exception ex)
             {
-                FileHelper.GeneratorFileByDay(FileStype.Error, ex.Message, "RestoreDb");
+                FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "RestoreDb");
                 return false;
             }
         }
