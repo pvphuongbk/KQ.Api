@@ -278,7 +278,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!allowBackup)
+                else if (!allowBackup && (now.Minutes % 5 == 0))
                 {
                     allowBackup = true;
                     try
