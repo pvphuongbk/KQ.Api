@@ -19,13 +19,15 @@ namespace KQ.Common.Helpers
 {
     public class InnitRepository
     {
-        static double _time = 60000;
+        static int minute = 1;
+        static double _time = 60000 * minute;
         static bool checkS = false;
         static bool checkN = false;
         static bool checkT = false;
         static bool checkB = false;
         static bool checkBup = false;
         static bool checkR = false;
+        static bool allowUpdate = false;
         static System.Timers.Timer aTimer = new System.Timers.Timer();
         private static IWebDriver drivers;
         public static ConcurrentDictionary<string, List<int>[]> _totalDic;
@@ -54,7 +56,7 @@ namespace KQ.Common.Helpers
             {
                 var now = DateTime.Now.TimeOfDay;
                 var nowT = DateTime.Now;
-                if (now < new TimeSpan(0, 1, 0))
+                if (now < new TimeSpan(0, minute, 0))
                 {
                     checkS = false;
                     checkN = false;
@@ -79,7 +81,7 @@ namespace KQ.Common.Helpers
                     catch (Exception ex)
                     {
                         checkS = false;
-                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "StartDate");
+                        FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "Save all data");
                     }
 
                     if (now > new TimeSpan(2, 30, 0) && !checkS)
@@ -103,11 +105,6 @@ namespace KQ.Common.Helpers
                         }
                     }
                 }
-                //else if (AppConfigs.Isbackup && checkS && !checkBup && now < new TimeSpan(3, 30, 0))
-                //{
-                //    checkBup = StoreKQRepository.BackUpDB();
-                //    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB {checkBup.ToString()}", "BackUpDB");
-                //}
                 else if (AppConfigs.IsRestore && !checkR && now >= new TimeSpan(0, 5, 0) && now < new TimeSpan(4, 30, 0))
                 {
                     checkR = DownloadBackupFile();
@@ -118,8 +115,9 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Restore backup {checkRe.ToString()}", "DownloadBackupFile");
                     }
                 }
-                else if (!checkN && now > new TimeSpan(16, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkN && now > new TimeSpan(16, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
+                    allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     int countCheck = 0;
@@ -162,6 +160,7 @@ namespace KQ.Common.Helpers
                     }
                     finally
                     {
+                        allowUpdate = false;
                         DisposeDriver();
                     }
 
@@ -170,8 +169,9 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkT && now > new TimeSpan(17, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkT && now > new TimeSpan(17, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
+                    allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     InitDriver();
@@ -214,6 +214,7 @@ namespace KQ.Common.Helpers
                     }
                     finally
                     {
+                        allowUpdate = false;
                         DisposeDriver();
                     }
 
@@ -222,8 +223,9 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!checkB && now > new TimeSpan(18, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkB && now > new TimeSpan(18, 35, 0) && now <= new TimeSpan(19, 0, 0))
                 {
+                    allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
                     s1.Start();
                     int countCheck = 0;
@@ -266,6 +268,7 @@ namespace KQ.Common.Helpers
                     }
                     finally
                     {
+                        allowUpdate = false;
                         DisposeDriver();
                     }
 
@@ -273,6 +276,14 @@ namespace KQ.Common.Helpers
                     if (checkB)
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
+                }
+                else
+                {
+                    Stopwatch s1 = new Stopwatch();
+                    s1.Start();
+                    var KqcheckBup = StoreKQRepository.BackUpDB();
+                    s1.Stop();
+                    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB Thời gian thực hiện {s1.ElapsedMilliseconds} ms.", "BackUpDB");
                 }
             }
             catch (Exception ex)
