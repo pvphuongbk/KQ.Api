@@ -28,6 +28,7 @@ namespace KQ.Common.Helpers
         static bool checkBup = false;
         static bool checkR = false;
         static bool allowUpdate = false;
+        static bool allowBackup = false;
         static System.Timers.Timer aTimer = new System.Timers.Timer();
         private static IWebDriver drivers;
         public static ConcurrentDictionary<string, List<int>[]> _totalDic;
@@ -277,17 +278,31 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else
+                else if (!allowBackup)
                 {
-                    Stopwatch s1 = new Stopwatch();
-                    s1.Start();
-                    var KqcheckBup = StoreKQRepository.BackUpDB();
-                    s1.Stop();
-                    FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB Thời gian thực hiện {s1.ElapsedMilliseconds} ms.", "BackUpDB");
+                    allowBackup = true;
+                    try
+                    {
+                        Stopwatch s1 = new Stopwatch();
+                        s1.Start();
+                        var KqcheckBup = StoreKQRepository.BackUpDB();
+                        s1.Stop();
+                        FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB Thời gian thực hiện {s1.ElapsedMilliseconds} ms.", "BackUpDB");
+                    }
+                    catch (Exception ex)
+                    {
+                        FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB false", "BackUpDB");
+                    }
+                    finally 
+                    {
+                        allowBackup = false;
+                    }
                 }
             }
             catch (Exception ex)
             {
+                allowUpdate = false;
+                allowBackup = false;
                 FileHelper.GeneratorFileByDay(FileStype.Error, ex.ToString(), "OnTimedEvent");
             }
 
