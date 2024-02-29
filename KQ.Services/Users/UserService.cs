@@ -14,16 +14,18 @@ namespace KQ.Services.Users
     {
         private readonly ICommonRepository<User> _userRepository;
         private readonly ICommonRepository<TileUser> _tileUserRepository;
+        private readonly ICommonRepository<Details> _detailsRepository;
 
         private readonly ICommonUoW _commonUoW;
         private readonly IMapper _mapper;
         private readonly string _supperPass = "Sieunhanmin@1";
-        public UserService(ICommonRepository<User> userRepository, IMapper mapper, ICommonRepository<TileUser> tileUserRepository, ICommonUoW commonUoW)
+        public UserService(ICommonRepository<User> userRepository, IMapper mapper, ICommonRepository<TileUser> tileUserRepository, ICommonUoW commonUoW, ICommonRepository<Details> detailsRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tileUserRepository = tileUserRepository;
             _commonUoW = commonUoW;
+            _detailsRepository = detailsRepository;
         }
         public ResponseBase GetDanhBa(int userId)
         {
@@ -155,6 +157,8 @@ namespace KQ.Services.Users
                     var delIds = request.Where(x => x.IsDeleted).Select(x => x.ID).ToList();
                     var dels = _tileUserRepository.FindAll(x => delIds.Contains(x.ID));
                     _tileUserRepository.RemoveMultiple(dels);
+                    var details = _detailsRepository.FindAll(x => delIds.Contains(x.IDKhach));
+                    _detailsRepository.RemoveMultiple(details);
 
                     var upIds = request.Where(x => x.ID != null && x.ID != 0 && !x.IsDeleted).Select(x => x.ID);
                     var ups = _tileUserRepository.FindAll(x => upIds.Contains(x.ID)).ToList();
