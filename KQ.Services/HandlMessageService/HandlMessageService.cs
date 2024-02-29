@@ -170,7 +170,7 @@ namespace KQ.Services.HandlMessageService
                 foreach (var item in details)
                 {
                     var tile = tiles.FirstOrDefault(x => x.ID == item.IDKhach);
-                    if (tile != null)
+                    if (tile == null)
                     {
                         continue;
                     }
