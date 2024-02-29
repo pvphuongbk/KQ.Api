@@ -170,6 +170,10 @@ namespace KQ.Services.HandlMessageService
                 foreach (var item in details)
                 {
                     var tile = tiles.FirstOrDefault(x => x.ID == item.IDKhach);
+                    if (tile != null)
+                    {
+                        continue;
+                    }
                     var tileDto = GetAllTiLeByMien(tile, item.Mien);
                     var detail = JsonConvert.DeserializeObject<Cal3DetailDto>(item.Detail.Decrypt());
                     if (!detail.IsTinh)
