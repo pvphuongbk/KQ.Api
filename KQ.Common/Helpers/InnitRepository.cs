@@ -278,16 +278,12 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MB lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!allowBackup && (now.Minutes % 5 == 0))
+                else if (AppConfigs.Isbackup && !allowBackup && (now.Minutes % 5 == 0))
                 {
                     allowBackup = true;
                     try
                     {
-                        Stopwatch s1 = new Stopwatch();
-                        s1.Start();
                         var KqcheckBup = StoreKQRepository.BackUpDB();
-                        s1.Stop();
-                        FileHelper.GeneratorFileByDay(FileStype.Log, $"BackUpDB Thời gian thực hiện {s1.ElapsedMilliseconds} ms.", "BackUpDB");
                     }
                     catch (Exception ex)
                     {
@@ -1156,7 +1152,7 @@ namespace KQ.Common.Helpers
                 var options = new ChromeOptions();
                 options.AddArguments("--window-position=-32000,-32000");
                 //drivers = new ChromeDriver("C:\\tesst\\driver", options);
-                drivers = new ChromeDriver(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), options);
+                drivers = new ChromeDriver(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), options, new TimeSpan(0,3,0));
                 //drivers = new ChromeDriver("D:\\Git\\KQ.Api", options);
 
                 //FirefoxOptions options = new FirefoxOptions();
