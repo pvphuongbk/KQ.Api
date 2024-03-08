@@ -16,5 +16,6 @@ namespace KQ.Services.Admin
         public ResponseBase ChangePass(UserChangePassDto dto);
         public ResponseBase ResetUser(int userId);
         public ResponseBase DeleteUser(int userId);
+        public ResponseBase UpdateUser(UpdateUserDto dto);
     }
 }

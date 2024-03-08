@@ -100,6 +100,29 @@ namespace KQ.Services.Admin
             }
         }
 
+        public ResponseBase UpdateUser(UpdateUserDto dto)
+        {
+            try
+            {
+                _commonUoW.BeginTransaction();
+                var user = _userRepository.FindAll(x => x.ID == dto.UserId).FirstOrDefault();
+                if (user == null)
+                {
+                    return new ResponseBase { Code = 400, Message = "Người dùng không tồn tại" };
+                }
+                user.Note = dto.Note.Encrypt();
+                _userRepository.Update(user);
+                _commonUoW.Commit();
+
+                return new ResponseBase();
+            }
+            catch (Exception ex)
+            {
+                _commonUoW.RollBack();
+                return new ResponseBase { Code = 500, Message = ex.Message };
+            }
+        }
+
         public ResponseBase ResetUser(int userId)
         {
             try

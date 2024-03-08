@@ -54,5 +54,11 @@ namespace KQ.Api.Controllers
             var items = _adminService.DeleteUser(userId);
             return items;
         }
+        [HttpPost("update")]
+        public ResponseBase Update(UpdateUserDto request)
+        {
+            var items = _adminService.UpdateUser(request);
+            return items;
+        }
     }
 }
