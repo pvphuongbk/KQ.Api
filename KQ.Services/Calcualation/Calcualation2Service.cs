@@ -2106,9 +2106,68 @@ namespace KQ.Services.Calcualation
             sys = sys.Replace("\\", " ");
             sys = sys.Replace("/", " ");
             sys = sys.Replace(":", " ");
+            sys = sys.Replace(";", " ");
             sys = Regex.Replace(sys, @"\s", " ");
             arr.AddRange(HandlerStringNoSpace(sys));
             return arr.ToArray();
+        }
+
+        public string ChuanHoaTin(string sys)
+        {
+            //sys = sys.Replace("-", " ");
+            //sys = sys.Replace("\r", " ");
+            //sys = sys.Replace("\n", " ");
+            //sys = sys.Replace("\\", " ");
+            //sys = sys.Replace("/", " ");
+            //sys = sys.Replace(":", " ");
+            //sys = sys.Replace(";", " ");
+            //sys = Regex.Replace(sys, @"\s", " ");
+            //var arr = sys.ToArray();
+            //bool isNumber = false;
+            //bool isSpace = false;
+            //List<string> lst = new List<string>();
+            //for (int i = 0; i < arr.Length;i++)
+            //{
+            //    var cstr = arr[i].ToString();
+            //    if(cstr == " ")
+            //    {
+            //        if(!isSpace)
+            //        {
+            //            lst.Add(cstr);
+            //            isSpace = true;
+            //        }
+            //        continue;
+            //    }
+            //    isSpace = false;
+
+            //    if (int.TryParse(cstr, out _))
+            //    {
+            //        lst.Add(cstr);
+            //        isNumber = true;
+            //        continue;
+            //    }
+
+            //    if ((cstr == "." || cstr == ",") && isNumber && arr.Length > (i + 1)
+            //        && int.TryParse(arr[i + 1].ToString(), out _)
+            //        && (arr.Length <= (i + 2) || (!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr, i + 2))))
+            //    {
+            //        lst.Add($"{str}.{arr[i + 1].ToString()}");
+            //        str = "";
+            //        i++;
+            //    }
+            //    else if (cstr == "." || cstr == ",")
+            //    {
+            //        if (!string.IsNullOrEmpty(str))
+            //            lst.Add(str);
+            //        lst.Add(" ");
+            //        str = "";
+            //    }
+            //}
+            //var arr = ChuanHoa(sys);
+            //var arrNoSpace = arr.Where(x => !string.IsNullOrEmpty(x) && x != " ");
+            //return string.Join(" ", arrNoSpace).ToUpper();
+
+            return "";
         }
     }
 }

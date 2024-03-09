@@ -14,5 +14,6 @@ namespace KQ.Services.Calcualation
         ResponseBase Cal3Request(Cal3RequestDto dtos);
         public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail, StoreKQ? kq = null);
         public void UpdateSumTrungThuong(ref Cal3DetailDto detail);
+        public string ChuanHoaTin(string sys);
     }
 }
