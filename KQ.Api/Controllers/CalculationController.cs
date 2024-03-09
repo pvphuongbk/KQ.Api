@@ -47,5 +47,12 @@ namespace KQ.Api.Controllers
             var items = _calcualation2Service.Cal3Request(cal3);
             return items;
         }
+
+        [HttpPost("filter")]
+        public ResponseBase Filter(Cal3RequestDto cal3)
+        {
+            var items = _calcualation2Service.Filter(cal3);
+            return items;
+        }
     }
 }

@@ -29,7 +29,31 @@ namespace KQ.Services.Calcualation
             _commonUoW = commonUoW;
             _detailsRepository = detailsRepository;
         }
+        public ResponseBase Filter(Cal3RequestDto cal3)
+        {
+            try
+            {
+                ResponseBase response = new ResponseBase();
+                var items = Cal3Request(cal3);
 
+                if (((Cal3DetailDto)items.Data).Error == null)
+                {
+                    var newSys = ChuanHoaTin(cal3.SynTax);
+                    response.Data = new FilterDto { Sys = newSys };
+                    return response;
+                }
+                else
+                {
+                    response.Data = new FilterDto { Error = ((Cal3DetailDto)items.Data).Error };
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                FileHelper.GeneratorFileByDay(FileStype.Error, $"Request = {JsonConvert.SerializeObject(cal3)}. \r\n===\r\n" + ex.ToString(), "Filter");
+                return new ResponseBase { Code = 501, Message = ex.Message };
+            }
+        }
         public ResponseBase Cal3Request(Cal3RequestDto dto)
         {
             try
@@ -2114,60 +2138,49 @@ namespace KQ.Services.Calcualation
 
         public string ChuanHoaTin(string sys)
         {
-            //sys = sys.Replace("-", " ");
-            //sys = sys.Replace("\r", " ");
-            //sys = sys.Replace("\n", " ");
-            //sys = sys.Replace("\\", " ");
-            //sys = sys.Replace("/", " ");
-            //sys = sys.Replace(":", " ");
-            //sys = sys.Replace(";", " ");
-            //sys = Regex.Replace(sys, @"\s", " ");
-            //var arr = sys.ToArray();
-            //bool isNumber = false;
-            //bool isSpace = false;
-            //List<string> lst = new List<string>();
-            //for (int i = 0; i < arr.Length;i++)
-            //{
-            //    var cstr = arr[i].ToString();
-            //    if(cstr == " ")
-            //    {
-            //        if(!isSpace)
-            //        {
-            //            lst.Add(cstr);
-            //            isSpace = true;
-            //        }
-            //        continue;
-            //    }
-            //    isSpace = false;
+            sys = sys.Replace("-", " ");
+            sys = sys.Replace("\r", " ");
+            sys = sys.Replace("\n", " ");
+            sys = sys.Replace("\\", " ");
+            sys = sys.Replace("/", " ");
+            sys = sys.Replace(":", " ");
+            sys = sys.Replace(";", " ");
+            sys = Regex.Replace(sys, @"\s", " ");
 
-            //    if (int.TryParse(cstr, out _))
-            //    {
-            //        lst.Add(cstr);
-            //        isNumber = true;
-            //        continue;
-            //    }
 
-            //    if ((cstr == "." || cstr == ",") && isNumber && arr.Length > (i + 1)
-            //        && int.TryParse(arr[i + 1].ToString(), out _)
-            //        && (arr.Length <= (i + 2) || (!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr, i + 2))))
-            //    {
-            //        lst.Add($"{str}.{arr[i + 1].ToString()}");
-            //        str = "";
-            //        i++;
-            //    }
-            //    else if (cstr == "." || cstr == ",")
-            //    {
-            //        if (!string.IsNullOrEmpty(str))
-            //            lst.Add(str);
-            //        lst.Add(" ");
-            //        str = "";
-            //    }
-            //}
-            //var arr = ChuanHoa(sys);
-            //var arrNoSpace = arr.Where(x => !string.IsNullOrEmpty(x) && x != " ");
-            //return string.Join(" ", arrNoSpace).ToUpper();
+            List<string> lst = new List<string>();
+            var arr = sys.ToArray();
+            bool isNumber = false;
+            bool isSpace = false;
+            string str = "";
+            for (int i = 0; i < arr.Length; i++)
+            {
+                var cstr = arr[i].ToString();
+                if ((cstr == "." || cstr == ",") && isNumber && arr.Length > (i + 1)
+                    && int.TryParse(arr[i + 1].ToString(), out _)
+                    && (arr.Length <= (i + 2) || (!int.TryParse(arr[i + 2].ToString(), out _) && !FindNextd(arr, i + 2))))
+                {
+                    lst.Add(".");
+                    isSpace = false;
+                }
+                else if (cstr == "." || cstr == "," || cstr == " ")
+                {
+                    if(!isSpace)
+                    {
+                        lst.Add(" ");
+                        isSpace = true;
+                    }
+                }
+                else
+                {
+                    lst.Add(cstr);
+                    isNumber = int.TryParse(cstr, out _);
+                    isSpace = false;
+                }
+            }
 
-            return "";
+            var result = string.Join("", lst);
+            return result;
         }
     }
 }

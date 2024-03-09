@@ -220,7 +220,7 @@ namespace KQ.Services.CommonServices
             };
             for(int i = 0; i < teststos.Count; i++)
             {
-                if(i == 107)
+                if(i == 81)
                 {
 
                 }
@@ -233,7 +233,7 @@ namespace KQ.Services.CommonServices
                 dto.CachTrungDaXien = CachTrungDa.NhieuCap;
                 dto.CachTrungDaThang = CachTrungDa.NhieuCap;
                 dto.CoN = teststos[i].CoN;
-                //dto.SynTax = _calcualation2Service.ChuanHoaTin(dto.SynTax);
+                dto.SynTax = _calcualation2Service.ChuanHoaTin(dto.SynTax);
                 var re = (Cal3DetailDto)_calcualation2Service.Cal3Request(dto).Data;
                 if(re.Error == null)
                 {

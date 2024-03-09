@@ -2,6 +2,12 @@
 
 namespace KQ.DataDto.Calculation
 {
+
+    public class FilterDto
+    {
+        public Error Error { get; set; }
+        public string Sys { get; set; }
+    }
     public class Cal3DetailDto
     {
         public Summary Xac { get; set; }
