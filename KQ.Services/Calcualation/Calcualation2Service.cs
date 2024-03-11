@@ -34,7 +34,7 @@ namespace KQ.Services.Calcualation
             try
             {
                 ResponseBase response = new ResponseBase();
-                var items = Cal3Request(cal3);
+                var items = Cal3Request(cal3, true);
 
                 if (((Cal3DetailDto)items.Data).Error == null)
                 {
@@ -54,7 +54,7 @@ namespace KQ.Services.Calcualation
                 return new ResponseBase { Code = 501, Message = ex.Message };
             }
         }
-        public ResponseBase Cal3Request(Cal3RequestDto dto)
+        public ResponseBase Cal3Request(Cal3RequestDto dto, bool isFilter = false)
         {
             try
             {
@@ -380,6 +380,12 @@ namespace KQ.Services.Calcualation
             Foo:
                 if (error == null)
                 {
+                    if (isFilter)
+                    {
+                        s1.Stop();
+                        return new ResponseBase { Data = new Cal3DetailDto() };
+                    }
+
                     var detail = CreateDetail(dto, cal3PrepareDtosTotal.SelectMany(x => x.Cal3PrepareDtos).ToList());
                     var isUpdate = UpdateTrungThuong(dto.HandlByDate, dto.CachTrungDaThang, dto.CachTrungDaXien, dto.Mien, ref detail);
                     if (isUpdate)

@@ -5,13 +5,14 @@ using KQ.DataAccess.Entities;
 using KQ.DataAccess.Enum;
 using KQ.DataDto.Calculation;
 using KQ.DataDto.Enum;
+using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 
 namespace KQ.Services.Calcualation
 {
     public interface ICalcualation2Service
     {
-        ResponseBase Cal3Request(Cal3RequestDto dtos);
+        ResponseBase Cal3Request(Cal3RequestDto dtos, bool isFilter = false);
         public bool UpdateTrungThuong(DateTime handlByDate, CachTrungDa dathang, CachTrungDa daxien, MienEnum mien, ref Cal3DetailDto detail, StoreKQ? kq = null);
         public void UpdateSumTrungThuong(ref Cal3DetailDto detail);
         public string ChuanHoaTin(string sys);

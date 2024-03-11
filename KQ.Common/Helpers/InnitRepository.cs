@@ -116,7 +116,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Restore backup {checkRe.ToString()}", "DownloadBackupFile");
                     }
                 }
-                else if (!allowUpdate && !checkN && now > new TimeSpan(16, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkN && now > new TimeSpan(16, 35, 0))
                 {
                     allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
@@ -170,7 +170,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MN lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!allowUpdate && !checkT && now > new TimeSpan(17, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkT && now > new TimeSpan(17, 35, 0))
                 {
                     allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
@@ -224,7 +224,7 @@ namespace KQ.Common.Helpers
                         FileHelper.GeneratorFileByDay(FileStype.Log, $"Cập nhật dữ liệu MT lúc {DateTime.Now.ToString("HH:mm:ss")}." +
                             $" Thời gian thực hiện {s1.ElapsedMilliseconds} ms. Số lần thực hiện {countCheck}. Đài {dai}", "UpdateOnTime");
                 }
-                else if (!allowUpdate && !checkB && now > new TimeSpan(18, 35, 0) && now <= new TimeSpan(19, 0, 0))
+                else if (!allowUpdate && !checkB && now > new TimeSpan(18, 35, 0))
                 {
                     allowUpdate = true;
                     Stopwatch s1 = new Stopwatch();
@@ -350,11 +350,11 @@ namespace KQ.Common.Helpers
                     _totalBonSoDic.TryAdd("Now", new List<int>[8]);
                 }
                 var now = DateTime.Now.TimeOfDay;
-                if (now < new TimeSpan(18, 59, 0))
-                    return true;
-                InitDriver();
-                isCheck = true;
-                var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
+                //if (now < new TimeSpan(18, 59, 0))
+                //    return true;
+                //InitDriver();
+                //isCheck = true;
+                //var check1 = UpdateKQ(DateTime.Now.DayOfWeek);
                 //var check2 = UpdateKQ(DayOfWeek.Monday);
                 return true;
 
@@ -366,8 +366,8 @@ namespace KQ.Common.Helpers
             }
             finally
             {
-                if (isCheck)
-                    DisposeDriver();
+                //if (isCheck)
+                //    DisposeDriver();
             }
 
         }
