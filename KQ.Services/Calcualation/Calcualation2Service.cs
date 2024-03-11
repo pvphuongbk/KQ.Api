@@ -13,6 +13,7 @@ using System.Diagnostics;
 using KQ.DataAccess.Enum;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using KQ.DataDto.HandlMessage;
 
 namespace KQ.Services.Calcualation
 {
@@ -35,11 +36,42 @@ namespace KQ.Services.Calcualation
             {
                 ResponseBase response = new ResponseBase();
                 var items = Cal3Request(cal3, true);
-
-                if (((Cal3DetailDto)items.Data).Error == null)
+                var cal3Detail = (Cal3DetailDto)items.Data;
+                if (cal3Detail.Error == null)
                 {
+                    var oldSys = cal3.SynTax;
                     var newSys = ChuanHoaTin(cal3.SynTax);
-                    response.Data = new FilterDto { Sys = newSys };
+                    cal3.SynTax = newSys;
+                    var item2s = Cal3Request(cal3, true);
+                    var cal3Detail2 = (Cal3DetailDto)item2s.Data;
+
+                    cal3Detail.Xac.HaiCB = Math.Round(cal3Detail.Xac.HaiCB, 2);
+                    cal3Detail.Xac.HaiCD = Math.Round(cal3Detail.Xac.HaiCD, 2);
+                    cal3Detail.Xac.DaT = Math.Round(cal3Detail.Xac.DaT, 2);
+                    cal3Detail.Xac.DaX = Math.Round(cal3Detail.Xac.DaX, 2);
+                    cal3Detail.Xac.BaCon = Math.Round(cal3Detail.Xac.BaCon, 2);
+                    cal3Detail.Xac.BonCon = Math.Round(cal3Detail.Xac.BonCon, 2);
+
+                    cal3Detail2.Xac.HaiCB = Math.Round(cal3Detail2.Xac.HaiCB, 2);
+                    cal3Detail2.Xac.HaiCD = Math.Round(cal3Detail2.Xac.HaiCD, 2);
+                    cal3Detail2.Xac.DaT = Math.Round(cal3Detail2.Xac.DaT, 2);
+                    cal3Detail2.Xac.DaX = Math.Round(cal3Detail2.Xac.DaX, 2);
+                    cal3Detail2.Xac.BaCon = Math.Round(cal3Detail2.Xac.BaCon, 2);
+                    cal3Detail2.Xac.BonCon = Math.Round(cal3Detail2.Xac.BonCon, 2);
+
+                    if (cal3Detail.Xac.HaiCB == cal3Detail2.Xac.HaiCB
+                        && cal3Detail.Xac.HaiCD == cal3Detail2.Xac.HaiCD
+                        && cal3Detail.Xac.DaT == cal3Detail2.Xac.DaT
+                        && cal3Detail.Xac.DaX == cal3Detail2.Xac.DaX
+                        && cal3Detail.Xac.BaCon == cal3Detail2.Xac.BaCon
+                        && cal3Detail.Xac.BonCon == cal3Detail2.Xac.BonCon)
+                    {
+                        response.Data = new FilterDto { Sys = newSys };
+                    }
+                    else
+                    {
+                        response.Data = new FilterDto { Sys = oldSys };
+                    }
                     return response;
                 }
                 else
@@ -380,13 +412,12 @@ namespace KQ.Services.Calcualation
             Foo:
                 if (error == null)
                 {
+                    var detail = CreateDetail(dto, cal3PrepareDtosTotal.SelectMany(x => x.Cal3PrepareDtos).ToList());
                     if (isFilter)
                     {
                         s1.Stop();
-                        return new ResponseBase { Data = new Cal3DetailDto() };
+                        return new ResponseBase { Data = detail };
                     }
-
-                    var detail = CreateDetail(dto, cal3PrepareDtosTotal.SelectMany(x => x.Cal3PrepareDtos).ToList());
                     var isUpdate = UpdateTrungThuong(dto.HandlByDate, dto.CachTrungDaThang, dto.CachTrungDaXien, dto.Mien, ref detail);
                     if (isUpdate)
                     {
